@@ -7,9 +7,8 @@ public record DiscoveredEnumMember : EnumMember
 	public DiscoverabilityMode DiscoverabilityMode { get; }
 	public string FilePath { get; } 
 	public LinePosition LinePosition { get; }
-	public string? InheritanceDefinition { get; }
 
-	public DiscoveredEnumMember(string enumIdenifier, string name, string? value, string? comment, DiscoverabilityMode discoverabilityMode, string filePath, LinePosition linePosition, string? inheritanceDefinition = null)
+	public DiscoveredEnumMember(string enumIdenifier, string name, string? value, string? comment, DiscoverabilityMode discoverabilityMode, string filePath, LinePosition linePosition)
 		: base(enumIdenifier, name, value, comment)
 	{
 		if (discoverabilityMode == DiscoverabilityMode.None)
@@ -20,6 +19,5 @@ public record DiscoveredEnumMember : EnumMember
 		this.DiscoverabilityMode = discoverabilityMode;
 		this.FilePath = filePath;
 		this.LinePosition = linePosition;
-		this.InheritanceDefinition = inheritanceDefinition;
 	}
 }

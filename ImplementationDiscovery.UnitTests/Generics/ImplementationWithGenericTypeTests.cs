@@ -19,6 +19,6 @@ public class ImplementationWithGenericTypeTests
 	[Fact]
 	public void ClassWithExtraGenericTypeImplementationHasCorrectType()
 	{
-		Assert.Equal(typeof(ImplementationWithExtraGenericTypeMock<int>),	ClassWithExtraGenericTypeToImplement<int, int>.Implementations.ImplementationWithExtraGenericTypeMock.Value.GetType());
+		Assert.Equal(typeof(ImplementationWithExtraGenericTypeMock<int>),		ClassWithExtraGenericTypeToImplement<ImplementationWithExtraGenericTypeMock<int>, int>.Implementations.ImplementationWithExtraGenericTypeMock.Value.GetType());
 	}
 }

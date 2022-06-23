@@ -61,8 +61,6 @@ internal static class ImplementationSyntaxReceiver
 
 		if (attribute is null) return null;
 
-		//Debugger.Launch();
-
 		var member = new DiscoveredEnumMember(
 			enumIdenifier: $"{baseType.GetTypeFullNameWithoutGenericParameters()}.Implementations", // Get the {namespace}.{typeName} in order to create a unique base type name key (while ignoring generic parameters).
 			name: type.Name,
@@ -70,8 +68,7 @@ internal static class ImplementationSyntaxReceiver
 			comment: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: typeDeclarationSyntax.SyntaxTree.FilePath,
-			linePosition: typeDeclarationSyntax.SyntaxTree.GetLineSpan(typeDeclarationSyntax.Span, cancellationToken).StartLinePosition,
-			inheritanceDefinition: typeDeclarationSyntax.ChildNodes().First(child => child is BaseListSyntax).ChildNodes().First().ToString());
+			linePosition: typeDeclarationSyntax.SyntaxTree.GetLineSpan(typeDeclarationSyntax.Span, cancellationToken).StartLinePosition);
 
 		return member;
 	}

@@ -153,7 +153,7 @@ using CodeChops.MagicEnums;
 
 			// Define the enum record.
 			code.Append($@"
-{indent}{definition.AccessModifier}partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(isImplementationDiscovery ? $": MagicUninitializedObjectEnum<{definition.Name}, {((DiscoveredEnumMember)members.First()).InheritanceDefinition}>" : null)}
+{indent}{definition.AccessModifier}partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(isImplementationDiscovery ? $": MagicUninitializedObjectEnum<{definition.Name}, {definition.ValueTypeNamespace}.{definition.ValueTypeName}>" : null)}
 {indent}{{	
 ");
 
