@@ -1,14 +1,25 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
 
 [DiscoverImplementations]
-public abstract partial class ClassWithGenericTypeToImplement<TGenericType>
+internal abstract partial record ClassWithGenericTypeToImplement<TGenericType>
 {
 }
 
-internal class ImplementationWithGenericTypeMock<TGenericType> : ClassWithGenericTypeToImplement<TGenericType>
+internal record ImplementationWithGenericTypeMock<TGenericType> : ClassWithGenericTypeToImplement<TGenericType>
 {
 }
 
-internal class ImplementationWithoutGenericTypeMock : ClassWithGenericTypeToImplement<int>
+internal record ImplementationWithoutGenericTypeMock : ClassWithGenericTypeToImplement<int>
+{
+}
+
+[DiscoverImplementations]
+internal abstract partial record ClassWithExtraGenericTypeToImplement<TDirection, TDeltaPointNumber>
+	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>, IConvertible
+{
+}
+
+internal record ImplementationWithExtraGenericTypeMock<TDeltaPointNumber> : ClassWithExtraGenericTypeToImplement<ImplementationWithExtraGenericTypeMock<TDeltaPointNumber>, TDeltaPointNumber>
+	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>, IConvertible
 {
 }

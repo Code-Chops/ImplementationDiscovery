@@ -3,21 +3,28 @@ using Microsoft.CodeAnalysis;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
 
-public record EnumMember
+public record EnumMember : IEnumEntity
 {
+	/// <summary>
+	/// The enum full name.
+	/// </summary>
+	public string EnumIdentifier { get; }
 	public string Name { get; }
 	public object? Value { get; }
 	public string? Comment { get; }
 
-	public EnumMember(string name, object? value = null, string? comment = null)
+	public EnumMember(string enumIdentifier, string name, object? value = null, string? comment = null)
 	{
+		this.EnumIdentifier = String.IsNullOrWhiteSpace(enumIdentifier) ? throw new ArgumentNullException(nameof(enumIdentifier)) : enumIdentifier;
 		this.Name = String.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name;
 		this.Value = value;
 		this.Comment = String.IsNullOrWhiteSpace(comment) ? null : comment;
 	}
 
-	public EnumMember(AttributeData data)
+	public EnumMember(string enumIdentifier, AttributeData data)
 	{
+		this.EnumIdentifier = String.IsNullOrWhiteSpace(enumIdentifier) ? throw new ArgumentNullException(nameof(enumIdentifier)) : enumIdentifier;
+		
 		if (!data.TryGetArguments(out var arguments))
 		{
 			throw new Exception($"Could not retrieve attribute parameters of attribute {data.AttributeClass?.Name}.");

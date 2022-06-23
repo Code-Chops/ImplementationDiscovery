@@ -461,16 +461,19 @@ internal static class TypeSymbolExtensions
 		return $"(this.{memberName} is null || other.{memberName} is null ? -(this.{memberName} is null).CompareTo(other.{memberName} is null) : this.{memberName}.CompareTo(other.{memberName}))";
 	}
 
+	public static string GetTypeFullNameWithoutGenericParameters(this ITypeSymbol typeSymbol)
+		=> $"{typeSymbol.ContainingNamespace.ToDisplayString()}.{typeSymbol.Name}";
+
 	/// <summary>
-	/// Converts names like 'string' to 'System.String'
+	/// Converts names like 'string' to 'System.String' including generic parameter names (if used).
 	/// </summary>
-	public static string GetTypeFullName(this ITypeSymbol typeSymbol) 
+	public static string GetTypeFullNameWithGenericParameters(this ITypeSymbol typeSymbol) 
 		=> typeSymbol.SpecialType == SpecialType.None
 			? typeSymbol.ToDisplayString()
 			: typeSymbol.SpecialType.ToString().Replace("_", ".");
 
-	public static string GetNameWithGenericParameters(this ITypeSymbol typeSymbol, bool includeNamespace = false)
-		=> typeSymbol.GetTypeFullName().Substring(includeNamespace ? 0 : typeSymbol.ContainingNamespace.ToDisplayString().Length + 1);
+	public static string GetTypeNameWithGenericParameters(this ITypeSymbol typeSymbol)
+		=> typeSymbol.GetTypeFullNameWithGenericParameters().Substring(typeSymbol.ContainingNamespace.ToDisplayString().Length + 1);
 
 	public static string? GetClassTypeName(this ITypeSymbol baseType)
 	{
@@ -478,9 +481,9 @@ internal static class TypeSymbolExtensions
 
 		return baseType.TypeKind switch
 		{
-			TypeKind.Class		=> "class",
+			TypeKind.Class		=> $"{(baseType.IsRecord ? "record " : "")}class",
 			TypeKind.Struct		=> $"{(baseType.IsRecord ? "record " : "")}struct",
-			TypeKind.Interface	=> $"{(baseType.IsRecord ? "record " : "")}interface",
+			TypeKind.Interface	=> "interface",
 			TypeKind.Unknown	=> null,
 			_					=> null,
 		};

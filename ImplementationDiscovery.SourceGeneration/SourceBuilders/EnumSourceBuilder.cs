@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Immutable;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+using System.Diagnostics;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
@@ -11,18 +12,18 @@ public static class EnumSourceBuilder
 	/// <summary>
 	/// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
 	/// </summary>
-	public static void CreateSource(SourceProductionContext context, ImmutableArray<DiscoveredEnumMember> allDiscoveredMembers, Dictionary<string, EnumDefinition> enumDefinitionsByName)
+	public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, Dictionary<string, EnumDefinition> enumDefinitionsByIdentifier)
 	{
-		if (enumDefinitionsByName.Count == 0) return;
+		if (enumDefinitionsByIdentifier.Count == 0) return;
 
 		// Get the discovered members and their definition.
 		// Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
 		var relevantDiscoveredMembersByDefinition = allDiscoveredMembers
-			.GroupBy(member => enumDefinitionsByName.TryGetValue(member.EnumName, out var definition) ? definition : null)
+			.GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
 			.Where(grouping => grouping.Key is not null)
 			.ToDictionary(grouping => grouping.Key, grouping => grouping.Where(member => grouping.Key!.DiscoverabilityMode == member.DiscoverabilityMode));
-		
-		foreach (var definition in enumDefinitionsByName.Values)
+
+		foreach (var definition in enumDefinitionsByIdentifier.Values)
 		{
 			var relevantDiscoveredMembers = relevantDiscoveredMembersByDefinition.TryGetValue(definition, out var members)
 				? members.ToList()
@@ -31,7 +32,7 @@ public static class EnumSourceBuilder
 			var enumCode = CreateEnumSource(definition!, relevantDiscoveredMembers);
 			if (enumCode is null) continue;
 
-			var fileName = GetValidFileName($"{definition.ValueTypeNamespace}.{definition.Name}.g.cs");
+			var fileName = GetValidFileName($"{definition.Identifier}.g.cs");
 
 			context.AddSource(fileName, SourceText.From(enumCode, Encoding.UTF8));
 		}
@@ -43,7 +44,7 @@ public static class EnumSourceBuilder
 			var i = 0;
 			var invalidCharacters = Path.GetInvalidFileNameChars();
 
-			foreach (char c in definitionName)
+			foreach (var c in definitionName)
 			{
 				var newCharacter = c;
 				if (invalidCharacters.Contains(c)) newCharacter = '_';
@@ -59,7 +60,7 @@ public static class EnumSourceBuilder
 	{
 		var code = new StringBuilder();
 
-		// Place the members that are discovered in the enum definition file itself first. The order can be relevant because the value of enum members can be implicitily incremental.
+		// Place the members that are discovered in the enum definition file itself first. The order can be relevant because the value of enum members can be implicitly incremental.
 		// Do a distinct on the file path and line position so the members will be deduplicated while typing their invocation.
 		// Also do a distinct on the member name.		
 		relevantDiscoveredMembers = relevantDiscoveredMembers
@@ -70,7 +71,7 @@ public static class EnumSourceBuilder
 			.Select(membersByName => membersByName.First())
 			.ToList();
 
-		var members = definition.AttributeMembers.Concat(relevantDiscoveredMembers);
+		var members = definition.MembersFromAttribute.Concat(relevantDiscoveredMembers);
 
 		// Is used for correct enum member outlining.
 		var longestMemberNameLength = members
@@ -131,7 +132,7 @@ using CodeChops.MagicEnums;
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 
 				code.Append($@"
-/// -{member.Name}{outlineSpaces} = {(member.Value is null ? "?" : member.Value)}");
+/// -{member.Name}{outlineSpaces} = {member.Value ?? "?"}");
 			}
 
 			code.Append($@"
@@ -144,7 +145,7 @@ using CodeChops.MagicEnums;
 			{
 				// Add the outer class
 				code.AppendLine($@"
-{definition.ValueTypeDefinition}
+{definition.BaseClassDefinition}
 {{
 ");
 			}
@@ -152,7 +153,7 @@ using CodeChops.MagicEnums;
 
 			// Define the enum record.
 			code.Append($@"
-{indent}{definition.AccessModifier}partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(isImplementationDiscovery ? $": MagicUninitializedObjectEnum<{definition.Name}, {definition.ValueTypeNamespace}.{definition.ValueTypeName}>" : null)}
+{indent}{definition.AccessModifier}partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(isImplementationDiscovery ? $": MagicUninitializedObjectEnum<{definition.Name}, {((DiscoveredEnumMember)members.First()).InheritanceDefinition}>" : null)}
 {indent}{{	
 ");
 

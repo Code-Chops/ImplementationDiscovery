@@ -1,18 +1,24 @@
 ﻿using Xunit;
 
-namespace CodeChops.ImplementationDiscovery.UnitTests;
+namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
 
 public class ImplementationWithGenericTypeTests
 {
 	[Fact]
 	public void ClassImplementationHasCorrectMemberName()
 	{
-		Assert.True(ClassWithGenericTypeToImplement<int>.Implementations.ImplementationWithGenericTypeMock.Name == nameof(ImplementationWithGenericTypeMock<int>));
+		Assert.Equal(nameof(ImplementationWithGenericTypeMock<int>),			ClassWithGenericTypeToImplement<int>.Implementations.ImplementationWithGenericTypeMock.Name);
 	}
 
 	[Fact]
 	public void ClassImplementationHasCorrectMemberValue()
 	{
-		Assert.True(ClassWithGenericTypeToImplement<int>.Implementations.ImplementationWithGenericTypeMock.Value.GetType()	== typeof(ImplementationWithGenericTypeMock<int>));
+		Assert.Equal(typeof(ImplementationWithGenericTypeMock<int>),			ClassWithGenericTypeToImplement<int>.Implementations.ImplementationWithGenericTypeMock.Value.GetType());
+	}
+	
+	[Fact]
+	public void ClassWithExtraGenericTypeImplementationHasCorrectType()
+	{
+		Assert.Equal(typeof(ImplementationWithExtraGenericTypeMock<int>),	ClassWithExtraGenericTypeToImplement<int, int>.Implementations.ImplementationWithExtraGenericTypeMock.Value.GetType());
 	}
 }

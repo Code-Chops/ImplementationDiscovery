@@ -27,7 +27,7 @@ internal static class AttributeDataExtensions
 
 		foreach (var argument in allArguments)
 		{
-			argumentByNames.Add(argument.Key, (argument.Value.Type!.GetTypeFullName(), argument.Value.Value));
+			argumentByNames.Add(argument.Key, (argument.Value.Type!.GetTypeFullNameWithGenericParameters(), argument.Value.Value));
 		}
 
 		return true;

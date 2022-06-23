@@ -5,6 +5,6 @@ public abstract partial class AbstractClassToImplement
 {
 }
 
-internal class ClassImplementationMock : AbstractClassToImplement
+public class ClassImplementationMock : AbstractClassToImplement
 {
 }
