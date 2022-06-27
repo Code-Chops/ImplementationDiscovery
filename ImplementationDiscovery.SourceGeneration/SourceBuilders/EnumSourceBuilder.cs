@@ -118,7 +118,7 @@ using CodeChops.MagicEnums;
 		// Creates the partial enum record (or null if the enum has no members).
 		string? GetEnumRecord()
 		{
-			if (!members.Any()) return null;
+			if (!members.Any() && definition.DiscoverabilityMode != DiscoverabilityMode.Implementation) return null;
 
 			var code = new StringBuilder();
 

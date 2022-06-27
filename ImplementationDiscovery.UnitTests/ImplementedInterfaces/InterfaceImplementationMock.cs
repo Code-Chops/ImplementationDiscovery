@@ -31,6 +31,6 @@ public abstract record DayOfWeek<TDayOfWeek, TDay> : MagicCustomEnum<TDayOfWeek,
 public record DayOfWeek<TDay> : DayOfWeek<DayOfWeek<TDay>, TDay>
 	where TDay : class
 {
-	public static DayOfWeek<TDay> Monday { get; } = CreateMember("Maandag");
-	public static DayOfWeek<TDay> Tuesday { get; } = CreateMember("Dinsdag");
+	public static DayOfWeek<TDay> Monday { get; }   = CreateMember("Maandag");
+	public static DayOfWeek<TDay> Tuesday { get; }  = CreateMember("Dinsdag");
 }
