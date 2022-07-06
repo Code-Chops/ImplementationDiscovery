@@ -488,4 +488,12 @@ internal static class TypeSymbolExtensions
 			_					=> null,
 		};
 	}
+	
+	public static string GetClassDefinition(this ITypeSymbol type)
+	{
+		var accessibility = type.DeclaredAccessibility.ToString().ToLowerInvariant();
+		var abstractOrEmpty = type.IsAbstract && type.TypeKind != TypeKind.Interface ? "abstract " : "";
+		var definition = $"{accessibility} {abstractOrEmpty}partial {type.GetClassTypeName()}";
+		return definition;
+	}
 }

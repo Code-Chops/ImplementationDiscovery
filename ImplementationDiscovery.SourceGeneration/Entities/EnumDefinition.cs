@@ -1,4 +1,5 @@
-﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
+﻿using System.Diagnostics;
+using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
@@ -17,17 +18,24 @@ public record EnumDefinition : IEnumEntity
 	/// </summary>
 	public string ValueTypeNamespace { get; }
 	/// <summary>
-	/// AccessModifier + Type + Name.
+	/// AccessModifier + Type.
 	/// Is NULL when <see cref="DiscoverabilityMode"/> is not set to Implementation.
 	/// </summary>
 	public string? BaseClassDefinition { get; }
+	/// <summary>
+	/// Base class name.
+	/// Is NULL when <see cref="DiscoverabilityMode"/> is not set to Implementation.
+	/// </summary>
+	public string? BaseClassName { get; }
 	public DiscoverabilityMode DiscoverabilityMode { get; }
 	public string FilePath { get; }
 	public string AccessModifier { get; }
 	public List<EnumMember> MembersFromAttribute { get; }
 	public bool IsStruct { get; }
-
-	public EnumDefinition(ITypeSymbol type, string valueTypeNameIncludingGenerics, string valueTypeNamespace, DiscoverabilityMode discoverabilityMode, string filePath, string accessModifier, IEnumerable<EnumMember> attributeMembers, ITypeSymbol? baseType)
+	public bool GenerateIdsForImplementations { get; }
+	
+	public EnumDefinition(ITypeSymbol type, string valueTypeNameIncludingGenerics, string valueTypeNamespace, DiscoverabilityMode discoverabilityMode, 
+		string filePath, string accessModifier, IEnumerable<EnumMember> attributeMembers, ITypeSymbol? baseType, bool implementationsHaveIds)
 		: this(
 			  name: type.Name, 
 			  enumNamespace: type.ContainingNamespace?.ToDisplayString(), 
@@ -38,22 +46,24 @@ public record EnumDefinition : IEnumEntity
 			  accessModifier: accessModifier, 
 			  membersFromAttribute: attributeMembers, 
 			  isStruct: type.TypeKind == TypeKind.Struct,
-			  baseType: baseType)
+			  baseType: baseType,
+			  generateIdsForImplementations: implementationsHaveIds)
 	{
 	}
 
 	public EnumDefinition(string name, string? enumNamespace, string valueTypeNameIncludingGenerics, string valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
-		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, ITypeSymbol? baseType)
+		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, ITypeSymbol? baseType, bool generateIdsForImplementations)
 	{
-		if (discoverabilityMode == DiscoverabilityMode.Implementation && baseType is null) throw new ArgumentException("Base type should be provided when the discoverability mode is set to implemention.");
-
+		if (discoverabilityMode == DiscoverabilityMode.Implementation && baseType is null) throw new ArgumentException("Base type should be provided when the discoverability mode is set to implementation.");
+		
 		this.Name = name;
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 
 		this.ValueTypeName = valueTypeNameIncludingGenerics;
 		this.ValueTypeNamespace = valueTypeNamespace;
-		this.BaseClassDefinition = discoverabilityMode == DiscoverabilityMode.Implementation ? GetBaseClassDefinition(baseType!) : null;
-
+		this.BaseClassDefinition = discoverabilityMode == DiscoverabilityMode.Implementation ? baseType!.GetClassDefinition() : null;
+		this.BaseClassName = baseType?.GetTypeNameWithGenericParameters();
+		
 		this.DiscoverabilityMode = discoverabilityMode;
 		this.FilePath = filePath;
 		this.AccessModifier = accessModifier.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "");
@@ -63,14 +73,8 @@ public record EnumDefinition : IEnumEntity
 
 		var genericParameterIndex = valueTypeNameIncludingGenerics.IndexOf('<');
 		var valueTypeNameWithoutGenerics = genericParameterIndex <= 0 ? valueTypeNameIncludingGenerics : valueTypeNameIncludingGenerics.Substring(0, genericParameterIndex);
-		this.Identifier = $"{this.ValueTypeNamespace}.{valueTypeNameWithoutGenerics}.{this.Name}";
+		this.Identifier = $"{this.ValueTypeNamespace}.{valueTypeNameWithoutGenerics}";
 
-
-		static string? GetBaseClassDefinition(ITypeSymbol baseType)
-		{
-			var accessibility = baseType.DeclaredAccessibility.ToString().ToLowerInvariant();
-			var abstractOrEmpty = baseType.IsAbstract && baseType.TypeKind != TypeKind.Interface ? "abstract " : "";
-			return $"{accessibility} {abstractOrEmpty}partial {baseType.GetClassTypeName()} {baseType.GetTypeNameWithGenericParameters()}";
-		}
+		this.GenerateIdsForImplementations = generateIdsForImplementations;
 	}
 }

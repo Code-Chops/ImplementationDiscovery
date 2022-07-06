@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 
@@ -25,17 +26,17 @@ internal static class ImplementationSyntaxReceiver
 			if (syntaxNode is not TypeDeclarationSyntax typeDeclarationSyntax || typeDeclarationSyntax is InterfaceDeclarationSyntax) return false;
 
 			// It should inherit (from a base class/struct/record or interface).
-			var isProbablyBaseType = typeDeclarationSyntax.BaseList is not null && typeDeclarationSyntax.BaseList.Types.Count != 0;
-			return isProbablyBaseType;
+			var isProbablyImplementation = typeDeclarationSyntax.BaseList is not null && typeDeclarationSyntax.BaseList.Types.Count != 0;
+			return isProbablyImplementation;
 		}
 
 		static bool IsProbablyDiscoverableBaseType(SyntaxNode syntaxNode, CancellationToken cancellationToken)
 		{
-			if (syntaxNode is not AttributeSyntax attribute || attribute.ArgumentList?.Arguments.Count > 0) return false;
+			if (syntaxNode is not AttributeSyntax attribute || attribute.ArgumentList?.Arguments.Count > 1) return false;
 			if (attribute.Parent?.Parent is not TypeDeclarationSyntax) return false;
 
-			var isProbablyImplementation = attribute.Name.HasAttributeName(SourceGenerator.DiscoverableAttributeName, cancellationToken);
-			return isProbablyImplementation;
+			var isProbablyBaseType = attribute.Name.HasAttributeName(SourceGenerator.DiscoverableAttributeName, cancellationToken);
+			return isProbablyBaseType;
 		}
 	}
 
@@ -47,7 +48,7 @@ internal static class ImplementationSyntaxReceiver
 	{
 		if (context.Node is not TypeDeclarationSyntax typeDeclarationSyntax) return null;
 
-		if (context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax, cancellationToken) is not INamedTypeSymbol type) return null;
+		if (ModelExtensions.GetDeclaredSymbol(context.SemanticModel, typeDeclarationSyntax, cancellationToken) is not INamedTypeSymbol type) return null;
 
 		if (type.IsStatic || type.IsAbstract) return null;
 
@@ -62,8 +63,11 @@ internal static class ImplementationSyntaxReceiver
 		if (attribute is null) return null;
 
 		var member = new DiscoveredEnumMember(
-			enumIdenifier: $"{baseType.GetTypeFullNameWithoutGenericParameters()}.Implementations", // Get the {namespace}.{typeName} in order to create a unique base type name key (while ignoring generic parameters).
+			enumIdentifier: baseType.GetTypeFullNameWithoutGenericParameters(), // Get the {namespace}.{typeName} in order to create a unique base type name key (while ignoring generic parameters).
 			name: type.Name,
+			isPartial: typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword)),
+			@namespace: type.ContainingNamespace.ToDisplayString(), 
+			definition: type.GetClassDefinition(),
 			value: $"typeof({type.GetTypeFullNameWithGenericParameters()})",
 			comment: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
@@ -79,17 +83,17 @@ internal static class ImplementationSyntaxReceiver
 	/// <returns>The enum definition. Or null if not applicable for this node.</returns>
 	internal static IEnumEntity? GetBaseType(GeneratorSyntaxContext context, CancellationToken cancellationToken)
 	{
-		if (context.Node is not AttributeSyntax { Parent.Parent: TypeDeclarationSyntax type }) return null;
+		if (context.Node is not AttributeSyntax { Parent.Parent: TypeDeclarationSyntax typeDeclarationSyntax }) return null;
 
-		if (context.SemanticModel.GetDeclaredSymbol(type, cancellationToken) is not INamedTypeSymbol baseType) return null;
+		if (ModelExtensions.GetDeclaredSymbol(context.SemanticModel, typeDeclarationSyntax, cancellationToken) is not INamedTypeSymbol baseType) return null;
 
 		// ReSharper disable once SimplifyLinqExpressionUseAll
-		if (baseType.IsStatic || !baseType.IsAbstract || !type.Modifiers.Any(m => m.ValueText == "partial")) return null;
+		if (baseType.IsStatic || !baseType.IsAbstract || !typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword))) return null;
 
-		var hasDiscoverableAttribute = baseType.HasAttribute(SourceGenerator.DiscoverableAttributeName, SourceGenerator.DiscoverableAttributeNamespace, out _);
+		var hasDiscoverableAttribute = baseType.HasAttribute(SourceGenerator.DiscoverableAttributeName, SourceGenerator.DiscoverableAttributeNamespace, out var discoverableAttribute);
 		if (!hasDiscoverableAttribute) return null;
 		
-		var filePath = type.SyntaxTree.FilePath;
+		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;
 
 		var definition = new EnumDefinition(
 			name: "Implementations", 
@@ -98,10 +102,11 @@ internal static class ImplementationSyntaxReceiver
 			valueTypeNamespace: baseType.ContainingNamespace!.ToDisplayString(),
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: filePath,
-			accessModifier: type.Modifiers.ToFullString(),
+			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(), 
 			isStruct: false,
-			baseType: baseType);
+			baseType: baseType,
+			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true);
 
 		return definition;
 	}
