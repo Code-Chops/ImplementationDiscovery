@@ -47,5 +47,6 @@ public class SourceGenerator : IIncrementalGenerator
 		var members = entities.OfType<DiscoveredEnumMember>();
 
 		EnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier);
+		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier);
 	}
 }

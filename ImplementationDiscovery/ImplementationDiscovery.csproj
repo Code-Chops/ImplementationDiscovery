@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.6.1</VersionPrefix>
-		<PackageReleaseNotes>Changed type specific ID generation to string ID generation.</PackageReleaseNotes>
+		<VersionPrefix>0.6.2</VersionPrefix>
+		<PackageReleaseNotes>Split source builders. Separated filenamehelper. Added record implementation tests.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
