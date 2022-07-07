@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.6.2</VersionPrefix>
-		<PackageReleaseNotes>Split source builders. Separated filenamehelper. Added record implementation tests.</PackageReleaseNotes>
+		<VersionPrefix>0.6.3</VersionPrefix>
+		<PackageReleaseNotes>Fixed global namespaces, added test for global namespaces, fixed padding of members in comment.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
