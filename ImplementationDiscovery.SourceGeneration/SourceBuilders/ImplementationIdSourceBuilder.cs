@@ -47,7 +47,7 @@ public static class ImplementationIdSourceBuilder
 using System;
 using CodeChops.Identities;
 
-namespace {member.Namespace};
+{(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
 			
             code.AppendLine($@"

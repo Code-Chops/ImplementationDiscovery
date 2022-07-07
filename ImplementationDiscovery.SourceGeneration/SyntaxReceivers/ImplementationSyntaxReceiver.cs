@@ -63,10 +63,14 @@ internal static class ImplementationSyntaxReceiver
 		if (attribute is null) return null;
 
 		var member = new DiscoveredEnumMember(
-			enumIdentifier: baseType.GetTypeFullNameWithoutGenericParameters(), // Get the {namespace}.{typeName} in order to create a unique base type name key (while ignoring generic parameters).
+			enumIdentifier: baseType.ContainingNamespace.IsGlobalNamespace
+				? baseType.Name
+				: $"{baseType.ContainingNamespace}.{baseType.Name}",
 			name: type.Name,
 			isPartial: typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword)),
-			@namespace: type.ContainingNamespace.ToDisplayString(), 
+			@namespace: type.ContainingNamespace.IsGlobalNamespace 
+				? null 
+				: type.ContainingNamespace.ToDisplayString(), 
 			definition: type.GetClassDefinition(),
 			value: $"typeof({type.GetTypeFullNameWithGenericParameters()})",
 			comment: null,
@@ -97,9 +101,13 @@ internal static class ImplementationSyntaxReceiver
 
 		var definition = new EnumDefinition(
 			name: "Implementations", 
-			enumNamespace: baseType.ContainingNamespace?.ToDisplayString(),
+			enumNamespace: baseType.ContainingNamespace.IsGlobalNamespace 
+				? null 
+				: baseType.ContainingNamespace.ToDisplayString(),
 			valueTypeNameIncludingGenerics: baseType.GetTypeNameWithGenericParameters(),
-			valueTypeNamespace: baseType.ContainingNamespace!.ToDisplayString(),
+			valueTypeNamespace: baseType.ContainingNamespace.IsGlobalNamespace
+				? null 
+				: baseType.ContainingNamespace.ToDisplayString(),
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: filePath,
 			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),

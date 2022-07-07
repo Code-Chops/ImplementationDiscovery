@@ -8,10 +8,12 @@ public record DiscoveredEnumMember : EnumMember
 	public string FilePath { get; } 
 	public LinePosition LinePosition { get; }
 	public bool IsPartial { get; }
-	public string Namespace { get; }
+	public string? Namespace { get; }
 	public string Definition { get; }
 	
-	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string @namespace, string definition, string? value,
+	/// <param name="enumIdentifier">Be aware of global namespaces!</param>
+	/// <param name="namespace">Be aware of global namespaces!</param>
+	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string definition, string? value,
 		string? comment, DiscoverabilityMode discoverabilityMode, string filePath, LinePosition linePosition)
 		: base(enumIdentifier, name, value, comment)
 	{

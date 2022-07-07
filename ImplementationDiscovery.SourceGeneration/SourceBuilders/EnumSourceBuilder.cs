@@ -75,7 +75,7 @@ using CodeChops.MagicEnums;
 		string? GetValueTypeUsing()
 		{
 			var ns = definition.ValueTypeNamespace;
-			if (ns == "System") return null;
+			if (ns is null or "System") return null;
 
 			ns = $"using {ns};{Environment.NewLine}";
 			return ns;
@@ -118,7 +118,7 @@ using CodeChops.MagicEnums;
 				var outlineSpacesLength = longestMemberNameLength - member.Name.Length;
 				
 				code.Append($@"
-{indent}/// -{new String(' ', outlineSpacesLength)} = {member.Value ?? "?"}");
+{indent}/// -{member.Name}{new String(' ', outlineSpacesLength)} = {member.Value ?? "?"}");
 			}
 			
 			code.Append($@"
@@ -126,7 +126,9 @@ using CodeChops.MagicEnums;
 {indent}/// </summary>");
 			
 			// Define the magic enum record.
-			var parentDefinition = $"MagicUninitializedObjectEnum<{definition.Name}, {definition.ValueTypeNamespace}.{definition.ValueTypeName}>";
+			var valueTypeFullName = $"{(definition.ValueTypeNamespace is null ? null : $"{definition.ValueTypeNamespace}.")}{definition.ValueTypeName}";
+			var parentDefinition = $"MagicUninitializedObjectEnum<{definition.Name}, {valueTypeFullName}>";
+			
 			code.Append($@"
 {indent}{definition.AccessModifier}partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(isImplementationDiscovery ? $": {parentDefinition}" : null)}
 {indent}{{	

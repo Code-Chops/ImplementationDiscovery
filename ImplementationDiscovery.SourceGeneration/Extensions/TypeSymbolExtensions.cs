@@ -473,7 +473,11 @@ internal static class TypeSymbolExtensions
 			: typeSymbol.SpecialType.ToString().Replace("_", ".");
 
 	public static string GetTypeNameWithGenericParameters(this ITypeSymbol typeSymbol)
-		=> typeSymbol.GetTypeFullNameWithGenericParameters().Substring(typeSymbol.ContainingNamespace.ToDisplayString().Length + 1);
+	{
+		var startFromIndex = typeSymbol.ContainingNamespace.IsGlobalNamespace ? 0 : typeSymbol.ContainingNamespace.ToDisplayString().Length + 1;
+		var value = typeSymbol.GetTypeFullNameWithGenericParameters().Substring(startFromIndex);
+		return value;
+	}
 
 	public static string? GetClassTypeName(this ITypeSymbol baseType)
 	{

@@ -16,7 +16,7 @@ public record EnumDefinition : IEnumEntity
 	/// <summary>
 	/// When <see cref="DiscoverabilityMode"/> is set to Implementation, the ValueTypeNamespace is equal to namespace of the base class / interface.
 	/// </summary>
-	public string ValueTypeNamespace { get; }
+	public string? ValueTypeNamespace { get; }
 	/// <summary>
 	/// AccessModifier + Type.
 	/// Is NULL when <see cref="DiscoverabilityMode"/> is not set to Implementation.
@@ -34,24 +34,29 @@ public record EnumDefinition : IEnumEntity
 	public bool IsStruct { get; }
 	public bool GenerateIdsForImplementations { get; }
 	
-	public EnumDefinition(ITypeSymbol type, string valueTypeNameIncludingGenerics, string valueTypeNamespace, DiscoverabilityMode discoverabilityMode, 
+	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
+	public EnumDefinition(ITypeSymbol type, string valueTypeNameIncludingGenerics, string? valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
 		string filePath, string accessModifier, IEnumerable<EnumMember> attributeMembers, ITypeSymbol? baseType, bool implementationsHaveIds)
 		: this(
-			  name: type.Name, 
-			  enumNamespace: type.ContainingNamespace?.ToDisplayString(), 
-			  valueTypeNameIncludingGenerics: valueTypeNameIncludingGenerics, 
-			  valueTypeNamespace: valueTypeNamespace, 
-			  discoverabilityMode: discoverabilityMode, 
-			  filePath: filePath, 
-			  accessModifier: accessModifier, 
-			  membersFromAttribute: attributeMembers, 
-			  isStruct: type.TypeKind == TypeKind.Struct,
-			  baseType: baseType,
-			  generateIdsForImplementations: implementationsHaveIds)
+			name: type.Name,
+			enumNamespace: type.ContainingNamespace.IsGlobalNamespace 
+				? null 
+				: type.ContainingNamespace.ToDisplayString(),
+			valueTypeNameIncludingGenerics: valueTypeNameIncludingGenerics,
+			valueTypeNamespace: valueTypeNamespace,
+			discoverabilityMode: discoverabilityMode, 
+			filePath: filePath, 
+			accessModifier: accessModifier, 
+			membersFromAttribute: attributeMembers, 
+			isStruct: type.TypeKind == TypeKind.Struct, 
+			baseType: baseType, 
+			generateIdsForImplementations: implementationsHaveIds)
 	{
 	}
 
-	public EnumDefinition(string name, string? enumNamespace, string valueTypeNameIncludingGenerics, string valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
+	/// <param name="enumNamespace">Be aware of global namespaces!</param>
+	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
+	public EnumDefinition(string name, string? enumNamespace, string valueTypeNameIncludingGenerics, string? valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
 		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, ITypeSymbol? baseType, bool generateIdsForImplementations)
 	{
 		if (discoverabilityMode == DiscoverabilityMode.Implementation && baseType is null) throw new ArgumentException("Base type should be provided when the discoverability mode is set to implementation.");
@@ -73,7 +78,7 @@ public record EnumDefinition : IEnumEntity
 
 		var genericParameterIndex = valueTypeNameIncludingGenerics.IndexOf('<');
 		var valueTypeNameWithoutGenerics = genericParameterIndex <= 0 ? valueTypeNameIncludingGenerics : valueTypeNameIncludingGenerics.Substring(0, genericParameterIndex);
-		this.Identifier = $"{this.ValueTypeNamespace}.{valueTypeNameWithoutGenerics}";
+		this.Identifier = $"{(this.ValueTypeNamespace is null ? null : $"{this.ValueTypeNamespace}.")}{valueTypeNameWithoutGenerics}";
 
 		this.GenerateIdsForImplementations = generateIdsForImplementations;
 	}
