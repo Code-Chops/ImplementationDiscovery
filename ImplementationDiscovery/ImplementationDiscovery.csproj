@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.6.4</VersionPrefix>
-		<PackageReleaseNotes>Discoverable members don't have to be abstract anymore. Updated packages.</PackageReleaseNotes>
+		<VersionPrefix>0.6.5</VersionPrefix>
+		<PackageReleaseNotes>Updated MagicEnum package.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -58,7 +58,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="CodeChops.Identities" Version="0.0.6" />
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.3.10" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.4.1" />
 	</ItemGroup>
 
 	<PropertyGroup>
