@@ -92,7 +92,7 @@ internal static class ImplementationSyntaxReceiver
 		if (ModelExtensions.GetDeclaredSymbol(context.SemanticModel, typeDeclarationSyntax, cancellationToken) is not INamedTypeSymbol baseType) return null;
 
 		// ReSharper disable once SimplifyLinqExpressionUseAll
-		if (baseType.IsStatic || !baseType.IsAbstract || !typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword))) return null;
+		if (baseType.IsStatic || !typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword))) return null;
 
 		var hasDiscoverableAttribute = baseType.HasAttribute(SourceGenerator.DiscoverableAttributeName, SourceGenerator.DiscoverableAttributeNamespace, out var discoverableAttribute);
 		if (!hasDiscoverableAttribute) return null;
