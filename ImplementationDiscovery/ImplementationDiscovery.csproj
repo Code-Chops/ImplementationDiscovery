@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.6.8</VersionPrefix>
-		<PackageReleaseNotes>Added CDATA to XML comments.</PackageReleaseNotes>
+		<VersionPrefix>0.6.9</VersionPrefix>
+		<PackageReleaseNotes>Fixed CDATA to XML comments.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
