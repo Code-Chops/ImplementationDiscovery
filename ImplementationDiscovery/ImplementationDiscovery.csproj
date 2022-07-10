@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.6.5</VersionPrefix>
-		<PackageReleaseNotes>Updated MagicEnum package.</PackageReleaseNotes>
+		<VersionPrefix>0.6.6</VersionPrefix>
+		<PackageReleaseNotes>Added 'new' to generated members.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
