@@ -52,7 +52,7 @@ using CodeChops.Identities;
 ");
 			
             code.AppendLine($@"
-{member.Definition} {member.Name} : IHasStaticTypeId<Id<string>>, IHasTypeId<Id<string>>, IHasTypeId
+{member.Definition} {member.Name} : IHasStaticTypeId<Id<string>>, IHasTypeId<Id<string>>
 {{
 	public static new Id<string> StaticTypeId {{ get; }} = new Id<string>(""{member.Name}"");
 	public new IId GetTypeId() => StaticTypeId;
