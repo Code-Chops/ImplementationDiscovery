@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.7.0</VersionPrefix>
-		<PackageReleaseNotes>Updated Identities and MagicEnums.</PackageReleaseNotes>
+		<VersionPrefix>0.7.1</VersionPrefix>
+		<PackageReleaseNotes>Updated MagicEnums and fixed CDATA.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -58,7 +58,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="CodeChops.Identities" Version="0.0.7" />
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.4.3" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.5.0" />
 	</ItemGroup>
 
 	<PropertyGroup>
