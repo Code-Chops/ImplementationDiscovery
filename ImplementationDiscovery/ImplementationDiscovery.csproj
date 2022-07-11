@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.7.6</VersionPrefix>
-		<PackageReleaseNotes>Only static type ID for discovered implementation ID.</PackageReleaseNotes>
+		<VersionPrefix>0.7.7</VersionPrefix>
+		<PackageReleaseNotes>Updated MagicEnums package.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.5.5" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.5.6" />
 	</ItemGroup>
 
 	<PropertyGroup>
