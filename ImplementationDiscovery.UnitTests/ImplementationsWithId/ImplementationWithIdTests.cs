@@ -14,7 +14,7 @@ public class ImplementationWithIdTests
     [Fact]
     public void IdsAreCreated()
     {
-        Assert.Equal(nameof(ImplementationWithIdMock1), ImplementationWithIdMock1.StaticTypeId);
-        Assert.Equal(nameof(ImplementationWithIdMock2), ImplementationWithIdMock2.StaticTypeId);
+        Assert.Equal(nameof(ImplementationWithIdMock1), ImplementationWithIdMock1.TypeId);
+        Assert.Equal(nameof(ImplementationWithIdMock2), ImplementationWithIdMock2.TypeId);
     }
 }

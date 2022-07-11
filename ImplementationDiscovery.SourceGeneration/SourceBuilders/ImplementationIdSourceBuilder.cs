@@ -54,15 +54,15 @@ using CodeChops.Identities;
             code.AppendLine($@"
 {member.Definition} {member.Name} : IHasStaticTypeId<Id<string>>
 {{
-	public static new Id<string> StaticTypeId {{ get; }} = new Id<string>(""{member.Name}"");
-	public new IId GetStaticTypeId() => StaticTypeId;
+	public static new Id<string> TypeId {{ get; }} = new Id<string>(""{member.Name}"");
+	public new IId GetTypeId() => TypeId;
 }}
 
 #nullable restore
 ");
 			
-            var staticTypeIdFileName = FileNameHelpers.GetValidFileName($"{member.Namespace}.{member.Name}.g.cs");
-            context.AddSource(staticTypeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
+            var typeIdFileName = FileNameHelpers.GetValidFileName($"{member.Namespace}.{member.Name}.g.cs");
+            context.AddSource(typeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
         }
     }
 

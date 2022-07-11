@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.6.9</VersionPrefix>
-		<PackageReleaseNotes>Fixed CDATA to XML comments.</PackageReleaseNotes>
+		<VersionPrefix>0.7.0</VersionPrefix>
+		<PackageReleaseNotes>Updated Identities and MagicEnums.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -57,8 +57,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.Identities" Version="0.0.6" />
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.4.2" />
+	  <PackageReference Include="CodeChops.Identities" Version="0.0.7" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.4.3" />
 	</ItemGroup>
 
 	<PropertyGroup>
