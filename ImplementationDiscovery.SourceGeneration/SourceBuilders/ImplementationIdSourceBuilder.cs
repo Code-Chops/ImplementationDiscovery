@@ -52,10 +52,11 @@ using CodeChops.Identities;
 ");
 			
             code.AppendLine($@"
-{member.Definition} {member.Name} : IHasStaticTypeId<Id<string>>
+{member.Definition} {member.Name} : IHasStaticTypeId<Id<string>>, IHasTypeId<Id<string>>, IHasTypeId
 {{
 	public static new Id<string> StaticTypeId {{ get; }} = new Id<string>(""{member.Name}"");
 	public new IId GetTypeId() => StaticTypeId;
+    public new Id<string> TypeId {{ get; }} = StaticTypeId;
 }}
 
 #nullable restore

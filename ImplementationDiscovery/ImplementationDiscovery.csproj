@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.7.3</VersionPrefix>
-		<PackageReleaseNotes>Changed auto discovered ID to StaticTypeId.</PackageReleaseNotes>
+		<VersionPrefix>0.7.4</VersionPrefix>
+		<PackageReleaseNotes>Added IHasTypeId.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.5.3" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.5.4" />
 	</ItemGroup>
 
 	<PropertyGroup>
