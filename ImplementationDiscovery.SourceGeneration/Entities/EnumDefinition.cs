@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
+﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;

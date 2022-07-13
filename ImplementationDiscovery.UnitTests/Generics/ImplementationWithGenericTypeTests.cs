@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
 
 public class ImplementationWithGenericTypeTests
 {

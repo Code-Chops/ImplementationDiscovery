@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
 
 public class InterfaceImplementationDiscoverabilityTests
 {

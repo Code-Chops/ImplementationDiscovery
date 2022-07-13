@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests;
 
 public class EmptyImplementationsTests
 {

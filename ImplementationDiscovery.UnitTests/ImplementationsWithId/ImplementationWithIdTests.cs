@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsWithId;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsWithId;
 
 public class ImplementationWithIdTests
 {

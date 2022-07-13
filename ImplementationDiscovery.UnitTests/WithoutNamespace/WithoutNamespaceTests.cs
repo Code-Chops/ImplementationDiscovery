@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.WithoutNamespace;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.WithoutNamespace;
 
 public class RecordWithoutNamespaceTests
 {

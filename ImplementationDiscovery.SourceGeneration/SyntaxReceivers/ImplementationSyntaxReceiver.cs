@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;

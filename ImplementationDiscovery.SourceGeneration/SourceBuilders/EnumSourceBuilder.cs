@@ -111,18 +111,18 @@ using CodeChops.MagicEnums;
 			// Create the comments on the enum record.
 			code.Append($@"
 {indent}/// <summary>
-{indent}/// <code>");
+{indent}/// <list type=""bullet"">");
 			
 			foreach (var member in members)
 			{
-				var outlineSpacesLength = longestMemberNameLength - member.Name.Length;
+				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 				
 				code.Append($@"
-{indent}/// <para><![CDATA[ -{member.Name}{new String(' ', outlineSpacesLength)} = {member.Value ?? "?"} ]]></para>");
+{indent}/// <item><c><![CDATA[ {member.Name}{outlineSpaces} = {member.Value ?? "?"} ]]></c></item>");
 			}
 			
 			code.Append($@"
-{indent}/// </code>
+{indent}/// </list>
 {indent}/// </summary>");
 			
 			// Define the magic enum record.
@@ -143,16 +143,16 @@ using CodeChops.MagicEnums;
 					code.Append($@"
 {indent}	/// <summary>");
 
-					if (member.Value is not null)
-					{
-						code.Append($@"
-{indent}	/// <para><![CDATA[ (value: {member.Value}) ]]></para>");
-					}
-
 					if (member.Comment is not null)
 					{
 						code.Append($@"
-{indent}	/// {member.Comment}");
+{indent}	/// <para>{member.Comment}</para>");
+					}
+
+					if (member.Value is not null)
+					{
+						code.Append($@"
+{indent}	/// <c><![CDATA[ (value: {member.Value}) ]]></c>");
 					}
 
 					code.Append($@"

@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedRecords;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedRecords;
 
 public class RecordImplementationDiscoverabilityTests
 {

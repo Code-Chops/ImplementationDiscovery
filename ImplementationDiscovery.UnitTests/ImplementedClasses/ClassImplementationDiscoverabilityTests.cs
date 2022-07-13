@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedClasses;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedClasses;
 
 public class ClassImplementationDiscoverabilityTests
 {
