@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.8.0</VersionPrefix>
-		<PackageReleaseNotes>Added GlobalUsings for tests. Fixed comments. Updated MagicEnums package.</PackageReleaseNotes>
+		<VersionPrefix>0.8.1</VersionPrefix>
+		<PackageReleaseNotes>Updated MagicEnums package.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.6.0" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.6.1" />
 	</ItemGroup>
 
 	<PropertyGroup>
