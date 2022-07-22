@@ -1,9 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Helpers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration;
@@ -20,14 +22,15 @@ public class SourceGenerator : IIncrementalGenerator
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
 	internal const string ImplementationsEnumName			= "Implementations";
-	private const string AllImplementationsEnumName			= "AllImplementations";
-	private const string GlobalEnumNamespace				= $"{nameof(CodeChops)}.{nameof(ImplementationDiscovery)}";
+	private const string AllImplementationsEnumName			= "AllDiscoveredImplementations";
 
-	public void Initialize(IncrementalGeneratorInitializationContext context)
-	{
-		context.RegisterSourceOutput(
-			source: FindImplementations(context),
-			action: (c, implementations) => CreateSource(c, implementations!));
+	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
+	{		
+		var valueProvider = FindImplementations(initializationContext).Combine(initializationContext.AnalyzerConfigOptionsProvider);
+
+		initializationContext.RegisterSourceOutput(
+			source: valueProvider,
+			action: (c, provider) => CreateSource(c, provider.Left, provider.Right!));
 	}
 
 	/// <summary>
@@ -45,17 +48,19 @@ public class SourceGenerator : IIncrementalGenerator
 		return enumEntities!;
 	}
 
-	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumEntity> entities)
+	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumEntity> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
 		entities = entities as List<IEnumEntity> ?? entities.ToList();
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
 		var members = entities.OfType<DiscoveredEnumMember>();
 
 		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => !definition.OuterClassName?.HasGenericParameter() ?? true);
-		
+
+		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
+
 		var globalEnumDefinition = new EnumDefinition(
 			name: SourceGenerator.AllImplementationsEnumName,
-			enumNamespace: GlobalEnumNamespace,
+			enumNamespace: enumNamespace,
 			valueTypeNameIncludingGenerics: null,
 			valueTypeNamespace: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,

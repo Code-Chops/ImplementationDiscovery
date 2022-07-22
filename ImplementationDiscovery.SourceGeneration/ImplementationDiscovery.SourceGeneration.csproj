@@ -35,7 +35,11 @@ Source generation for static discoverability.
 		<None Include="Properties\LICENSE" Pack="true" PackagePath="" />
 		<None Include="Properties\icon.png" Pack="true" Visible="true" PackagePath="" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<CompilerVisibleProperty Include="RootNamespace" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>

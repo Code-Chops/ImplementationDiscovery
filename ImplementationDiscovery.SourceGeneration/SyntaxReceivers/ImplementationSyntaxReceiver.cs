@@ -95,7 +95,7 @@ internal static class ImplementationSyntaxReceiver
 
 		var hasDiscoverableAttribute = baseType.HasAttribute(SourceGenerator.DiscoverableAttributeName, SourceGenerator.DiscoverableAttributeNamespace, out var discoverableAttribute);
 		if (!hasDiscoverableAttribute) return null;
-		
+
 		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;
 
 		var definition = new EnumDefinition(
