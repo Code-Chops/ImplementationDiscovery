@@ -51,6 +51,8 @@ public class SourceGenerator : IIncrementalGenerator
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
 		var members = entities.OfType<DiscoveredEnumMember>();
 
+		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => !definition.OuterClassName?.HasGenericParameter() ?? true);
+		
 		var globalEnumDefinition = new EnumDefinition(
 			name: SourceGenerator.AllImplementationsEnumName,
 			enumNamespace: GlobalEnumNamespace,
@@ -59,8 +61,7 @@ public class SourceGenerator : IIncrementalGenerator
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: AllImplementationsEnumName,
 			accessModifier: "public",
-			membersFromAttribute: definitionsByIdentifier.Values
-				.Where(definition => !definition.OuterClassName?.HasGenericParameter() ?? true)
+			membersFromAttribute: globallyListableEnumMembers
 				.Select(definition => new DiscoveredEnumMember(
 					enumIdentifier: AllImplementationsEnumName, 
 					name: definition.OuterClassName!.GetClassNameWithoutGenerics(), 

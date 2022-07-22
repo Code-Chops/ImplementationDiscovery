@@ -96,7 +96,6 @@ using CodeChops.MagicEnums;
 		string? GetEnumRecord()
 		{
 			var hasOuterClass = definition.OuterClassName is not null;
-			if (!members.Any() && !hasOuterClass) return null;
 
 			var code = new StringBuilder();
 
