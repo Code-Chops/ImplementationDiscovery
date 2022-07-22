@@ -99,7 +99,7 @@ internal static class ImplementationSyntaxReceiver
 		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;
 
 		var definition = new EnumDefinition(
-			name: "Implementations", 
+			name: SourceGenerator.ImplementationsEnumName, 
 			enumNamespace: baseType.ContainingNamespace.IsGlobalNamespace 
 				? null 
 				: baseType.ContainingNamespace.ToDisplayString(),
@@ -112,7 +112,8 @@ internal static class ImplementationSyntaxReceiver
 			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(), 
 			isStruct: false,
-			baseType: baseType,
+			outerClassDefinition: baseType?.GetClassDefinition(), 
+			outerClassName: baseType?.GetTypeNameWithGenericParameters(), 
 			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true);
 
 		return definition;

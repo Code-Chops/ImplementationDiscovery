@@ -95,18 +95,21 @@ using CodeChops.MagicEnums;
 		// Creates the partial enum record (or null if the enum has no members).
 		string? GetEnumRecord()
 		{
-			var isImplementationDiscovery = definition.DiscoverabilityMode == DiscoverabilityMode.Implementation;
-			if (!members.Any() && !isImplementationDiscovery) return null;
+			var hasOuterClass = definition.OuterClassName is not null;
+			if (!members.Any() && !hasOuterClass) return null;
 
 			var code = new StringBuilder();
 
-			var indent = isImplementationDiscovery ? (char?)'\t' : null;
-			
-			// Add the outer class
-			code.AppendLine($@"
-{definition.BaseClassDefinition} {definition.BaseClassName}
+			var indent = hasOuterClass ? (char?)'\t' : null;
+
+			if (hasOuterClass)
+			{
+				// Add the outer class
+				code.AppendLine($@"
+{definition.OuterClassDefinition} {definition.OuterClassName}
 {{
 ");
+			}
 
 			// Create the comments on the enum record.
 			code.Append($@"
@@ -126,11 +129,13 @@ using CodeChops.MagicEnums;
 {indent}/// </summary>");
 			
 			// Define the magic enum record.
-			var valueTypeFullName = $"{(definition.ValueTypeNamespace is null ? null : $"{definition.ValueTypeNamespace}.")}{definition.ValueTypeName}";
-			var parentDefinition = $"MagicUninitializedObjectEnum<{definition.Name}, {valueTypeFullName}>";
+			var valueTypeFullName = definition.ValueTypeName is null 
+				? null 
+				: $", global::{(definition.ValueTypeNamespace is null ? null : $"{definition.ValueTypeNamespace}.")}{definition.ValueTypeName}";
+			var parentDefinition = $"MagicUninitializedObjectEnum<{definition.Name}{valueTypeFullName}>";
 			
 			code.Append($@"
-{indent}{definition.AccessModifier}partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(isImplementationDiscovery ? $": {parentDefinition}" : null)}
+{indent}{definition.AccessModifier} partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
 {indent}{{	
 ");
 
@@ -170,7 +175,7 @@ using CodeChops.MagicEnums;
 {indent}}}
 ");
 
-			if (isImplementationDiscovery)
+			if (hasOuterClass)
 			{
 				code.Append($@"
 }}

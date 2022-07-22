@@ -2,7 +2,9 @@
 using System.Collections.Immutable;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+using CodeChops.ImplementationDiscovery.SourceGeneration.Helpers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
+using Microsoft.CodeAnalysis.Text;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration;
 
@@ -17,6 +19,9 @@ public class SourceGenerator : IIncrementalGenerator
 	internal const string GenerateMethodName				= "CreateMember";
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
+	internal const string ImplementationsEnumName			= "Implementations";
+	private const string AllImplementationsEnumName			= "AllImplementations";
+	private const string GlobalEnumNamespace				= $"{nameof(CodeChops)}.{nameof(ImplementationDiscovery)}";
 
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
@@ -46,6 +51,34 @@ public class SourceGenerator : IIncrementalGenerator
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
 		var members = entities.OfType<DiscoveredEnumMember>();
 
+		var globalEnumDefinition = new EnumDefinition(
+			name: SourceGenerator.AllImplementationsEnumName,
+			enumNamespace: GlobalEnumNamespace,
+			valueTypeNameIncludingGenerics: null,
+			valueTypeNamespace: null,
+			discoverabilityMode: DiscoverabilityMode.Implementation,
+			filePath: AllImplementationsEnumName,
+			accessModifier: "public",
+			membersFromAttribute: definitionsByIdentifier.Values
+				.Where(definition => !definition.OuterClassName?.HasGenericParameter() ?? true)
+				.Select(definition => new DiscoveredEnumMember(
+					enumIdentifier: AllImplementationsEnumName, 
+					name: definition.OuterClassName!.GetClassNameWithoutGenerics(), 
+					isPartial: false, 
+					@namespace: definition.Namespace, 
+					definition: "public class", 
+					value: $"typeof(global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.OuterClassName is null ? null : $"{definition.OuterClassName}.")}{definition.Name})",
+					comment: null,
+					discoverabilityMode: DiscoverabilityMode.Implementation,
+					filePath: AllImplementationsEnumName,
+					linePosition: new LinePosition())),
+			isStruct: false,
+			outerClassDefinition: null,
+			outerClassName: null,
+			generateIdsForImplementations: false);
+		
+		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
+		
 		EnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier);
 		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier);
 	}
