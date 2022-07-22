@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.8.4</VersionPrefix>
-		<PackageReleaseNotes>Show enums when no members.</PackageReleaseNotes>
+		<VersionPrefix>0.8.5</VersionPrefix>
+		<PackageReleaseNotes>Fixed AllDiscoveredImplementations namespace.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
