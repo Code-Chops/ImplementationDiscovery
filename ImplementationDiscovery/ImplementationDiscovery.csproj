@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.8.6</VersionPrefix>
+		<VersionPrefix>0.8.7</VersionPrefix>
 		<PackageReleaseNotes>Updated MagicEnums package.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.7.2" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.7.3" />
 	</ItemGroup>
 
 	<PropertyGroup>
