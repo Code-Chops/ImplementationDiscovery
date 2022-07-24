@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.8.7</VersionPrefix>
-		<PackageReleaseNotes>Updated MagicEnums package.</PackageReleaseNotes>
+		<VersionPrefix>0.8.8</VersionPrefix>
+		<PackageReleaseNotes>Changed generated static type ID to enum member, and updated MagicEnums package.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.7.3" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="1.7.7" />
 	</ItemGroup>
 
 	<PropertyGroup>

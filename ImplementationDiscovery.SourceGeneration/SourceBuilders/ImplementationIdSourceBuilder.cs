@@ -48,14 +48,15 @@ public static class ImplementationIdSourceBuilder
 using System;
 using CodeChops.Identities;
 using CodeChops.ImplementationDiscovery;
+using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName};
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
 			
             code.AppendLine($@"
-{member.Definition} {member.Name} : IHasStaticTypeId<Id<string>>
+{member.Definition} {member.Name} : IHasStaticTypeId<EnumNamespace.{SourceGenerator.ImplementationsEnumName}>
 {{
-	public static new Id<string> StaticTypeId {{ get; }} = new Id<string>(""{member.Name}"");
+	public static new EnumNamespace.{SourceGenerator.ImplementationsEnumName} StaticTypeId {{ get; }} = EnumNamespace.{SourceGenerator.ImplementationsEnumName}.{member.Name};
 }}
 
 #nullable restore

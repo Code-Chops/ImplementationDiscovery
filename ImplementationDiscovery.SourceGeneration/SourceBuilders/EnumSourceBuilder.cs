@@ -165,6 +165,7 @@ using CodeChops.MagicEnums;
 
 				// Create the enum member itself.
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
+				
 				code.Append(@$"
 {indent}	public static {definition.Name} {member.Name} {{ get; }} {outlineSpaces}= CreateMember({member.Value});
 ");
