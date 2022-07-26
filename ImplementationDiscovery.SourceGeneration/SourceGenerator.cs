@@ -1,12 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
+﻿using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Helpers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration;
 
@@ -54,7 +48,7 @@ public class SourceGenerator : IIncrementalGenerator
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
 		var members = entities.OfType<DiscoveredEnumMember>();
 
-		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => !definition.OuterClassName?.HasGenericParameter() ?? true);
+		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.OuterClassName is null || !ClassNameHelpers.HasGenericParameter(definition.OuterClassName));
 
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
 
@@ -69,7 +63,7 @@ public class SourceGenerator : IIncrementalGenerator
 			membersFromAttribute: globallyListableEnumMembers
 				.Select(definition => new DiscoveredEnumMember(
 					enumIdentifier: AllImplementationsEnumName, 
-					name: definition.OuterClassName!.GetClassNameWithoutGenerics(), 
+					name: ClassNameHelpers.GetClassNameWithoutGenerics(definition.OuterClassName!), 
 					isPartial: false, 
 					@namespace: definition.Namespace, 
 					definition: "public class", 

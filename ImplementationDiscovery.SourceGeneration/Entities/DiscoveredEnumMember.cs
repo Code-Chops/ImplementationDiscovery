@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Text;
-
-namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+﻿namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
 
 public record DiscoveredEnumMember : EnumMember
 {

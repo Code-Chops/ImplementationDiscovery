@@ -1,8 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 
@@ -70,8 +66,8 @@ internal static class ImplementationSyntaxReceiver
 			@namespace: type.ContainingNamespace.IsGlobalNamespace 
 				? null 
 				: type.ContainingNamespace.ToDisplayString(), 
-			definition: type.GetClassDefinition(),
-			value: $"typeof({type.GetTypeFullNameWithGenericParameters()})",
+			definition: type.GetObjectDefinition(),
+			value: $"typeof({type.GetFullTypeNameWithGenericParameters()})",
 			comment: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: typeDeclarationSyntax.SyntaxTree.FilePath,
@@ -112,7 +108,7 @@ internal static class ImplementationSyntaxReceiver
 			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(), 
 			isStruct: false,
-			outerClassDefinition: baseType?.GetClassDefinition(), 
+			outerClassDefinition: baseType?.GetObjectDefinition(), 
 			outerClassName: baseType?.GetTypeNameWithGenericParameters(), 
 			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true);
 

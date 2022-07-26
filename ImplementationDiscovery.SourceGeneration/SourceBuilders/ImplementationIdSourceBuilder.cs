@@ -1,7 +1,5 @@
 ﻿using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 

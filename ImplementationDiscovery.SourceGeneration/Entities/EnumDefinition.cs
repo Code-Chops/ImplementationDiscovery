@@ -1,8 +1,4 @@
-﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Extensions;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Helpers;
-using Microsoft.CodeAnalysis;
-
-namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+﻿  namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
 
 public record EnumDefinition : IEnumEntity
 {
@@ -47,7 +43,7 @@ public record EnumDefinition : IEnumEntity
 			accessModifier: accessModifier, 
 			membersFromAttribute: attributeMembers, 
 			isStruct: type.TypeKind == TypeKind.Struct, 
-			outerClassDefinition: outerClassType?.GetClassDefinition(), 
+			outerClassDefinition: outerClassType?.GetObjectDefinition(), 
 			outerClassName: outerClassType?.GetTypeNameWithGenericParameters(), 
 			generateIdsForImplementations: implementationsHaveIds)
 	{
@@ -73,7 +69,9 @@ public record EnumDefinition : IEnumEntity
 		this.MembersFromAttribute = membersFromAttribute as List<EnumMember> ?? membersFromAttribute.ToList();
 		this.IsStruct = isStruct;
 
-		var valueTypeNameWithoutGenerics = valueTypeNameIncludingGenerics?.GetClassNameWithoutGenerics();
+		var valueTypeNameWithoutGenerics = valueTypeNameIncludingGenerics is null 
+			? null 
+			: ClassNameHelpers.GetClassNameWithoutGenerics(valueTypeNameIncludingGenerics);
 		this.Identifier = $"{(this.ValueTypeNamespace is null ? null : $"{this.ValueTypeNamespace}.")}{valueTypeNameWithoutGenerics}";
 
 		this.GenerateIdsForImplementations = generateIdsForImplementations;

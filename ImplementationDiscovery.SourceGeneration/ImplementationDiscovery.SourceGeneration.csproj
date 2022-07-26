@@ -21,7 +21,7 @@
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<Copyright>Copyright (c) CodeChops 2022</Copyright>
+		<Copyright>Copyright (c) CodeChops $([System.DateTime]::Now.ToString(yyyy))</Copyright>
 		<Description>
 Source generation for static discoverability.
 		</Description>
@@ -29,6 +29,7 @@ Source generation for static discoverability.
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -47,6 +48,22 @@ Source generation for static discoverability.
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
+		<PackageReference Include="CodeChops.SourceGeneration.Utilities" Version="0.0.9" PrivateAssets="all" GeneratePathProperty="true" />
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+	</PropertyGroup>
+
+	<Target Name="GetDependencyTargetPaths">
+		<ItemGroup>
+			<TargetPathWithTargetPlatformMoniker Include="$(PkgCodeChops_SourceGeneration_Utilities)\lib\netstandard2.0\CodeChops.SourceGeneration.Utilities.dll" IncludeRuntimeDependency="false" />
+		</ItemGroup>
+	</Target>
+	
+	<ItemGroup>
+	  <Folder Include="Helpers" />
 	</ItemGroup>
 
 	<PropertyGroup>
