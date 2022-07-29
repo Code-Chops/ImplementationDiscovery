@@ -22,6 +22,9 @@ internal static class ImplementationIdSourceBuilder
         foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
         {
             var definition = discoveredMembersByDefinition.Key;
+
+            if (NameHelpers.HasGenericParameter(definition.OuterClassName!)) continue;
+            
             var members = discoveredMembersByDefinition.Value.ToList();
 
             CreateStaticDiscoveredTypeIdFiles(context, definition!, members);

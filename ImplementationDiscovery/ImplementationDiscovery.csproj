@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.9.5</VersionPrefix>
-		<PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
+		<VersionPrefix>0.9.6</VersionPrefix>
+		<PackageReleaseNotes>Don't create static ID when base type is generic.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
