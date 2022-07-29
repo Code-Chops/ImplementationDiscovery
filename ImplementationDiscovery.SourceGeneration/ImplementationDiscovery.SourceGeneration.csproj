@@ -48,7 +48,7 @@ Source generation for static discoverability.
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
-		<PackageReference Include="CodeChops.SourceGeneration.Utilities" Version="0.0.9" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Include="CodeChops.SourceGeneration.Utilities" Version="0.1.8" PrivateAssets="all" GeneratePathProperty="true" />
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
@@ -61,16 +61,11 @@ Source generation for static discoverability.
 			<TargetPathWithTargetPlatformMoniker Include="$(PkgCodeChops_SourceGeneration_Utilities)\lib\netstandard2.0\CodeChops.SourceGeneration.Utilities.dll" IncludeRuntimeDependency="false" />
 		</ItemGroup>
 	</Target>
-	
-	<ItemGroup>
-	  <Folder Include="Helpers" />
-	</ItemGroup>
 
 	<PropertyGroup>
-		<!-- CA1822: Instance member does not access instance data and can be marked as static -->
-		<!-- CS1573: Undocumented public symbol while -doc compiler option is used -->
 		<!-- CS1591: Missing XML comment for publicly visible type -->
-		<!-- CA1816: Dispose() should call GC.SuppressFinalize()-->
-		<NoWarn>CA1822,CS1573,CS1591,CA1816</NoWarn>
+		<!-- CS1573: Undocumented public symbol while -doc compiler option is used -->
+		<!-- CA1822: Instance member does not access instance data and can be marked as static -->
+		<NoWarn>CS1591,CS1573,CA1822</NoWarn>
 	</PropertyGroup>
 </Project>

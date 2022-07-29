@@ -1,17 +1,17 @@
-﻿namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+﻿namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
-public record DiscoveredEnumMember : EnumMember
+internal record DiscoveredEnumMember : EnumMember
 {
 	public DiscoverabilityMode DiscoverabilityMode { get; }
 	public string FilePath { get; } 
 	public LinePosition LinePosition { get; }
 	public bool IsPartial { get; }
 	public string? Namespace { get; }
-	public string Definition { get; }
+	public string Declaration { get; }
 	
 	/// <param name="enumIdentifier">Be aware of global namespaces!</param>
 	/// <param name="namespace">Be aware of global namespaces!</param>
-	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string definition, string? value,
+	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value,
 		string? comment, DiscoverabilityMode discoverabilityMode, string filePath, LinePosition linePosition)
 		: base(enumIdentifier, name, value, comment)
 	{
@@ -25,6 +25,6 @@ public record DiscoveredEnumMember : EnumMember
 		this.LinePosition = linePosition;
 		this.IsPartial = isPartial;
 		this.Namespace = @namespace;
-		this.Definition = definition;
+		this.Declaration = declaration;
 	}
 }

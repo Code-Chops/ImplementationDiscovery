@@ -1,4 +1,4 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.EmptyImplementations;
 
 [DiscoverImplementations]
 public abstract partial record EmptyImplementationsMock;

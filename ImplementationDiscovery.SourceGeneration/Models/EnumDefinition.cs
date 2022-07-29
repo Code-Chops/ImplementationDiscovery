@@ -1,6 +1,6 @@
-﻿  namespace CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+﻿  namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
-public record EnumDefinition : IEnumEntity
+internal record EnumDefinition : IEnumEntity
 {
 	public string Identifier { get; }
 	public string Name { get; }
@@ -16,7 +16,7 @@ public record EnumDefinition : IEnumEntity
 	/// <summary>
 	/// AccessModifier + Type.
 	/// </summary>
-	public string? OuterClassDefinition { get; }
+	public string? OuterClassDeclaration { get; }
 	/// <summary>
 	/// Base class name.
 	/// </summary>
@@ -43,7 +43,7 @@ public record EnumDefinition : IEnumEntity
 			accessModifier: accessModifier, 
 			membersFromAttribute: attributeMembers, 
 			isStruct: type.TypeKind == TypeKind.Struct, 
-			outerClassDefinition: outerClassType?.GetObjectDefinition(), 
+			outerClassDeclaration: outerClassType?.GetObjectDeclaration(), 
 			outerClassName: outerClassType?.GetTypeNameWithGenericParameters(), 
 			generateIdsForImplementations: implementationsHaveIds)
 	{
@@ -52,14 +52,14 @@ public record EnumDefinition : IEnumEntity
 	/// <param name="enumNamespace">Be aware of global namespaces!</param>
 	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
 	public EnumDefinition(string name, string? enumNamespace, string? valueTypeNameIncludingGenerics, string? valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
-		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, string? outerClassDefinition, string? outerClassName, bool generateIdsForImplementations)
+		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, string? outerClassDeclaration, string? outerClassName, bool generateIdsForImplementations)
 	{
 		this.Name = name;
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 
 		this.ValueTypeName = valueTypeNameIncludingGenerics;
 		this.ValueTypeNamespace = valueTypeNamespace;
-		this.OuterClassDefinition = outerClassDefinition;
+		this.OuterClassDeclaration = outerClassDeclaration;
 		this.OuterClassName = outerClassName;
 		
 		this.DiscoverabilityMode = discoverabilityMode;
@@ -71,7 +71,7 @@ public record EnumDefinition : IEnumEntity
 
 		var valueTypeNameWithoutGenerics = valueTypeNameIncludingGenerics is null 
 			? null 
-			: ClassNameHelpers.GetClassNameWithoutGenerics(valueTypeNameIncludingGenerics);
+			: NameHelpers.GetNameWithoutGenerics(valueTypeNameIncludingGenerics);
 		this.Identifier = $"{(this.ValueTypeNamespace is null ? null : $"{this.ValueTypeNamespace}.")}{valueTypeNameWithoutGenerics}";
 
 		this.GenerateIdsForImplementations = generateIdsForImplementations;

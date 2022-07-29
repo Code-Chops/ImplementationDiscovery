@@ -1,9 +1,9 @@
 ﻿using System.Text;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
-public static class EnumSourceBuilder
+internal static class EnumSourceBuilder
 {
 	/// <summary>
 	/// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
@@ -57,12 +57,13 @@ public static class EnumSourceBuilder
 #nullable enable
 
 using System;
-using CodeChops.MagicEnums;
+using CodeChops.ImplementationDiscovery;
 {GetValueTypeUsing()}
 {GetNamespaceDeclaration()}
 {GetEnumRecord()}
 {GetExtensionMethod()}
-#nullable restore");
+#nullable restore
+");
 
 		var enumCodeFileName = FileNameHelpers.GetValidFileName($"{definition.Identifier}.{definition.Name}.g.cs");
 		context.AddSource(enumCodeFileName, SourceText.From(code.ToString(), Encoding.UTF8));
@@ -91,7 +92,7 @@ using CodeChops.MagicEnums;
 
 
 		// Creates the partial enum record (or null if the enum has no members).
-		string? GetEnumRecord()
+		string GetEnumRecord()
 		{
 			var hasOuterClass = definition.OuterClassName is not null;
 
@@ -103,7 +104,7 @@ using CodeChops.MagicEnums;
 			{
 				// Add the outer class
 				code.AppendLine($@"
-{definition.OuterClassDefinition} {definition.OuterClassName}
+{definition.OuterClassDeclaration} {definition.OuterClassName}
 {{
 ");
 			}
@@ -128,8 +129,8 @@ using CodeChops.MagicEnums;
 			// Define the magic enum record.
 			var valueTypeFullName = definition.ValueTypeName is null 
 				? null 
-				: $", global::{(definition.ValueTypeNamespace is null ? null : $"{definition.ValueTypeNamespace}.")}{definition.ValueTypeName}";
-			var parentDefinition = $"MagicUninitializedObjectEnum<{definition.Name}{valueTypeFullName}>";
+				: $", {definition.ValueTypeName}";
+			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{valueTypeFullName}>";
 			
 			code.Append($@"
 {indent}{definition.AccessModifier} partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}

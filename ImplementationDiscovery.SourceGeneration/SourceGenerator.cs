@@ -1,5 +1,5 @@
-﻿using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
+using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration;
@@ -34,7 +34,7 @@ public class SourceGenerator : IIncrementalGenerator
 	{
 		var enumEntities = context.SyntaxProvider
 			.CreateSyntaxProvider(
-				predicate: static (syntaxNode, ct)	=> ImplementationSyntaxReceiver.CheckIfIsProbablyDiscoverableBaseOrImplementation(syntaxNode, ct),
+				predicate: ImplementationSyntaxReceiver.CheckIfIsProbablyDiscoverableBaseOrImplementation,
 				transform: static (context, ct)		=> ImplementationSyntaxReceiver.GetBaseType(context, ct) ?? ImplementationSyntaxReceiver.GetEnumMemberFromImplementation(context, ct))
 			.Where(static definition => definition is not null)
 			.Collect();
@@ -48,7 +48,7 @@ public class SourceGenerator : IIncrementalGenerator
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
 		var members = entities.OfType<DiscoveredEnumMember>();
 
-		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.OuterClassName is null || !ClassNameHelpers.HasGenericParameter(definition.OuterClassName));
+		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.OuterClassName is null || !NameHelpers.HasGenericParameter(definition.OuterClassName));
 
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
 
@@ -63,17 +63,17 @@ public class SourceGenerator : IIncrementalGenerator
 			membersFromAttribute: globallyListableEnumMembers
 				.Select(definition => new DiscoveredEnumMember(
 					enumIdentifier: AllImplementationsEnumName, 
-					name: ClassNameHelpers.GetClassNameWithoutGenerics(definition.OuterClassName!), 
+					name: NameHelpers.GetNameWithoutGenerics(definition.OuterClassName!), 
 					isPartial: false, 
 					@namespace: definition.Namespace, 
-					definition: "public class", 
+					declaration: "public class", 
 					value: $"typeof(global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.OuterClassName is null ? null : $"{definition.OuterClassName}.")}{definition.Name})",
 					comment: null,
 					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,
 					linePosition: new LinePosition())),
 			isStruct: false,
-			outerClassDefinition: null,
+			outerClassDeclaration: null,
 			outerClassName: null,
 			generateIdsForImplementations: false);
 		

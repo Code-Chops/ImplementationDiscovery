@@ -1,11 +1,11 @@
-﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 
 internal static class ImplementationSyntaxReceiver
 {
 	/// <summary>
-	/// The predicate for every node that is probably a discoverable implementation. TODO
+	/// The predicate for every node that is probably a discoverable implementation.
 	/// </summary>
 	internal static bool CheckIfIsProbablyDiscoverableBaseOrImplementation(SyntaxNode syntaxNode, CancellationToken cancellationToken)
 	{
@@ -66,7 +66,7 @@ internal static class ImplementationSyntaxReceiver
 			@namespace: type.ContainingNamespace.IsGlobalNamespace 
 				? null 
 				: type.ContainingNamespace.ToDisplayString(), 
-			definition: type.GetObjectDefinition(),
+			declaration: type.GetObjectDeclaration(),
 			value: $"typeof({type.GetFullTypeNameWithGenericParameters()})",
 			comment: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
@@ -108,7 +108,7 @@ internal static class ImplementationSyntaxReceiver
 			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(), 
 			isStruct: false,
-			outerClassDefinition: baseType?.GetObjectDefinition(), 
+			outerClassDeclaration: baseType?.GetObjectDeclaration(), 
 			outerClassName: baseType?.GetTypeNameWithGenericParameters(), 
 			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true);
 

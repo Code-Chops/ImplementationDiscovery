@@ -1,9 +1,9 @@
 ﻿using System.Text;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Entities;
+using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
-public static class ImplementationIdSourceBuilder
+internal static class ImplementationIdSourceBuilder
 {
     /// <summary>
     /// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
@@ -44,7 +44,7 @@ public static class ImplementationIdSourceBuilder
 #pragma warning disable CS0109
 
 using System;
-using CodeChops.Identities;
+using CodeChops.DomainDrivenDesign.DomainModeling.Identities;
 using CodeChops.ImplementationDiscovery;
 using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName};
 
@@ -52,7 +52,7 @@ using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName}
 ");
 			
             code.AppendLine($@"
-{member.Definition} {member.Name} : IHasStaticTypeId<EnumNamespace.{SourceGenerator.ImplementationsEnumName}>
+{member.Declaration} {member.Name} : IHasStaticTypeId<EnumNamespace.{SourceGenerator.ImplementationsEnumName}>
 {{
 	public static new EnumNamespace.{SourceGenerator.ImplementationsEnumName} StaticTypeId {{ get; }} = EnumNamespace.{SourceGenerator.ImplementationsEnumName}.{member.Name};
 }}

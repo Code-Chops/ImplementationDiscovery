@@ -1,4 +1,4 @@
-﻿namespace System.Runtime.CompilerServices;
+﻿namespace CodeChops.ImplementationDiscovery.SourceGeneration.Compatability;
 
 /// <summary>
 /// Is needed to support init on netstandard2.1.

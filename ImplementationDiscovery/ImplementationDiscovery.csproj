@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.9.3</VersionPrefix>
-		<PackageReleaseNotes>Updated MagicEnums package.</PackageReleaseNotes>
+		<VersionPrefix>0.9.4</VersionPrefix>
+		<PackageReleaseNotes>Added MagicDiscoveredImplementation enum. Updated packages.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -30,19 +30,18 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<EnablePreviewFeatures>true</EnablePreviewFeatures>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
-	<!-- Removes local nuget packages, so the package will be replaced when it exists -->
-	<Target Name="RemoveNugetPackage" AfterTargets="Pack" Condition="'$(LocalNuGetPackagesFolder)' != null">
-		<Exec Command="rmdir $(LocalNuGetPackagesFolder)\$(PackageId)\$(PackageVersion)\ /s /q" />
-	</Target>
-	<!-- Creates local nuget packages if environment variable LocalNuGetPackagesFolder is configured -->
-	<Target Name="AddNugetPackage" AfterTargets="Pack" Condition="'$(LocalNuGetPackagesFolder)' != null">
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+
+	<!-- Creates local nuget packages if in release mode and environment variable LocalNuGetPackagesFolder is configured -->
+	<Target Name="AddNugetPackage" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release' AND '$(LocalNuGetPackagesFolder)' != null">
 		<Exec Command="$(LocalNuGetPackagesFolder)\nuget.exe add $(OutputPath)..\$(PackageId).$(PackageVersion).nupkg -source $(LocalNuGetPackagesFolder)" />
 	</Target>
 
@@ -56,7 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="1.8.5" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="2.0.4" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -64,11 +63,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<!-- CA1822: Instance member does not access instance data and can be marked as static -->
-		<!-- CS1573: Undocumented public symbol while -doc compiler option is used -->
 		<!-- CS1591: Missing XML comment for publicly visible type -->
-		<!-- CA1816: Dispose() should call GC.SuppressFinalize()-->
-		<NoWarn>CA1822,CS1573,CS1591,CA1816</NoWarn>
-		<DebugType>none</DebugType>
+		<!-- CS1573: Undocumented public symbol while -doc compiler option is used -->
+		<!-- CA1822: Instance member does not access instance data and can be marked as static -->
+		<NoWarn>CS1591,CS1573,CA1822</NoWarn>
 	</PropertyGroup>
 </Project>
