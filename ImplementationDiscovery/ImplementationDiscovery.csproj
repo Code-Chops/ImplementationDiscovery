@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.9.4</VersionPrefix>
-		<PackageReleaseNotes>Added MagicDiscoveredImplementation enum. Updated packages.</PackageReleaseNotes>
+		<VersionPrefix>0.9.5</VersionPrefix>
+		<PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -34,6 +34,7 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<None Include="..\ImplementationDiscovery.SourceGeneration\bin\$(Configuration)\netstandard2.0\$(AssemblyName).SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -55,7 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="2.0.4" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="2.0.6" />
 	</ItemGroup>
 
 	<PropertyGroup>

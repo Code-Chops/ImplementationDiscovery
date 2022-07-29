@@ -2,40 +2,17 @@
 
 	<PropertyGroup>
 		<Version>1.0.0</Version>
-		<PackageReleaseNotes>Init</PackageReleaseNotes>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>10</LangVersion>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<Title>CodeChops.ImplementationDiscovery.SourceGeneration</Title>
 		<AssemblyName>CodeChops.ImplementationDiscovery.SourceGeneration</AssemblyName>
 		<RootNamespace>CodeChops.ImplementationDiscovery.SourceGeneration</RootNamespace>
-		<PackageId>CodeChops.ImplementationDiscovery.SourceGeneration</PackageId>
-		<Authors>CodeChops (@Code-Chops), Max Bergman</Authors>
-		<Company>CodeChops</Company>
-		<PackageProjectUrl>https://github.com/code-chops/ImplementationDiscovery</PackageProjectUrl>
-		<PackageTags>CodeChops;CodeChops.ImplementationDiscovery;CodeChops.ImplementationDiscovery.SourceGeneration;ImplementationDiscovery</PackageTags>
-		<RepositoryUrl>https://github.com/code-chops/ImplementationDiscovery</RepositoryUrl>
-		<RepositoryType>Git</RepositoryType>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<Copyright>Copyright (c) CodeChops $([System.DateTime]::Now.ToString(yyyy))</Copyright>
-		<Description>
-Source generation for static discoverability.
-		</Description>
-		<AnalysisLevel>latest</AnalysisLevel>
+		<LangVersion>10</LangVersion>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
+		<EnablePreviewFeatures>true</EnablePreviewFeatures>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="Properties\LICENSE" Pack="true" PackagePath="" />
-		<None Include="Properties\icon.png" Pack="true" Visible="true" PackagePath="" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<CompilerVisibleProperty Include="RootNamespace" />
