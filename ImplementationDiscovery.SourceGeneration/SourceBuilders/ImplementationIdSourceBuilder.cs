@@ -21,7 +21,7 @@ internal static class ImplementationIdSourceBuilder
         
         foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
         {
-            var definition = discoveredMembersByDefinition.Key;
+            var definition = discoveredMembersByDefinition.Key!;
 
             if (NameHelpers.HasGenericParameter(definition.OuterClassName!)) continue;
             
