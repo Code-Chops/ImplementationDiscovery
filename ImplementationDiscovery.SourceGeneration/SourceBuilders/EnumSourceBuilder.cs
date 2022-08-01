@@ -102,11 +102,40 @@ using CodeChops.ImplementationDiscovery;
 
 			if (hasOuterClass)
 			{
-				// Add the outer class
-				code.AppendLine($@"
+				if (NameHelpers.HasGenericParameter(definition.OuterClassName!))
+				{
+					// Add the outer class
+					code.AppendLine($@"
 {definition.OuterClassDeclaration} {definition.OuterClassName}
 {{
 ");
+				}
+				else
+				{
+					var typeIdName = $"{definition.OuterClassName}TypeId";
+					// Add the outer class
+					code.AppendLine($@"
+{definition.OuterClassDeclaration} {definition.OuterClassName} {(definition.GenerateIdsForImplementations ? ": IHasDiscoverableImplementations" : null)}
+{{
+	
+{indent}public partial record {typeIdName} : global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id<{typeIdName}, string> 
+{indent}{{ 
+{indent}	public {typeIdName}(string value) : base(value) {{ }}
+{indent}	public {typeIdName}() : base() {{ }}
+{indent}}}
+	");
+	
+					if (definition.OuterClassTypeKind == TypeKind.Class && definition.GenerateIdsForImplementations)
+					{
+						code.AppendLine($@"
+{indent}public abstract global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id GetStaticTypeId();
+");
+					}
+						
+						
+				}
+				
+				
 			}
 
 			// Create the comments on the enum record.

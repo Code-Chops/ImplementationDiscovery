@@ -53,18 +53,34 @@ using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName}
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
-			
-            code.AppendLine($@"
-{member.Declaration} {member.Name} : IHasStaticTypeId<EnumNamespace.{SourceGenerator.ImplementationsEnumName}>
+            if (!NameHelpers.HasGenericParameter(member.Name))
+            {
+                var typeIdName = $"EnumNamespace.{definition.OuterClassName}TypeId";
+                code.AppendLine($@"
+{member.Declaration} {member.Name} : CodeChops.DomainDrivenDesign.DomainModeling.Identities.IHasStaticTypeId<{typeIdName}>
 {{
-	public static new EnumNamespace.{SourceGenerator.ImplementationsEnumName} StaticTypeId {{ get; }} = EnumNamespace.{SourceGenerator.ImplementationsEnumName}.{member.Name};
-}}
+	public static new {typeIdName} StaticTypeId {{ get; }} = new {typeIdName}(EnumNamespace.{definition.Name}.{member.Name}.Name);
+    {GetNonStaticTypeId()}
+}}");
+            }
 
+            code.AppendLine(@"                
 #nullable restore
 ");
 			
             var typeIdFileName = FileNameHelpers.GetValidFileName($"{member.Namespace}.{member.Name}.g.cs");
             context.AddSource(typeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
+
+
+            string? GetNonStaticTypeId()
+            {
+                if (!definition.GenerateIdsForImplementations) return null;
+
+                var code = $@"
+    public {(definition.OuterClassTypeKind == TypeKind.Class ? "override " : "")}global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id GetStaticTypeId() => StaticTypeId;
+";
+                return code;
+            }
         }
     }
 

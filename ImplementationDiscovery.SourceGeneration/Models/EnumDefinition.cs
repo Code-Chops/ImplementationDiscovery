@@ -17,6 +17,7 @@ internal record EnumDefinition : IEnumEntity
 	/// AccessModifier + Type.
 	/// </summary>
 	public string? OuterClassDeclaration { get; }
+	public TypeKind? OuterClassTypeKind { get; }
 	/// <summary>
 	/// Base class name.
 	/// </summary>
@@ -44,7 +45,8 @@ internal record EnumDefinition : IEnumEntity
 			membersFromAttribute: attributeMembers, 
 			isStruct: type.TypeKind == TypeKind.Struct, 
 			outerClassDeclaration: outerClassType?.GetObjectDeclaration(), 
-			outerClassName: outerClassType?.GetTypeNameWithGenericParameters(), 
+			outerClassName: outerClassType?.GetTypeNameWithGenericParameters(),
+			outerClassTypeKind: outerClassType?.TypeKind,
 			generateIdsForImplementations: implementationsHaveIds)
 	{
 	}
@@ -52,7 +54,8 @@ internal record EnumDefinition : IEnumEntity
 	/// <param name="enumNamespace">Be aware of global namespaces!</param>
 	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
 	public EnumDefinition(string name, string? enumNamespace, string? valueTypeNameIncludingGenerics, string? valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
-		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, string? outerClassDeclaration, string? outerClassName, bool generateIdsForImplementations)
+		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, string? outerClassDeclaration, string? outerClassName, 
+		TypeKind? outerClassTypeKind, bool generateIdsForImplementations)
 	{
 		this.Name = name;
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
@@ -61,6 +64,7 @@ internal record EnumDefinition : IEnumEntity
 		this.ValueTypeNamespace = valueTypeNamespace;
 		this.OuterClassDeclaration = outerClassDeclaration;
 		this.OuterClassName = outerClassName;
+		this.OuterClassTypeKind = outerClassTypeKind;
 		
 		this.DiscoverabilityMode = discoverabilityMode;
 		this.FilePath = filePath;

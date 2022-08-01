@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.10.0</VersionPrefix>
-		<PackageReleaseNotes>Fixed source generator reference 3.</PackageReleaseNotes>
+		<VersionPrefix>0.11.0</VersionPrefix>
+		<PackageReleaseNotes>Created better static typed IDs.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>

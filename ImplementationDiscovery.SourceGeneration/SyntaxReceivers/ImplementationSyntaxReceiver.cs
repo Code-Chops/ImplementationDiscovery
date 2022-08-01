@@ -108,8 +108,9 @@ internal static class ImplementationSyntaxReceiver
 			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(), 
 			isStruct: false,
-			outerClassDeclaration: baseType?.GetObjectDeclaration(), 
-			outerClassName: baseType?.GetTypeNameWithGenericParameters(), 
+			outerClassDeclaration: baseType.GetObjectDeclaration(), 
+			outerClassName: baseType.GetTypeNameWithGenericParameters(),
+			outerClassTypeKind: baseType.TypeKind,
 			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true);
 
 		return definition;
