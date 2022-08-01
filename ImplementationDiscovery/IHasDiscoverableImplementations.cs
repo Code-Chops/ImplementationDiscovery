@@ -2,6 +2,7 @@
 
 namespace CodeChops.ImplementationDiscovery;
 
-public interface IHasDiscoverableImplementations : IHasTypeId 
+public interface IHasDiscoverableImplementations<out TTypeId> : IHasTypeId<TTypeId> 
+	where TTypeId : Id
 {
 }

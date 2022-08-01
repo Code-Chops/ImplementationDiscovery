@@ -115,7 +115,7 @@ using CodeChops.ImplementationDiscovery;
 					var typeIdName = $"{definition.OuterClassName}TypeId";
 					// Add the outer class
 					code.AppendLine($@"
-{definition.OuterClassDeclaration} {definition.OuterClassName} {(definition.GenerateIdsForImplementations ? ": IHasDiscoverableImplementations" : null)}
+{definition.OuterClassDeclaration} {definition.OuterClassName} {(definition.GenerateIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.OuterClassName}.{typeIdName}>" : null)}
 {{
 	
 {indent}public partial record {typeIdName} : global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id<{typeIdName}, string> 
@@ -128,7 +128,7 @@ using CodeChops.ImplementationDiscovery;
 					if (definition.OuterClassTypeKind == TypeKind.Class && definition.GenerateIdsForImplementations)
 					{
 						code.AppendLine($@"
-{indent}public abstract global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id GetTypeId();
+{indent}public abstract {typeIdName} TypeId {{ get; }}
 ");
 					}
 						
