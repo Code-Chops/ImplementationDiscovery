@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.9.9</VersionPrefix>
-		<PackageReleaseNotes>Trying to fix source generator reference 2.</PackageReleaseNotes>
+		<VersionPrefix>0.10.0</VersionPrefix>
+		<PackageReleaseNotes>Fixed source generator reference 3.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -31,9 +31,12 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<EnablePreviewFeatures>true</EnablePreviewFeatures>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-		<AnalyzerReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" />
+		<ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<!-- Package the generator in the analyzer directory of the nuget package -->
+		<None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/$(AssemblyName).SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/CodeChops.SourceGeneration.Utilities.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -55,7 +58,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="2.0.8" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="2.1.1" />
 	</ItemGroup>
 
 	<PropertyGroup>
