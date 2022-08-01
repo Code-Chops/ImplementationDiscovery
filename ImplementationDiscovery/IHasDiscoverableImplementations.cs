@@ -2,6 +2,6 @@
 
 namespace CodeChops.ImplementationDiscovery;
 
-public interface IHasDiscoverableImplementations : IHasStaticTypeId 
+public interface IHasDiscoverableImplementations : IHasTypeId 
 {
 }

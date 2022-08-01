@@ -57,7 +57,7 @@ using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName}
             {
                 var typeIdName = $"EnumNamespace.{definition.OuterClassName}TypeId";
                 code.AppendLine($@"
-{member.Declaration} {member.Name} : CodeChops.DomainDrivenDesign.DomainModeling.Identities.IHasStaticTypeId<{typeIdName}>
+{member.Declaration} {member.Name} : CodeChops.DomainDrivenDesign.DomainModeling.Identities.IHasTypeId
 {{
 	public static new {typeIdName} StaticTypeId {{ get; }} = new {typeIdName}(EnumNamespace.{definition.Name}.{member.Name}.Name);
     {GetNonStaticTypeId()}
@@ -77,7 +77,7 @@ using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName}
                 if (!definition.GenerateIdsForImplementations) return null;
 
                 var code = $@"
-    public {(definition.OuterClassTypeKind == TypeKind.Class ? "override " : "")}global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id GetStaticTypeId() => StaticTypeId;
+    public {(definition.OuterClassTypeKind == TypeKind.Class ? "override " : "")}global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id GetTypeId() => StaticTypeId;
 ";
                 return code;
             }

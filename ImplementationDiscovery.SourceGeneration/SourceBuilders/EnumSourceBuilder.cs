@@ -128,7 +128,7 @@ using CodeChops.ImplementationDiscovery;
 					if (definition.OuterClassTypeKind == TypeKind.Class && definition.GenerateIdsForImplementations)
 					{
 						code.AppendLine($@"
-{indent}public abstract global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id GetStaticTypeId();
+{indent}public abstract global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id GetTypeId();
 ");
 					}
 						
