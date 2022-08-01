@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.11.2</VersionPrefix>
-		<PackageReleaseNotes>Strongly typed type IDs.</PackageReleaseNotes>
+		<VersionPrefix>0.11.3</VersionPrefix>
+		<PackageReleaseNotes>Added new TypeId and ignore warning.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
