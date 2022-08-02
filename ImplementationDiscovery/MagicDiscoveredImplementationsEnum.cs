@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using CodeChops.DomainDrivenDesign.DomainModeling.Identities;
+﻿using CodeChops.MagicEnums.Core;
 
 namespace CodeChops.ImplementationDiscovery;
 
@@ -18,16 +16,10 @@ public abstract record MagicDiscoveredImplementationsEnum<TSelf> : MagicDiscover
 /// </summary>
 /// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
-public abstract record MagicDiscoveredImplementationsEnum<TSelf, TBaseType> : MagicCustomEnum<TSelf, TBaseType>, IId
+public abstract record MagicDiscoveredImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSelf, TBaseType>
 	where TSelf : MagicDiscoveredImplementationsEnum<TSelf, TBaseType>
 	where TBaseType : notnull
 {
-	public object GetValue() => this.Value;
-	
-	public bool HasDefaultValue => this.Value.Equals(DefaultValue);
-	private static readonly TBaseType DefaultValue = default!;
-	
-	
 	protected static TSelf CreateMember<TValue>([CallerMemberName] string name = null!)
 	{
 		var id = CreateMember(typeof(TValue), name);

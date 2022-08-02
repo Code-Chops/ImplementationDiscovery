@@ -132,11 +132,7 @@ using CodeChops.ImplementationDiscovery;
 {indent}public new abstract {typeIdName} TypeId {{ get; }}
 ");
 					}
-						
-						
 				}
-				
-				
 			}
 
 			// Create the comments on the enum record.

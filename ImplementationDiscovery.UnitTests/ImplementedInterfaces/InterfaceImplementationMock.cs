@@ -1,6 +1,4 @@
-﻿using CodeChops.MagicEnums;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
 
 [DiscoverImplementations]
 public partial interface IInterfaceToImplement
@@ -17,7 +15,7 @@ public partial interface IDayOfWeek<TDay>
 {
 }
 
-public abstract record DayOfWeek<TDayOfWeek, TDay> : MagicCustomEnum<TDayOfWeek, TDay>, IDayOfWeek<TDay>
+public abstract record DayOfWeek<TDayOfWeek, TDay> : MagicDiscoveredImplementationsEnum<TDayOfWeek, TDay>, IDayOfWeek<TDay>
 	where TDayOfWeek : DayOfWeek<TDayOfWeek, TDay>
 	where TDay : class
 {
