@@ -11,12 +11,12 @@ public class ImplementationWithGenericTypeTests
     [Fact]
     public void ClassImplementationHasCorrectMemberValue()
     {
-        Assert.Equal(typeof(ImplementationWithGenericTypeMock<int>),			ClassWithGenericTypeToImplement<int>.Implementations.ImplementationWithGenericTypeMock.Value.GetType());
+        Assert.Equal(typeof(ImplementationWithGenericTypeMock<int>),			ClassWithGenericTypeToImplement<int>.Implementations.ImplementationWithGenericTypeMock.Value.Instance.GetType());
     }
 	
     [Fact]
     public void ClassWithExtraGenericTypeImplementationHasCorrectType()
     {
-        Assert.Equal(typeof(ImplementationWithExtraGenericTypeMock<int>),		ClassWithExtraGenericTypeToImplement<ImplementationWithExtraGenericTypeMock<int>, int>.Implementations.ImplementationWithExtraGenericTypeMock.Value.GetType());
+        Assert.Equal(typeof(ImplementationWithExtraGenericTypeMock<int>),		ClassWithExtraGenericTypeToImplement<ImplementationWithExtraGenericTypeMock<int>, int>.Implementations.ImplementationWithExtraGenericTypeMock.Value.Instance.GetType());
     }
 }

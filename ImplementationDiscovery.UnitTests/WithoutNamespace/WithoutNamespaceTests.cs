@@ -5,12 +5,12 @@ public class RecordWithoutNamespaceTests
 	[Fact]
 	public void RecordImplementationHasCorrectMemberName()
 	{
-		Assert.True(IInterfaceToImplementWithoutNamespace.Implementations.WithoutImplementationMock.Name			== nameof(WithoutImplementationMock));
+		Assert.True(IInterfaceToImplementWithoutNamespace.Implementations.WithoutImplementationMock.Name						== nameof(WithoutImplementationMock));
 	}
 
 	[Fact]
 	public void RecordImplementationHasCorrectMemberValue()
 	{
-		Assert.True(IInterfaceToImplementWithoutNamespace.Implementations.WithoutImplementationMock.Value.GetType()	== typeof(WithoutImplementationMock));
+		Assert.True(IInterfaceToImplementWithoutNamespace.Implementations.WithoutImplementationMock.Value.Instance.GetType()	== typeof(WithoutImplementationMock));
 	}
 }

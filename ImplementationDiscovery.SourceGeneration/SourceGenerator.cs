@@ -72,7 +72,6 @@ public class SourceGenerator : IIncrementalGenerator
 					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,
 					linePosition: new LinePosition())),
-			isStruct: false,
 			outerClassDeclaration: null,
 			outerClassName: null,
 			outerClassTypeKind: null,

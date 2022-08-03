@@ -159,7 +159,7 @@ using CodeChops.ImplementationDiscovery;
 			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{valueTypeFullName}>";
 			
 			code.Append($@"
-{indent}{definition.AccessModifier} partial record {(definition.IsStruct ? "struct " : "class")} {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
+{indent}{definition.AccessModifier} partial record {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
 {indent}{{	
 ");
 

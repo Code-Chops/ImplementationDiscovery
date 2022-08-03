@@ -26,7 +26,6 @@ internal record EnumDefinition : IEnumEntity
 	public string FilePath { get; }
 	public string AccessModifier { get; }
 	public List<EnumMember> MembersFromAttribute { get; }
-	public bool IsStruct { get; }
 	public bool GenerateIdsForImplementations { get; }
 	
 	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
@@ -43,7 +42,6 @@ internal record EnumDefinition : IEnumEntity
 			filePath: filePath, 
 			accessModifier: accessModifier, 
 			membersFromAttribute: attributeMembers, 
-			isStruct: type.TypeKind == TypeKind.Struct, 
 			outerClassDeclaration: outerClassType?.GetObjectDeclaration(), 
 			outerClassName: outerClassType?.GetTypeNameWithGenericParameters(),
 			outerClassTypeKind: outerClassType?.TypeKind,
@@ -54,7 +52,7 @@ internal record EnumDefinition : IEnumEntity
 	/// <param name="enumNamespace">Be aware of global namespaces!</param>
 	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
 	public EnumDefinition(string name, string? enumNamespace, string? valueTypeNameIncludingGenerics, string? valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
-		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool isStruct, string? outerClassDeclaration, string? outerClassName, 
+		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, string? outerClassDeclaration, string? outerClassName, 
 		TypeKind? outerClassTypeKind, bool generateIdsForImplementations)
 	{
 		this.Name = name;
@@ -71,7 +69,6 @@ internal record EnumDefinition : IEnumEntity
 		this.AccessModifier = accessModifier.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
 
 		this.MembersFromAttribute = membersFromAttribute as List<EnumMember> ?? membersFromAttribute.ToList();
-		this.IsStruct = isStruct;
 
 		var valueTypeNameWithoutGenerics = valueTypeNameIncludingGenerics is null 
 			? null 
