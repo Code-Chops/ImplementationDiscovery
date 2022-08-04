@@ -11,7 +11,7 @@ public record UninitializedObjectWithBaseTypeEnumMock : MagicDiscoveredImplement
 	public static void AddNullValue() => CreateMember(value: null!);
 }
 
-public record UninitializedObjectEnumMock : MagicDiscoveredImplementationsEnum<UninitializedObjectEnumMock>
+public record UninitializedObjectEnumMock : MagicDiscoveredImplementationsEnum<UninitializedObjectEnumMock, object>
 {
 	public static UninitializedObjectEnumMock Cat { get; } = CreateMember<Cat>();
 	public static UninitializedObjectEnumMock Dog { get; } = CreateMember<Dog>();

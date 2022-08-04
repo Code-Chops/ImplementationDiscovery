@@ -7,14 +7,6 @@ namespace CodeChops.ImplementationDiscovery;
 /// Use <see cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.CreateMember(TValue, string)"/> to create a member.
 /// </summary>
 /// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
-public abstract record MagicDiscoveredImplementationsEnum<TSelf> : MagicDiscoveredImplementationsEnum<TSelf, object>
-	where TSelf : MagicDiscoveredImplementationsEnum<TSelf>;
-
-/// <summary>
-/// An enum with discovered members (uninitialized objects) as values.
-/// Use <see cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.CreateMember(TValue, string)"/> to create a member.
-/// </summary>
-/// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
 public abstract record MagicDiscoveredImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSelf, UninitializedObject<TBaseType>>
 	where TSelf : MagicDiscoveredImplementationsEnum<TSelf, TBaseType>

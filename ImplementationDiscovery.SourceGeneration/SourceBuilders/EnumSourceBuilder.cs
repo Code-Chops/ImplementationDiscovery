@@ -59,7 +59,7 @@ internal static class EnumSourceBuilder
 
 using System;
 using CodeChops.ImplementationDiscovery;
-{GetValueTypeUsing()}
+{GetBaseTypeUsing()}
 {GetNamespaceDeclaration()}
 {GetEnumRecord()}
 {GetExtensionMethod()}
@@ -72,9 +72,9 @@ using CodeChops.ImplementationDiscovery;
 
 		
 		// Creates a using for the definition of the enum value type (or null if not applicable).
-		string? GetValueTypeUsing()
+		string? GetBaseTypeUsing()
 		{
-			if (definition.ValueTypeDeclaration is null || definition.Namespace is null or "System") return null;
+			if (definition.BaseTypeDeclaration is null || definition.Namespace is null or "System") return null;
 
 			var @namespace = $"using {definition.Namespace};{Environment.NewLine}";
 			return @namespace;
@@ -94,20 +94,20 @@ using CodeChops.ImplementationDiscovery;
 		// Creates the partial enum record (or null if the enum has no members).
 		string GetEnumRecord()
 		{
-			var hasOuterClass = definition.ValueTypeDeclaration is not null;
+			var hasOuterClass = definition.BaseTypeDeclaration is not null;
 
 			var code = new StringBuilder();
 
 			if (hasOuterClass)
 			{
 				code.AppendLine($@"
-{definition.ValueTypeDeclaration} {definition.ValueTypeName} {(definition.GenerateIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.ValueTypeName}.{definition.Name}>" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.BaseTypeName}.{definition.Name}>" : null)}
 {{
 ");
 			}
 
 			var indent = hasOuterClass ? (char?)'\t' : null;
-			if (definition.ValueTypeTypeKind == TypeKind.Class && definition.GenerateIdsForImplementations)
+			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
 				code.AppendLine($@"
 {indent}public new abstract {definition.Name} TypeId {{ get; }}
@@ -132,10 +132,13 @@ using CodeChops.ImplementationDiscovery;
 {indent}/// </summary>");
 			
 			// Define the magic enum record.
-			var valueTypeFullName = definition.ValueTypeName is null 
+			var baseTypeFullName = definition.BaseTypeName is null 
 				? null 
-				: $", {definition.ValueTypeName}";
-			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{valueTypeFullName}>";
+				: $", {definition.BaseTypeName}";
+			var magicEnumName = definition.HasNewableImplementations
+				? "MagicNewableDiscoveredImplementationsEnum"
+				: "MagicDiscoveredImplementationsEnum";
+			var parentDefinition = $"{magicEnumName}<{definition.Name}{baseTypeFullName}>";
 
 			code.Append($@"
 {indent}{definition.AccessModifier} partial record {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
@@ -201,7 +204,7 @@ $@"
 /// </summary>
 {definition.AccessModifier}static class {definition.Name}Extensions
 {{
-	public static {definition.Name} {SourceGenerator.GenerateMethodName}(this {definition.Name} member, {definition.ValueTypeName}? value = null, string? comment = null) => member;
+	public static {definition.Name} {SourceGenerator.GenerateMethodName}(this {definition.Name} member, {definition.BaseTypeName}? value = null, string? comment = null) => member;
 }}
 ";			
 		}

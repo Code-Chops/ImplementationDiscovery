@@ -3,11 +3,11 @@
 public readonly struct UninitializedObject<T> : IEquatable<UninitializedObject<T>>, IComparable<UninitializedObject<T>>
 	where T : class
 {
-	public T Instance { get; }
+	public T UninitializedInstance { get; }
 		
-	public UninitializedObject(T instance)
+	public UninitializedObject(T uninitializedInstance)
 	{
-		this.Instance = instance;
+		this.UninitializedInstance = uninitializedInstance;
 	}
 
 	#region Comparison
@@ -24,20 +24,20 @@ public readonly struct UninitializedObject<T> : IEquatable<UninitializedObject<T
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public bool Equals(UninitializedObject<T> other) 
-		=> this.Instance.Equals(other.Instance);
+		=> this.UninitializedInstance.Equals(other.UninitializedInstance);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override int GetHashCode()
-		=> this.Instance.GetHashCode();
+		=> this.UninitializedInstance.GetHashCode();
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static implicit operator T(UninitializedObject<T> magicEnum) => magicEnum.Instance;
+	public static implicit operator T(UninitializedObject<T> magicEnum) => magicEnum.UninitializedInstance;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static implicit operator UninitializedObject<T>(T value) => new(value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public int CompareTo(UninitializedObject<T> other) 
-		=> String.Compare(this.Instance.GetType().FullName, other.Instance.GetType().FullName, StringComparison.Ordinal);
+		=> String.Compare(this.UninitializedInstance.GetType().FullName, other.UninitializedInstance.GetType().FullName, StringComparison.Ordinal);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool operator <(UninitializedObject<T> left, UninitializedObject<T> right)	=> left.CompareTo(right) <	0;

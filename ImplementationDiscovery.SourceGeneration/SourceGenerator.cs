@@ -48,32 +48,33 @@ public class SourceGenerator : IIncrementalGenerator
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
 		var members = entities.OfType<DiscoveredEnumMember>();
 
-		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.ValueTypeName is null || !NameHelpers.HasGenericParameter(definition.ValueTypeName));
+		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.BaseTypeName is null || !NameHelpers.HasGenericParameter(definition.BaseTypeName));
 
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
 
 		var globalEnumDefinition = new EnumDefinition(
 			name: SourceGenerator.AllImplementationsEnumName,
 			enumNamespace: enumNamespace,
-			valueTypeNameIncludingGenerics: AllImplementationsEnumName,
-			valueTypeDeclaration: null,
-			valueTypeTypeKind: null,
+			baseTypeNameIncludingGenerics: AllImplementationsEnumName,
+			baseTypeDeclaration: null,
+			baseTypeTypeKind: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: AllImplementationsEnumName,
 			accessModifier: "public",
 			membersFromAttribute: globallyListableEnumMembers
 				.Select(definition => new DiscoveredEnumMember(
 					enumIdentifier: AllImplementationsEnumName, 
-					name: NameHelpers.GetNameWithoutGenerics(definition.ValueTypeName!), 
+					name: NameHelpers.GetNameWithoutGenerics(definition.BaseTypeName!), 
 					isPartial: false, 
 					@namespace: definition.Namespace, 
 					declaration: "public class", 
-					value: $"typeof(global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.ValueTypeName is null ? null : $"{definition.ValueTypeName}.")}{definition.Name})",
+					value: $"typeof(global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.BaseTypeName is null ? null : $"{definition.BaseTypeName}.")}{definition.Name})",
 					comment: null,
 					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,
 					linePosition: new LinePosition())),
-			generateIdsForImplementations: false);
+			generateTypeIdsForImplementations: false,
+			hasNewableImplementations: false);
 		
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
 		

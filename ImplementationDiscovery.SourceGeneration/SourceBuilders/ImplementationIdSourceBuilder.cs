@@ -23,7 +23,7 @@ internal static class ImplementationIdSourceBuilder
         {
             var definition = discoveredMembersByDefinition.Key!;
 
-            if (NameHelpers.HasGenericParameter(definition.ValueTypeName!)) continue;
+            if (NameHelpers.HasGenericParameter(definition.BaseTypeName!)) continue;
             
             var members = discoveredMembersByDefinition.Value.ToList();
 
@@ -33,7 +33,7 @@ internal static class ImplementationIdSourceBuilder
     
     private static void CreateStaticDiscoveredTypeIdFiles(SourceProductionContext context, EnumDefinition definition, IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers)
     {
-        if (definition.DiscoverabilityMode != DiscoverabilityMode.Implementation || !definition.GenerateIdsForImplementations) return;
+        if (definition.DiscoverabilityMode != DiscoverabilityMode.Implementation || !definition.GenerateTypeIdsForImplementations) return;
 
         var partialMembers = relevantDiscoveredMembers.Where(m => m.IsPartial);
 		
@@ -49,13 +49,13 @@ internal static class ImplementationIdSourceBuilder
 using System;
 using CodeChops.DomainDrivenDesign.DomainModeling.Identities;
 using CodeChops.ImplementationDiscovery;
-using ImplementationsEnum = global::{definition.Namespace}.{definition.ValueTypeName};
+using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
             if (!NameHelpers.HasGenericParameter(member.Name))
             {
-                const string typeIdName = $"ImplementationsEnum.{SourceGenerator.ImplementationsEnumName}";
+                const string typeIdName = $"BaseType.{SourceGenerator.ImplementationsEnumName}";
                 code.AppendLine($@"
 {member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
 {{
@@ -75,10 +75,10 @@ using ImplementationsEnum = global::{definition.Namespace}.{definition.ValueType
 
             string? GetNonStaticTypeId(string typeIdName)
             {
-                if (!definition.GenerateIdsForImplementations) return null;
+                if (!definition.GenerateTypeIdsForImplementations) return null;
 
                 var code = $@"
-    public {(definition.ValueTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeId => StaticTypeId;
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeId => StaticTypeId;
 ";
                 return code;
             }

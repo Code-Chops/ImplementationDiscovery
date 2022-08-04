@@ -5,11 +5,11 @@ public class UninitializedObjectEnumTest
 	[Fact]
 	public void ObjectEnum_ProvidedValue_IsCorrect()
 	{
-		Assert.Equal(typeof(Cat), UninitializedObjectEnumMock.Cat.Value.Instance.GetType());
-		Assert.Equal(typeof(Dog), UninitializedObjectEnumMock.Dog.Value.Instance.GetType());
+		Assert.Equal(typeof(Cat), UninitializedObjectEnumMock.Cat.Value.UninitializedInstance.GetType());
+		Assert.Equal(typeof(Dog), UninitializedObjectEnumMock.Dog.Value.UninitializedInstance.GetType());
 
-		Assert.Equal(typeof(Cat), UninitializedObjectWithBaseTypeEnumMock.Cat.Value.Instance.GetType());
-		Assert.Equal(typeof(Dog), UninitializedObjectWithBaseTypeEnumMock.Dog.Value.Instance.GetType());
+		Assert.Equal(typeof(Cat), UninitializedObjectWithBaseTypeEnumMock.Cat.Value.UninitializedInstance.GetType());
+		Assert.Equal(typeof(Dog), UninitializedObjectWithBaseTypeEnumMock.Dog.Value.UninitializedInstance.GetType());
 	}
 
 	[Fact]

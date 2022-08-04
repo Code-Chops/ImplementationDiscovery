@@ -27,7 +27,7 @@ internal static class ImplementationSyntaxReceiver
 
 		static bool IsProbablyDiscoverableBaseType(SyntaxNode syntaxNode, CancellationToken cancellationToken)
 		{
-			if (syntaxNode is not AttributeSyntax attribute || attribute.ArgumentList?.Arguments.Count > 1) return false;
+			if (syntaxNode is not AttributeSyntax attribute || attribute.ArgumentList?.Arguments.Count > 2) return false;
 			if (attribute.Parent?.Parent is not TypeDeclarationSyntax) return false;
 
 			var isProbablyBaseType = attribute.Name.HasAttributeName(SourceGenerator.DiscoverableAttributeName, cancellationToken);
@@ -96,12 +96,13 @@ internal static class ImplementationSyntaxReceiver
 
 		var definition = new EnumDefinition(
 			name: SourceGenerator.ImplementationsEnumName,
-			valueType: baseType,
+			baseType: baseType,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: filePath,
 			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(),
-			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true);
+			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true,
+			hasNewableImplementations: discoverableAttribute?.ConstructorArguments.Skip(1).FirstOrDefault().Value is true);
 
 		return definition;
 	}

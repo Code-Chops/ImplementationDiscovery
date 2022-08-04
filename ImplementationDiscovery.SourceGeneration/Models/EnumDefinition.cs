@@ -5,51 +5,51 @@ internal record EnumDefinition : IEnumModel
 	public string Identifier { get; }
 	public string Name { get; }
 	public string? Namespace { get; }
-	public string? ValueTypeName { get; }
-	public string? ValueTypeDeclaration { get; }
-	public TypeKind? ValueTypeTypeKind { get; }
+	public string? BaseTypeName { get; }
+	public string? BaseTypeDeclaration { get; }
+	public TypeKind? BaseTypeTypeKind { get; }
 	public DiscoverabilityMode DiscoverabilityMode { get; }
 	public string FilePath { get; }
 	public string AccessModifier { get; }
 	public List<EnumMember> MembersFromAttribute { get; }
-	public bool GenerateIdsForImplementations { get; }
+	public bool GenerateTypeIdsForImplementations { get; }
+	public bool HasNewableImplementations { get; }
 	
-	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
-	public EnumDefinition(string name, ITypeSymbol valueType, DiscoverabilityMode discoverabilityMode, string filePath, string accessModifier, 
-		IEnumerable<EnumMember> membersFromAttribute, bool generateIdsForImplementations)
+	public EnumDefinition(string name, ITypeSymbol baseType, DiscoverabilityMode discoverabilityMode, string filePath, string accessModifier, 
+		IEnumerable<EnumMember> membersFromAttribute, bool generateIdsForImplementations, bool hasNewableImplementations)
 		: this(
 			name: name,
-			enumNamespace: valueType.ContainingNamespace.IsGlobalNamespace 
+			enumNamespace: baseType.ContainingNamespace.IsGlobalNamespace 
 				? null 
-				: valueType.ContainingNamespace.ToDisplayString(),
-			valueTypeNameIncludingGenerics: valueType.GetTypeNameWithGenericParameters(),
-			valueTypeDeclaration: valueType.GetObjectDeclaration(),
-			valueTypeTypeKind: valueType?.TypeKind,
+				: baseType.ContainingNamespace.ToDisplayString(),
+			baseTypeNameIncludingGenerics: baseType.GetTypeNameWithGenericParameters(),
+			baseTypeDeclaration: baseType.GetObjectDeclaration(),
+			baseTypeTypeKind: baseType?.TypeKind,
 			discoverabilityMode: discoverabilityMode, 
 			filePath: filePath, 
 			accessModifier: accessModifier, 
 			membersFromAttribute: membersFromAttribute,
-			generateIdsForImplementations: generateIdsForImplementations)
+			generateTypeIdsForImplementations: generateIdsForImplementations,
+			hasNewableImplementations: hasNewableImplementations)
 	{
 	}
 
 	/// <param name="enumNamespace">Be aware of global namespaces!</param>
-	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
-	public EnumDefinition(string name, string? enumNamespace, string? valueTypeNameIncludingGenerics, string? valueTypeDeclaration, TypeKind? valueTypeTypeKind,
-		DiscoverabilityMode discoverabilityMode, string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateIdsForImplementations)
+	public EnumDefinition(string name, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, TypeKind? baseTypeTypeKind, DiscoverabilityMode discoverabilityMode, 
+		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateTypeIdsForImplementations, bool hasNewableImplementations)
 	{
 		this.Name = name;
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 		
-		var valueTypeNameWithoutGenerics = valueTypeNameIncludingGenerics is null 
+		var baseTypeNameWithoutGenerics = baseTypeNameIncludingGenerics is null 
 			? null 
-			: NameHelpers.GetNameWithoutGenerics(valueTypeNameIncludingGenerics);
+			: NameHelpers.GetNameWithoutGenerics(baseTypeNameIncludingGenerics);
 		
-		this.Identifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{valueTypeNameWithoutGenerics}";
+		this.Identifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{baseTypeNameWithoutGenerics}";
 
-		this.ValueTypeName = valueTypeNameIncludingGenerics;
-		this.ValueTypeDeclaration = valueTypeDeclaration;
-		this.ValueTypeTypeKind = valueTypeTypeKind;
+		this.BaseTypeName = baseTypeNameIncludingGenerics;
+		this.BaseTypeDeclaration = baseTypeDeclaration;
+		this.BaseTypeTypeKind = baseTypeTypeKind;
 		
 		this.DiscoverabilityMode = discoverabilityMode;
 		this.FilePath = filePath;
@@ -57,6 +57,7 @@ internal record EnumDefinition : IEnumModel
 
 		this.MembersFromAttribute = membersFromAttribute as List<EnumMember> ?? membersFromAttribute.ToList();
 
-		this.GenerateIdsForImplementations = generateIdsForImplementations;
+		this.GenerateTypeIdsForImplementations = generateTypeIdsForImplementations;
+		this.HasNewableImplementations = hasNewableImplementations;
 	}
 }

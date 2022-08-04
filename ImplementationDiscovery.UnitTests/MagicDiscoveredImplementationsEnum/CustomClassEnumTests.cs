@@ -5,11 +5,11 @@ public class CustomClassEnumTests
 	[Fact]
 	public void CustomClassEnum_HasCorrectValues()
 	{
-		Assert.Equal(nameof(CustomClassEnumMock.ValueA), CustomClassEnumMock.ValueA.Value.Instance.Text);
-		Assert.Equal(nameof(CustomClassEnumMock.ValueB), CustomClassEnumMock.ValueB.Value.Instance.Text);
+		Assert.Equal(nameof(CustomClassEnumMock.ValueA), CustomClassEnumMock.ValueA.Value.UninitializedInstance.Text);
+		Assert.Equal(nameof(CustomClassEnumMock.ValueB), CustomClassEnumMock.ValueB.Value.UninitializedInstance.Text);
 
-		Assert.Equal(nameof(CustomClassEnumMock.ValueA), CustomClassEnumMock.GetSingleMember(nameof(CustomClassEnumMock.ValueA)).Value.Instance.Text);
-		Assert.Equal(nameof(CustomClassEnumMock.ValueB), CustomClassEnumMock.GetSingleMember(nameof(CustomClassEnumMock.ValueB)).Value.Instance.Text);
+		Assert.Equal(nameof(CustomClassEnumMock.ValueA), CustomClassEnumMock.GetSingleMember(nameof(CustomClassEnumMock.ValueA)).Value.UninitializedInstance.Text);
+		Assert.Equal(nameof(CustomClassEnumMock.ValueB), CustomClassEnumMock.GetSingleMember(nameof(CustomClassEnumMock.ValueB)).Value.UninitializedInstance.Text);
 	}
 
 	[Fact]
