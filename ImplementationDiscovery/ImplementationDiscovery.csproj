@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.16.1</VersionPrefix>
-		<PackageReleaseNotes>ConstructNewObject not static.</PackageReleaseNotes>
+		<VersionPrefix>0.16.2</VersionPrefix>
+		<PackageReleaseNotes>ConstructNewObject renamed to ConstructNewInstance.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
