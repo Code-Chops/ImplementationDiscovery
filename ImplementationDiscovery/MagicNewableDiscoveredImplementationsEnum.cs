@@ -9,5 +9,5 @@ public abstract record MagicNewableDiscoveredImplementationsEnum<TSelf, TBaseTyp
 	where TSelf : MagicDiscoveredImplementationsEnum<TSelf, TBaseType>
 	where TBaseType : class, new()
 {
-	public static TBaseType ConstructNewObject() => new();
+	public TBaseType ConstructNewObject() => new();
 }

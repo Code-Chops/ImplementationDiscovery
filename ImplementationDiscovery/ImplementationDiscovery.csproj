@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.16.0</VersionPrefix>
-		<PackageReleaseNotes>Renamed ValueType to BaseType. Added MagicNewableDiscoveredImplementationEnum.</PackageReleaseNotes>
+		<VersionPrefix>0.16.1</VersionPrefix>
+		<PackageReleaseNotes>ConstructNewObject not static.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
