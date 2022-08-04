@@ -16,7 +16,7 @@ public class SourceGenerator : IIncrementalGenerator
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
 	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
-	internal const string ImplementationsEnumName			= "TypeIdentities";
+	internal const string ImplementationsEnumName			= "TypeEnum";
 	
 	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
 	{		
