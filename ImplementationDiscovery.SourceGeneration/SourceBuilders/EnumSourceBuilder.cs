@@ -74,11 +74,10 @@ using CodeChops.ImplementationDiscovery;
 		// Creates a using for the definition of the enum value type (or null if not applicable).
 		string? GetValueTypeUsing()
 		{
-			var ns = definition.ValueTypeNamespace;
-			if (ns is null or "System") return null;
+			if (definition.ValueTypeDeclaration is null || definition.Namespace is null or "System") return null;
 
-			ns = $"using {ns};{Environment.NewLine}";
-			return ns;
+			var @namespace = $"using {definition.Namespace};{Environment.NewLine}";
+			return @namespace;
 		}
 
 
@@ -95,44 +94,24 @@ using CodeChops.ImplementationDiscovery;
 		// Creates the partial enum record (or null if the enum has no members).
 		string GetEnumRecord()
 		{
-			var hasOuterClass = definition.OuterClassName is not null;
+			var hasOuterClass = definition.ValueTypeDeclaration is not null;
 
 			var code = new StringBuilder();
 
-			var indent = hasOuterClass ? (char?)'\t' : null;
-
 			if (hasOuterClass)
 			{
-				if (NameHelpers.HasGenericParameter(definition.OuterClassName!))
-				{
-					// Add the outer class
-					code.AppendLine($@"
-{definition.OuterClassDeclaration} {definition.OuterClassName}
+				code.AppendLine($@"
+{definition.ValueTypeDeclaration} {definition.ValueTypeName} {(definition.GenerateIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.ValueTypeName}.{definition.Name}>" : null)}
 {{
 ");
-				}
-				else
-				{
-					var typeIdName = $"{definition.OuterClassName}TypeId";
-					// Add the outer class
-					code.AppendLine($@"
-{definition.OuterClassDeclaration} {definition.OuterClassName} {(definition.GenerateIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.OuterClassName}.{typeIdName}>" : null)}
-{{
-	
-{indent}public partial record {typeIdName} : global::CodeChops.DomainDrivenDesign.DomainModeling.Identities.Id<{typeIdName}, string> 
-{indent}{{ 
-{indent}	public {typeIdName}(string value) : base(value) {{ }}
-{indent}	public {typeIdName}() : base() {{ }}
-{indent}}}
-	");
-	
-					if (definition.OuterClassTypeKind == TypeKind.Class && definition.GenerateIdsForImplementations)
-					{
-						code.AppendLine($@"
-{indent}public new abstract {typeIdName} TypeId {{ get; }}
+			}
+
+			var indent = hasOuterClass ? (char?)'\t' : null;
+			if (definition.ValueTypeTypeKind == TypeKind.Class && definition.GenerateIdsForImplementations)
+			{
+				code.AppendLine($@"
+{indent}public new abstract {definition.Name} TypeId {{ get; }}
 ");
-					}
-				}
 			}
 
 			// Create the comments on the enum record.
@@ -157,7 +136,7 @@ using CodeChops.ImplementationDiscovery;
 				? null 
 				: $", {definition.ValueTypeName}";
 			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{valueTypeFullName}>";
-			
+
 			code.Append($@"
 {indent}{definition.AccessModifier} partial record {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
 {indent}{{	

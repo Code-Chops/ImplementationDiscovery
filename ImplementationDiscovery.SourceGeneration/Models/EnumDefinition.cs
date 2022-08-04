@@ -1,27 +1,13 @@
 ﻿  namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
-internal record EnumDefinition : IEnumEntity
+internal record EnumDefinition : IEnumModel
 {
 	public string Identifier { get; }
 	public string Name { get; }
 	public string? Namespace { get; }
-	/// <summary>
-	/// When <see cref="DiscoverabilityMode"/> is set to Implementation, the ValueTypeName is equal to name of the base class / interface with generic type parameters.
-	/// </summary>
 	public string? ValueTypeName { get; }
-	/// <summary>
-	/// When <see cref="DiscoverabilityMode"/> is set to Implementation, the ValueTypeNamespace is equal to namespace of the base class / interface.
-	/// </summary>
-	public string? ValueTypeNamespace { get; }
-	/// <summary>
-	/// AccessModifier + Type.
-	/// </summary>
-	public string? OuterClassDeclaration { get; }
-	public TypeKind? OuterClassTypeKind { get; }
-	/// <summary>
-	/// Base class name.
-	/// </summary>
-	public string? OuterClassName { get; }
+	public string? ValueTypeDeclaration { get; }
+	public TypeKind? ValueTypeTypeKind { get; }
 	public DiscoverabilityMode DiscoverabilityMode { get; }
 	public string FilePath { get; }
 	public string AccessModifier { get; }
@@ -29,51 +15,47 @@ internal record EnumDefinition : IEnumEntity
 	public bool GenerateIdsForImplementations { get; }
 	
 	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
-	public EnumDefinition(ITypeSymbol type, string valueTypeNameIncludingGenerics, string? valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
-		string filePath, string accessModifier, IEnumerable<EnumMember> attributeMembers, ITypeSymbol? outerClassType, bool implementationsHaveIds)
+	public EnumDefinition(string name, ITypeSymbol valueType, DiscoverabilityMode discoverabilityMode, string filePath, string accessModifier, 
+		IEnumerable<EnumMember> membersFromAttribute, bool generateIdsForImplementations)
 		: this(
-			name: type.Name,
-			enumNamespace: type.ContainingNamespace.IsGlobalNamespace 
+			name: name,
+			enumNamespace: valueType.ContainingNamespace.IsGlobalNamespace 
 				? null 
-				: type.ContainingNamespace.ToDisplayString(),
-			valueTypeNameIncludingGenerics: valueTypeNameIncludingGenerics,
-			valueTypeNamespace: valueTypeNamespace,
+				: valueType.ContainingNamespace.ToDisplayString(),
+			valueTypeNameIncludingGenerics: valueType.GetTypeNameWithGenericParameters(),
+			valueTypeDeclaration: valueType.GetObjectDeclaration(),
+			valueTypeTypeKind: valueType?.TypeKind,
 			discoverabilityMode: discoverabilityMode, 
 			filePath: filePath, 
 			accessModifier: accessModifier, 
-			membersFromAttribute: attributeMembers, 
-			outerClassDeclaration: outerClassType?.GetObjectDeclaration(), 
-			outerClassName: outerClassType?.GetTypeNameWithGenericParameters(),
-			outerClassTypeKind: outerClassType?.TypeKind,
-			generateIdsForImplementations: implementationsHaveIds)
+			membersFromAttribute: membersFromAttribute,
+			generateIdsForImplementations: generateIdsForImplementations)
 	{
 	}
 
 	/// <param name="enumNamespace">Be aware of global namespaces!</param>
 	/// <param name="valueTypeNamespace">Be aware of global namespaces!</param>
-	public EnumDefinition(string name, string? enumNamespace, string? valueTypeNameIncludingGenerics, string? valueTypeNamespace, DiscoverabilityMode discoverabilityMode,
-		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, string? outerClassDeclaration, string? outerClassName, 
-		TypeKind? outerClassTypeKind, bool generateIdsForImplementations)
+	public EnumDefinition(string name, string? enumNamespace, string? valueTypeNameIncludingGenerics, string? valueTypeDeclaration, TypeKind? valueTypeTypeKind,
+		DiscoverabilityMode discoverabilityMode, string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateIdsForImplementations)
 	{
 		this.Name = name;
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
+		
+		var valueTypeNameWithoutGenerics = valueTypeNameIncludingGenerics is null 
+			? null 
+			: NameHelpers.GetNameWithoutGenerics(valueTypeNameIncludingGenerics);
+		
+		this.Identifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{valueTypeNameWithoutGenerics}";
 
 		this.ValueTypeName = valueTypeNameIncludingGenerics;
-		this.ValueTypeNamespace = valueTypeNamespace;
-		this.OuterClassDeclaration = outerClassDeclaration;
-		this.OuterClassName = outerClassName;
-		this.OuterClassTypeKind = outerClassTypeKind;
+		this.ValueTypeDeclaration = valueTypeDeclaration;
+		this.ValueTypeTypeKind = valueTypeTypeKind;
 		
 		this.DiscoverabilityMode = discoverabilityMode;
 		this.FilePath = filePath;
 		this.AccessModifier = accessModifier.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
 
 		this.MembersFromAttribute = membersFromAttribute as List<EnumMember> ?? membersFromAttribute.ToList();
-
-		var valueTypeNameWithoutGenerics = valueTypeNameIncludingGenerics is null 
-			? null 
-			: NameHelpers.GetNameWithoutGenerics(valueTypeNameIncludingGenerics);
-		this.Identifier = $"{(this.ValueTypeNamespace is null ? null : $"{this.ValueTypeNamespace}.")}{valueTypeNameWithoutGenerics}";
 
 		this.GenerateIdsForImplementations = generateIdsForImplementations;
 	}

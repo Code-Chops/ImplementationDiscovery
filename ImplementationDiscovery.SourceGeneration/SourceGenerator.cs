@@ -15,9 +15,9 @@ public class SourceGenerator : IIncrementalGenerator
 	internal const string GenerateMethodName				= "CreateMember";
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
-	internal const string ImplementationsEnumName			= "Implementations";
-	private const string AllImplementationsEnumName			= "AllDiscoveredImplementations";
-
+	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
+	internal const string ImplementationsEnumName			= "TypeIdentities";
+	
 	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
 	{		
 		var valueProvider = FindImplementations(initializationContext).Combine(initializationContext.AnalyzerConfigOptionsProvider);
@@ -30,7 +30,7 @@ public class SourceGenerator : IIncrementalGenerator
 	/// <summary>
 	/// Finds the enum definitions and stores the enum definitions in the property for later use.
 	/// </summary>
-	private static IncrementalValueProvider<ImmutableArray<IEnumEntity>> FindImplementations(IncrementalGeneratorInitializationContext context)
+	private static IncrementalValueProvider<ImmutableArray<IEnumModel>> FindImplementations(IncrementalGeneratorInitializationContext context)
 	{
 		var enumEntities = context.SyntaxProvider
 			.CreateSyntaxProvider(
@@ -42,39 +42,37 @@ public class SourceGenerator : IIncrementalGenerator
 		return enumEntities!;
 	}
 
-	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumEntity> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
+	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumModel> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
-		entities = entities as List<IEnumEntity> ?? entities.ToList();
+		entities = entities as List<IEnumModel> ?? entities.ToList();
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
 		var members = entities.OfType<DiscoveredEnumMember>();
 
-		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.OuterClassName is null || !NameHelpers.HasGenericParameter(definition.OuterClassName));
+		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.ValueTypeName is null || !NameHelpers.HasGenericParameter(definition.ValueTypeName));
 
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
 
 		var globalEnumDefinition = new EnumDefinition(
-			name: AllImplementationsEnumName,
+			name: SourceGenerator.AllImplementationsEnumName,
 			enumNamespace: enumNamespace,
-			valueTypeNameIncludingGenerics: null,
-			valueTypeNamespace: null,
+			valueTypeNameIncludingGenerics: AllImplementationsEnumName,
+			valueTypeDeclaration: null,
+			valueTypeTypeKind: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: AllImplementationsEnumName,
 			accessModifier: "public",
 			membersFromAttribute: globallyListableEnumMembers
 				.Select(definition => new DiscoveredEnumMember(
 					enumIdentifier: AllImplementationsEnumName, 
-					name: NameHelpers.GetNameWithoutGenerics(definition.OuterClassName!), 
+					name: NameHelpers.GetNameWithoutGenerics(definition.ValueTypeName!), 
 					isPartial: false, 
 					@namespace: definition.Namespace, 
 					declaration: "public class", 
-					value: $"typeof(global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.OuterClassName is null ? null : $"{definition.OuterClassName}.")}{definition.Name})",
+					value: $"typeof(global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.ValueTypeName is null ? null : $"{definition.ValueTypeName}.")}{definition.Name})",
 					comment: null,
 					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,
 					linePosition: new LinePosition())),
-			outerClassDeclaration: null,
-			outerClassName: null,
-			outerClassTypeKind: null,
 			generateIdsForImplementations: false);
 		
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);

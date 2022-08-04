@@ -1,6 +1,6 @@
 ﻿namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
-internal record EnumMember : IEnumEntity
+internal record EnumMember : IEnumModel
 {
 	/// <summary>
 	/// The enum full name.

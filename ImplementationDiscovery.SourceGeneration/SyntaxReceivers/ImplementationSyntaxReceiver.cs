@@ -39,7 +39,7 @@ internal static class ImplementationSyntaxReceiver
 	/// Gets the implementation details in the form of an enum member.
 	/// </summary>
 	/// <returns>The probably new enum member. Or null if not applicable for this node.</returns>
-	internal static IEnumEntity? GetEnumMemberFromImplementation(GeneratorSyntaxContext context, CancellationToken cancellationToken)
+	internal static IEnumModel? GetEnumMemberFromImplementation(GeneratorSyntaxContext context, CancellationToken cancellationToken)
 	{
 		if (context.Node is not TypeDeclarationSyntax typeDeclarationSyntax) return null;
 
@@ -80,7 +80,7 @@ internal static class ImplementationSyntaxReceiver
 	/// Checks if the node is an enum definition which has discoverable members or attributes.
 	/// </summary>
 	/// <returns>The enum definition. Or null if not applicable for this node.</returns>
-	internal static IEnumEntity? GetBaseType(GeneratorSyntaxContext context, CancellationToken cancellationToken)
+	internal static IEnumModel? GetBaseType(GeneratorSyntaxContext context, CancellationToken cancellationToken)
 	{
 		if (context.Node is not AttributeSyntax { Parent.Parent: TypeDeclarationSyntax typeDeclarationSyntax }) return null;
 
@@ -95,21 +95,12 @@ internal static class ImplementationSyntaxReceiver
 		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;
 
 		var definition = new EnumDefinition(
-			name: SourceGenerator.ImplementationsEnumName, 
-			enumNamespace: baseType.ContainingNamespace.IsGlobalNamespace 
-				? null 
-				: baseType.ContainingNamespace.ToDisplayString(),
-			valueTypeNameIncludingGenerics: baseType.GetTypeNameWithGenericParameters(),
-			valueTypeNamespace: baseType.ContainingNamespace.IsGlobalNamespace
-				? null 
-				: baseType.ContainingNamespace.ToDisplayString(),
+			name: SourceGenerator.ImplementationsEnumName,
+			valueType: baseType,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: filePath,
 			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(),
-			outerClassDeclaration: baseType.GetObjectDeclaration(), 
-			outerClassName: baseType.GetTypeNameWithGenericParameters(),
-			outerClassTypeKind: baseType.TypeKind,
 			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true);
 
 		return definition;

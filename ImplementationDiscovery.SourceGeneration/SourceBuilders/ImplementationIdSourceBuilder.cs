@@ -23,7 +23,7 @@ internal static class ImplementationIdSourceBuilder
         {
             var definition = discoveredMembersByDefinition.Key!;
 
-            if (NameHelpers.HasGenericParameter(definition.OuterClassName!)) continue;
+            if (NameHelpers.HasGenericParameter(definition.ValueTypeName!)) continue;
             
             var members = discoveredMembersByDefinition.Value.ToList();
 
@@ -49,17 +49,18 @@ internal static class ImplementationIdSourceBuilder
 using System;
 using CodeChops.DomainDrivenDesign.DomainModeling.Identities;
 using CodeChops.ImplementationDiscovery;
-using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName};
+using ImplementationsEnum = global::{definition.Namespace}.{definition.ValueTypeName};
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
             if (!NameHelpers.HasGenericParameter(member.Name))
             {
-                var typeIdName = $"EnumNamespace.{definition.OuterClassName}TypeId";
+                const string typeIdName = $"ImplementationsEnum.{SourceGenerator.ImplementationsEnumName}";
                 code.AppendLine($@"
 {member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
 {{
-	public static new {typeIdName} StaticTypeId {{ get; }} = new {typeIdName}(EnumNamespace.{definition.Name}.{member.Name}.Name);
+
+	public static new {typeIdName} StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
     {GetNonStaticTypeId(typeIdName)}
 }}");
             }
@@ -68,7 +69,7 @@ using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName}
 #nullable restore
 ");
 			
-            var typeIdFileName = FileNameHelpers.GetValidFileName($"{member.Namespace}.{member.Name}.g.cs");
+            var typeIdFileName = FileNameHelpers.GetValidFileName($"{member.Namespace}.{member.Name}.TypeId.g.cs");
             context.AddSource(typeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 
 
@@ -77,7 +78,7 @@ using EnumNamespace = global::{definition.Namespace}.{definition.OuterClassName}
                 if (!definition.GenerateIdsForImplementations) return null;
 
                 var code = $@"
-    public {(definition.OuterClassTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeId {{ get; }} = StaticTypeId;
+    public {(definition.ValueTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeId => StaticTypeId;
 ";
                 return code;
             }
