@@ -13,6 +13,5 @@ public abstract record MagicNewableDiscoveredImplementationsEnum<TSelf, TBaseTyp
 	/// <summary>
 	/// Creates a new instance by using the public constructor without parameters.
 	/// </summary>
-	/// <returns></returns>
 	public TBaseType CreateNewInstance() => new();
 }

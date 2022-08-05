@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.16.2</VersionPrefix>
-		<PackageReleaseNotes>ConstructNewObject renamed to ConstructNewInstance.</PackageReleaseNotes>
+		<VersionPrefix>0.16.3</VersionPrefix>
+		<PackageReleaseNotes>Updated MagicEnum package reference.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -58,7 +58,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="2.2.1" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="2.2.2" />
 	</ItemGroup>
 
 	<PropertyGroup>
