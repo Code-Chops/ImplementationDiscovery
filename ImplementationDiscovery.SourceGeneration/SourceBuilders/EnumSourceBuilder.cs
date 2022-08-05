@@ -44,7 +44,7 @@ internal static class EnumSourceBuilder
 			.Select(membersByName => membersByName.First())
 			.ToList();
 
-		var members = definition.MembersFromAttribute.Concat(relevantDiscoveredMembers);
+		var members = definition.MembersFromAttribute.Concat(relevantDiscoveredMembers).ToList();
 
 		// Is used for correct enum member outlining.
 		var longestMemberNameLength = members
@@ -132,13 +132,11 @@ using CodeChops.ImplementationDiscovery;
 {indent}/// </summary>");
 			
 			// Define the magic enum record.
-			var baseTypeFullName = definition.BaseTypeName is null 
-				? null 
-				: $", {definition.BaseTypeName}";
-			var magicEnumName = definition.HasNewableImplementations
-				? "MagicNewableDiscoveredImplementationsEnum"
-				: "MagicDiscoveredImplementationsEnum";
-			var parentDefinition = $"{magicEnumName}<{definition.Name}{baseTypeFullName}>";
+			var baseTypeFullName = definition.BaseTypeName ?? nameof(Object); 
+			var uninitializedObject = definition.HasNewableImplementations
+				? "NewableUninitializedObject"
+				: "UninitializedObject";
+			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}, {baseTypeFullName}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{baseTypeFullName}>>";
 
 			code.Append($@"
 {indent}{definition.AccessModifier} partial record {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
@@ -173,8 +171,11 @@ using CodeChops.ImplementationDiscovery;
 				// Create the enum member itself.
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 				
+				var memberInitialization = definition.HasNewableImplementations
+					? $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.NewableUninitializedObject<{baseTypeFullName}>.Create<{member.Value}>()"
+					: $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.UninitializedObject<{baseTypeFullName}>.Create(typeof({member.Value}))";
 				code.Append(@$"
-{indent}	public static {definition.Name} {member.Name} {{ get; }} {outlineSpaces}= CreateMember({member.Value});
+{indent}	public static {definition.Name} {member.Name} {{ get; }} {outlineSpaces}= CreateMember({memberInitialization});
 ");
 			}
 

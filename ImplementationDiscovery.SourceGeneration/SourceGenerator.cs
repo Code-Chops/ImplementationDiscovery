@@ -14,7 +14,7 @@ public class SourceGenerator : IIncrementalGenerator
 {
 	internal const string GenerateMethodName				= "CreateMember";
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
-	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
+	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery.Attributes";
 	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
 	internal const string ImplementationsEnumName			= "TypeEnum";
 	
@@ -46,7 +46,7 @@ public class SourceGenerator : IIncrementalGenerator
 	{
 		entities = entities as List<IEnumModel> ?? entities.ToList();
 		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
-		var members = entities.OfType<DiscoveredEnumMember>();
+		var members = entities.OfType<DiscoveredEnumMember>().ToList();
 
 		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.BaseTypeName is null || !NameHelpers.HasGenericParameter(definition.BaseTypeName));
 
@@ -68,7 +68,7 @@ public class SourceGenerator : IIncrementalGenerator
 					isPartial: false, 
 					@namespace: definition.Namespace, 
 					declaration: "public class", 
-					value: $"typeof(global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.BaseTypeName is null ? null : $"{definition.BaseTypeName}.")}{definition.Name})",
+					value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.BaseTypeName is null ? null : $"{definition.BaseTypeName}.")}{definition.Name}",
 					comment: null,
 					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,

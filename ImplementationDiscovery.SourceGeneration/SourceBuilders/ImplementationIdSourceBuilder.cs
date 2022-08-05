@@ -27,7 +27,7 @@ internal static class ImplementationIdSourceBuilder
             
             var members = discoveredMembersByDefinition.Value.ToList();
 
-            CreateStaticDiscoveredTypeIdFiles(context, definition!, members);
+            CreateStaticDiscoveredTypeIdFiles(context, definition, members);
         }
     }
     

@@ -1,20 +1,11 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests.MagicDiscoveredImplementationsEnum;
+﻿using CodeChops.ImplementationDiscovery.UninitializedObjects;
 
-public record UninitializedObjectWithBaseTypeEnumMock : MagicDiscoveredImplementationsEnum<UninitializedObjectWithBaseTypeEnumMock, Animal>
+namespace CodeChops.ImplementationDiscovery.UnitTests.MagicDiscoveredImplementationsEnum;
+
+public record MagicDiscoveredImplementationsEnumMock : MagicDiscoveredImplementationsEnum<MagicDiscoveredImplementationsEnumMock, Animal, UninitializedObject<Animal>>
 {
-	public static UninitializedObjectWithBaseTypeEnumMock Cat { get; } = CreateMember<Cat>();
-	public static UninitializedObjectWithBaseTypeEnumMock Dog { get; } = CreateMember<Dog>();
-
-	/// <summary>
-	/// Adds a null value. This should throw.
-	/// </summary>
-	public static void AddNullValue() => CreateMember(value: null!);
-}
-
-public record UninitializedObjectEnumMock : MagicDiscoveredImplementationsEnum<UninitializedObjectEnumMock, object>
-{
-	public static UninitializedObjectEnumMock Cat { get; } = CreateMember<Cat>();
-	public static UninitializedObjectEnumMock Dog { get; } = CreateMember<Dog>();
+	public static MagicDiscoveredImplementationsEnumMock Cat { get; } = CreateMember(UninitializedObject<Animal>.Create(typeof(Cat)));
+	public static MagicDiscoveredImplementationsEnumMock Dog { get; } = CreateMember(UninitializedObject<Animal>.Create(typeof(Dog)));
 }
 
 public sealed record Cat : Animal;

@@ -67,7 +67,7 @@ internal static class ImplementationSyntaxReceiver
 				? null 
 				: type.ContainingNamespace.ToDisplayString(), 
 			declaration: type.GetObjectDeclaration(),
-			value: $"typeof({type.GetFullTypeNameWithGenericParameters()})",
+			value: type.GetFullTypeNameWithGenericParameters(),
 			comment: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: typeDeclarationSyntax.SyntaxTree.FilePath,

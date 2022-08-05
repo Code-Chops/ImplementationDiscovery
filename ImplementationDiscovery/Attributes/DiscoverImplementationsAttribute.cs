@@ -1,4 +1,4 @@
-﻿namespace CodeChops.ImplementationDiscovery;
+﻿namespace CodeChops.ImplementationDiscovery.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false)]
 public sealed class DiscoverImplementations : Attribute

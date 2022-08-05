@@ -24,7 +24,7 @@ internal record EnumDefinition : IEnumModel
 				: baseType.ContainingNamespace.ToDisplayString(),
 			baseTypeNameIncludingGenerics: baseType.GetTypeNameWithGenericParameters(),
 			baseTypeDeclaration: baseType.GetObjectDeclaration(),
-			baseTypeTypeKind: baseType?.TypeKind,
+			baseTypeTypeKind: baseType.TypeKind,
 			discoverabilityMode: discoverabilityMode, 
 			filePath: filePath, 
 			accessModifier: accessModifier, 
