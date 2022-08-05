@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.17.0</VersionPrefix>
-		<PackageReleaseNotes>Fixed newable uninitialized object creation.</PackageReleaseNotes>
+		<VersionPrefix>0.17.1</VersionPrefix>
+		<PackageReleaseNotes>UninitializedInstance now of TBaseType instead of Object.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>

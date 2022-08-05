@@ -3,7 +3,7 @@
 public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TBaseType>>
 	where TBaseType : class
 {
-	public object UninitializedInstance { get; }
+	public TBaseType UninitializedInstance { get; }
 
 	protected UninitializedObject(TBaseType uninitializedInstance)
 	{

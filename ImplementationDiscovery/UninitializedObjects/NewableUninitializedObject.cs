@@ -1,6 +1,6 @@
 namespace CodeChops.ImplementationDiscovery.UninitializedObjects;
 
-public record NewableUninitializedObject<TBaseType> : UninitializedObject<TBaseType> 
+public record NewableUninitializedObject<TBaseType> : UninitializedObject<TBaseType>
 	where TBaseType : class
 {
 	/// <summary>
