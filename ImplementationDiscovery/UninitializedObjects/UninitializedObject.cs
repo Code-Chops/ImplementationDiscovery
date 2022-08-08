@@ -1,4 +1,6 @@
-﻿namespace CodeChops.ImplementationDiscovery.UninitializedObjects;
+﻿using CodeChops.MagicEnums.Core;
+
+namespace CodeChops.ImplementationDiscovery.UninitializedObjects;
 
 public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TBaseType>>
 	where TBaseType : class
@@ -16,6 +18,13 @@ public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TB
 	{
 		return new UninitializedObject<TBaseType>(type);
 	}
+	
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	// ReSharper disable once PossibleMistakenCallToGetType.2
+	public static implicit operator Type(UninitializedObject<TBaseType> uninitializedObject) => uninitializedObject.GetType();
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static implicit operator UninitializedObject<TBaseType>(Type type) => Create(type);
+
 	
 	#region Comparison
 	
