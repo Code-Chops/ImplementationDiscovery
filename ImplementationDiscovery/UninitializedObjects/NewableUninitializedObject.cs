@@ -13,12 +13,12 @@ public record NewableUninitializedObject<TBaseType> : UninitializedObject<TBaseT
 		where TImplementation : TBaseType, new()
 	{
 		return new NewableUninitializedObject<TBaseType>(
-			uninitializedInstance: (TBaseType)FormatterServices.GetUninitializedObject(typeof(TImplementation)), 
+			type: typeof(TImplementation), 
 			newInstanceFactory: () => new TImplementation());
 	}
-	
-	protected NewableUninitializedObject(TBaseType uninitializedInstance, Func<TBaseType> newInstanceFactory) 
-		: base(uninitializedInstance)
+
+	private NewableUninitializedObject(Type type, Func<TBaseType> newInstanceFactory) 
+		: base(type)
 	{
 		this.NewInstanceFactory = newInstanceFactory;
 	}

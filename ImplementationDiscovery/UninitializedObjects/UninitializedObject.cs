@@ -4,30 +4,33 @@ public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TB
 	where TBaseType : class
 {
 	public TBaseType UninitializedInstance { get; }
-
-	protected UninitializedObject(TBaseType uninitializedInstance)
+	private Type Type { get; } 
+	
+	protected UninitializedObject(Type type)
 	{
-		this.UninitializedInstance = uninitializedInstance;
+		this.UninitializedInstance = (TBaseType)FormatterServices.GetUninitializedObject(type);
+		this.Type = type;
 	}
 
 	public static UninitializedObject<TBaseType> Create(Type type)
 	{
-		return new UninitializedObject<TBaseType>((TBaseType)FormatterServices.GetUninitializedObject(type));
+		return new UninitializedObject<TBaseType>(type);
 	}
 	
 	#region Comparison
 	
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public virtual bool Equals(UninitializedObject<TBaseType>? other) 
-		=> this.UninitializedInstance.Equals(other?.UninitializedInstance);
+		// ReSharper disable once CheckForReferenceEqualityInstead.1
+		=> this.Type.Equals(other?.Type);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override int GetHashCode()
-		=> this.UninitializedInstance.GetHashCode();
+		=> this.Type.GetHashCode();
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public int CompareTo(UninitializedObject<TBaseType>? other) 
-		=> String.Compare(this.UninitializedInstance.GetType().FullName, other?.UninitializedInstance.GetType().FullName, StringComparison.Ordinal);
+		=> String.Compare(this.Type.FullName, other?.Type.FullName, StringComparison.Ordinal);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool operator <(UninitializedObject<TBaseType> left, UninitializedObject<TBaseType> right)	=> left.CompareTo(right) <	0;
