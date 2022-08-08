@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.17.4</VersionPrefix>
-		<PackageReleaseNotes>Make interfaces or concrete types implement IHasStaticTypeId.</PackageReleaseNotes>
+		<VersionPrefix>0.17.5</VersionPrefix>
+		<PackageReleaseNotes>IHasStaticTypeId non-generic.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -58,7 +58,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="2.2.2" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="2.3.4" />
 	</ItemGroup>
 
 	<PropertyGroup>

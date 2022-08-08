@@ -60,7 +60,7 @@ using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
 {member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
 {{
 
-	public static new {typeIdName} StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
+	public static new Id StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
     {GetNonStaticTypeId(typeIdName)}
 }}");
             }
@@ -78,7 +78,7 @@ using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
                 if (!definition.GenerateTypeIdsForImplementations) return null;
 
                 var code = $@"
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeId => StaticTypeId;
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeId => ({typeIdName})StaticTypeId;
 ";
                 return code;
             }

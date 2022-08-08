@@ -100,7 +100,7 @@ using CodeChops.ImplementationDiscovery;
 
 			if (hasOuterClass)
 			{
-				var implementStaticIdInterface = definition.GenerateTypeIdsForImplementations && definition.BaseTypeTypeKind != TypeKind.Class ? ", IHasStaticTypeId<TTypeId>" : null;
+				var implementStaticIdInterface = definition.GenerateTypeIdsForImplementations && definition.BaseTypeTypeKind != TypeKind.Class ? ", IHasStaticTypeId" : null;
 				code.AppendLine($@"
 {definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.BaseTypeName}.{definition.Name}>{implementStaticIdInterface}" : null)}
 {{
