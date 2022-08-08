@@ -139,7 +139,7 @@ using CodeChops.ImplementationDiscovery;
 			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}, {baseTypeFullName}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{baseTypeFullName}>>";
 
 			code.Append($@"
-{indent}{definition.AccessModifier} partial record {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
+{indent}{definition.AccessModifier} {(members.Any() ? null : "abstract ")}partial record {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
 {indent}{{	
 ");
 
