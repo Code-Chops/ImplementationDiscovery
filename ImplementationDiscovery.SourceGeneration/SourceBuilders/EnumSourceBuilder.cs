@@ -111,7 +111,7 @@ using CodeChops.ImplementationDiscovery;
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
 				code.AppendLine($@"
-{indent}public new abstract {definition.Name} TypeId {{ get; }}
+{indent}public abstract {definition.Name} TypeId {{ get; }}
 ");
 			}
 
