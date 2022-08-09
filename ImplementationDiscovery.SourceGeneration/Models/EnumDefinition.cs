@@ -17,9 +17,10 @@ internal record EnumDefinition : IEnumModel
 	public bool GenerateTypeIdsForImplementations { get; }
 	public bool HasNewableImplementations { get; }
 	
-	public EnumDefinition(TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, DiscoverabilityMode discoverabilityMode, string filePath, 
+	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, DiscoverabilityMode discoverabilityMode, string filePath, 
 		IEnumerable<EnumMember> membersFromAttribute, bool generateIdsForImplementations, bool hasNewableImplementations)
 		: this(
+			customName: customName,
 			name: $"{NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name)}{SourceGenerator.ImplementationsEnumName}",
 			typeParameters: baseTypeDeclarationSyntax.TypeParameterList?.ToFullString(),
 			enumNamespace: baseTypeSymbol.ContainingNamespace.IsGlobalNamespace 
@@ -39,10 +40,10 @@ internal record EnumDefinition : IEnumModel
 	}
 
 	/// <param name="enumNamespace">Be aware of global namespaces!</param>
-	public EnumDefinition(string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, DiscoverabilityMode discoverabilityMode, 
+	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, DiscoverabilityMode discoverabilityMode, 
 		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateTypeIdsForImplementations, bool hasNewableImplementations)
 	{
-		this.Name = name;
+		this.Name = customName ?? name;
 		this.TypeParameters = typeParameters;
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 		

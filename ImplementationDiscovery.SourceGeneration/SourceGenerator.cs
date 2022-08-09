@@ -53,6 +53,7 @@ public class SourceGenerator : IIncrementalGenerator
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
 
 		var globalEnumDefinition = new EnumDefinition(
+			customName: null,
 			name: AllImplementationsEnumName,
 			typeParameters: null,
 			enumNamespace: enumNamespace,

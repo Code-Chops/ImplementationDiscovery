@@ -2,5 +2,5 @@
 
 namespace CodeChops.ImplementationDiscovery.UnitTests.EmptyImplementations;
 
-[DiscoverImplementations]
+[DiscoverImplementations(enumName: nameof(EmptyEnum))]
 public abstract partial record EmptyImplementationsMock;

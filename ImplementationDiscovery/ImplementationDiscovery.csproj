@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.18.1</VersionPrefix>
-		<PackageReleaseNotes>Removed source generated comment.</PackageReleaseNotes>
+		<VersionPrefix>0.18.2</VersionPrefix>
+		<PackageReleaseNotes>Added option to create custom enum name.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
