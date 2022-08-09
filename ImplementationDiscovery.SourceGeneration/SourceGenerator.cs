@@ -16,7 +16,7 @@ public class SourceGenerator : IIncrementalGenerator
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery.Attributes";
 	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
-	internal const string ImplementationsEnumName			= "TypeEnum";
+	internal const string ImplementationsEnumName			= "Enum";
 	
 	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
 	{		
@@ -53,22 +53,24 @@ public class SourceGenerator : IIncrementalGenerator
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
 
 		var globalEnumDefinition = new EnumDefinition(
-			name: SourceGenerator.AllImplementationsEnumName,
+			name: AllImplementationsEnumName,
+			typeParameters: null,
 			enumNamespace: enumNamespace,
-			baseTypeNameIncludingGenerics: AllImplementationsEnumName,
+			baseTypeNameIncludingGenerics: nameof(Object),
 			baseTypeDeclaration: null,
+			baseTypeGenericConstraints: null,
 			baseTypeTypeKind: null,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: AllImplementationsEnumName,
 			accessModifier: "public",
 			membersFromAttribute: globallyListableEnumMembers
 				.Select(definition => new DiscoveredEnumMember(
-					enumIdentifier: AllImplementationsEnumName, 
+					enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}", 
 					name: NameHelpers.GetNameWithoutGenerics(definition.BaseTypeName!), 
 					isPartial: false, 
 					@namespace: definition.Namespace, 
 					declaration: "public class", 
-					value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{(definition.BaseTypeName is null ? null : $"{definition.BaseTypeName}.")}{definition.Name}",
+					value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
 					comment: null,
 					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,

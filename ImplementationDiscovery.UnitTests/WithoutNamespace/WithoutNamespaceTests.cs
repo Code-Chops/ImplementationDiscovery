@@ -5,12 +5,12 @@ public class RecordWithoutNamespaceTests
 	[Fact]
 	public void RecordImplementationHasCorrectMemberName()
 	{
-		Assert.True(IInterfaceToImplementWithoutNamespace.TypeEnum.WithoutImplementationMock.Name									== nameof(WithoutImplementationMock));
+		Assert.True(IInterfaceToImplementWithoutNamespaceEnum.WithoutImplementationMock.Name									== nameof(WithoutImplementationMock));
 	}
 
 	[Fact]
 	public void RecordImplementationHasCorrectMemberValue()
 	{
-		Assert.True(IInterfaceToImplementWithoutNamespace.TypeEnum.WithoutImplementationMock.Value.UninitializedInstance.GetType()	== typeof(WithoutImplementationMock));
+		Assert.True(IInterfaceToImplementWithoutNamespaceEnum.WithoutImplementationMock.Value.UninitializedInstance.GetType()	== typeof(WithoutImplementationMock));
 	}
 }

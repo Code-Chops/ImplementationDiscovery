@@ -31,6 +31,10 @@
 		<ProjectReference Include="..\ImplementationDiscovery\ImplementationDiscovery.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Remove="UninitializedObjects\UninitializedObjectMock.cs" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<!-- CS1591: Missing XML comment for publicly visible type -->
 		<!-- CS1573: Undocumented public symbol while -doc compiler option is used -->

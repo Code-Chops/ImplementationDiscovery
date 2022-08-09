@@ -15,5 +15,5 @@ internal record ImplementationWithoutGenericTypeMock : ClassWithGenericTypeToImp
 internal abstract partial record ClassWithExtraGenericTypeToImplement<TDirection, TDeltaPointNumber>
 	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>, IConvertible;
 
-internal record ImplementationWithExtraGenericTypeMock<TDeltaPointNumber> : ClassWithExtraGenericTypeToImplement<ImplementationWithExtraGenericTypeMock<TDeltaPointNumber>, TDeltaPointNumber>
+internal record ImplementationWithExtraGenericTypeMock<TDeltaPointNumber> : ClassWithExtraGenericTypeToImplement<TDeltaPointNumber, TDeltaPointNumber>
 	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>, IConvertible;

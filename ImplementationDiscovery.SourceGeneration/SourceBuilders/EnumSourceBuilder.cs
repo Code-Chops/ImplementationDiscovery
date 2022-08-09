@@ -61,12 +61,13 @@ using System;
 using CodeChops.ImplementationDiscovery;
 {GetBaseTypeUsing()}
 {GetNamespaceDeclaration()}
+{GetTypeIdProperty()}
 {GetEnumRecord()}
 {GetExtensionMethod()}
 #nullable restore
 ");
 
-		var enumCodeFileName = FileNameHelpers.GetValidFileName($"{definition.Identifier}.{definition.Name}.g.cs");
+		var enumCodeFileName = FileNameHelpers.GetValidFileName($"{definition.Namespace}.{definition.Name}.g.cs");
 		context.AddSource(enumCodeFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 		return;
 
@@ -91,57 +92,65 @@ using CodeChops.ImplementationDiscovery;
 		}
 
 
-		// Creates the partial enum record (or null if the enum has no members).
-		string GetEnumRecord()
+		string? GetTypeIdProperty()
 		{
-			var hasOuterClass = definition.BaseTypeDeclaration is not null;
+			if (definition.BaseTypeDeclaration is null) return null;
 
+			var implementStaticIdInterface = definition.GenerateTypeIdsForImplementations && definition.BaseTypeTypeKind != TypeKind.Class ? ", IHasStaticTypeId" : null;
 			var code = new StringBuilder();
 
-			if (hasOuterClass)
-			{
-				var implementStaticIdInterface = definition.GenerateTypeIdsForImplementations && definition.BaseTypeTypeKind != TypeKind.Class ? ", IHasStaticTypeId" : null;
-				code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.BaseTypeName}.{definition.Name}>{implementStaticIdInterface}" : null)}
+			code.AppendLine($@"
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}>{implementStaticIdInterface}" : null)}
 {{
 ");
-			}
-
-			var indent = hasOuterClass ? (char?)'\t' : null;
+				
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
 				code.AppendLine($@"
-{indent}public abstract {definition.Name} TypeId {{ get; }}
-");
+		public abstract {definition.Name} TypeId {{ get; }}
+	");
 			}
+			
+			code.Append($@"
+}}
+");
+
+			return code.ToString();
+		}
+		
+		
+		// Creates the partial enum record (or null if the enum has no members).
+		string GetEnumRecord()
+		{
+			var code = new StringBuilder();
 
 			// Create the comments on the enum record.
 			code.Append($@"
-{indent}/// <summary>
-{indent}/// <list type=""bullet"">");
+/// <summary>
+/// <list type=""bullet"">");
 			
 			foreach (var member in members)
 			{
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 				
 				code.Append($@"
-{indent}/// <item><c><![CDATA[ {member.Name}{outlineSpaces} = {member.Value ?? "?"} ]]></c></item>");
+/// <item><c><![CDATA[ {member.Name}{outlineSpaces} = {member.Value ?? "?"} ]]></c></item>");
 			}
 			
 			code.Append($@"
-{indent}/// </list>
-{indent}/// </summary>");
+/// </list>
+/// </summary>");
 			
 			// Define the magic enum record.
-			var baseTypeFullName = definition.BaseTypeName ?? nameof(Object); 
 			var uninitializedObject = definition.HasNewableImplementations
 				? "NewableUninitializedObject"
 				: "UninitializedObject";
-			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}, {baseTypeFullName}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{baseTypeFullName}>>";
+			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{definition.BaseTypeName}>>";
 
-			code.Append($@"
-{indent}{definition.AccessModifier} partial record {definition.Name} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
-{indent}{{	
+			code.Append($@" // {definition.TypeParameters}
+{definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
+{definition.BaseTypeGenericConstraints}
+{{	
 ");
 
 			// Add the discovered members to the enum record.
@@ -151,45 +160,38 @@ using CodeChops.ImplementationDiscovery;
 				if (member.Value is not null || member.Comment is not null)
 				{
 					code.Append($@"
-{indent}	/// <summary>");
+	/// <summary>");
 
 					if (member.Comment is not null)
 					{
 						code.Append($@"
-{indent}	/// <para>{member.Comment}</para>");
+	/// <para>{member.Comment}</para>");
 					}
 
 					if (member.Value is not null)
 					{
 						code.Append($@"
-{indent}	/// <c><![CDATA[ (value: {member.Value}) ]]></c>");
+	/// <c><![CDATA[ (value: {member.Value}) ]]></c>");
 					}
 
 					code.Append($@"
-{indent}	/// </summary>");
+	/// </summary>");
 				}
 
 				// Create the enum member itself.
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 				
 				var memberInitialization = definition.HasNewableImplementations
-					? $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.NewableUninitializedObject<{baseTypeFullName}>.Create<{member.Value}>()"
-					: $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.UninitializedObject<{baseTypeFullName}>.Create(typeof({member.Value}))";
+					? $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.NewableUninitializedObject<{definition.BaseTypeName}>.Create<{member.Value}>()"
+					: $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.UninitializedObject<{definition.BaseTypeName}>.Create(typeof({member.Value}))";
 				code.Append(@$"
-{indent}	public static {definition.Name} {member.Name} {{ get; }} {outlineSpaces}= CreateMember({memberInitialization});
+	public static {definition.Name}{definition.TypeParameters} {member.Name} {{ get; }} {outlineSpaces}= CreateMember({memberInitialization});
 ");
 			}
 
 			code.Append($@"
-{indent}}}
-");
-
-			if (hasOuterClass)
-			{
-				code.Append($@"
 }}
 ");
-			}
 
 			return code.ToString();
 		}

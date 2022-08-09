@@ -55,7 +55,7 @@ using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
 ");
             if (!NameHelpers.HasGenericParameter(member.Name))
             {
-                const string typeIdName = $"BaseType.{SourceGenerator.ImplementationsEnumName}";
+                var typeIdName = $"global::{definition.Namespace}.{definition.Name}";
                 code.AppendLine($@"
 {member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
 {{

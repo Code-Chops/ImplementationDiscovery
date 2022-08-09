@@ -7,8 +7,8 @@ public class ImplementationWithIdTests
     [Fact]
     public void ImplementationsExist()
     {
-        Assert.Equal(nameof(ImplementationWithIdMock1), ImplementationWithIdMockBase.TypeEnum.ImplementationWithIdMock1.Name);
-        Assert.Equal(nameof(ImplementationWithIdMock2), ImplementationWithIdMockBase.TypeEnum.ImplementationWithIdMock2.Name);
+        Assert.Equal(nameof(ImplementationWithIdMock1), ImplementationWithIdMockBaseEnum.ImplementationWithIdMock1.Name);
+        Assert.Equal(nameof(ImplementationWithIdMock2), ImplementationWithIdMockBaseEnum.ImplementationWithIdMock2.Name);
     }
 
     [Fact]

@@ -5,6 +5,6 @@ public class EmptyImplementationsTests
     [Fact]
     public void EnumShouldBeGenerated()
     {
-        Assert.Equal(typeof(EmptyImplementationsMock.TypeEnum), typeof(EmptyImplementationsMock.TypeEnum));
+        Assert.Equal(typeof(EmptyImplementationsMockEnum), typeof(EmptyImplementationsMockEnum));
     }
 }

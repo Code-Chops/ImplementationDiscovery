@@ -58,9 +58,7 @@ internal static class ImplementationSyntaxReceiver
 		if (attribute is null) return null;
 
 		var member = new DiscoveredEnumMember(
-			enumIdentifier: baseType.ContainingNamespace.IsGlobalNamespace
-				? baseType.Name
-				: $"{baseType.ContainingNamespace}.{baseType.Name}",
+			enumIdentifier: $"{(baseType.ContainingNamespace.IsGlobalNamespace ? null : $"{baseType.ContainingNamespace}.")}{NameHelpers.GetNameWithoutGenerics(baseType.Name)}{SourceGenerator.ImplementationsEnumName}",
 			name: type.Name,
 			isPartial: typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword)),
 			@namespace: type.ContainingNamespace.IsGlobalNamespace 
@@ -95,11 +93,10 @@ internal static class ImplementationSyntaxReceiver
 		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;
 
 		var definition = new EnumDefinition(
-			name: SourceGenerator.ImplementationsEnumName,
-			baseType: baseType,
+			baseTypeDeclarationSyntax: typeDeclarationSyntax,
+			baseTypeSymbol: baseType,
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: filePath,
-			accessModifier: typeDeclarationSyntax.Modifiers.ToFullString(),
 			membersFromAttribute: Array.Empty<EnumMember>(),
 			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value is true,
 			hasNewableImplementations: discoverableAttribute?.ConstructorArguments.Skip(1).FirstOrDefault().Value is true);
