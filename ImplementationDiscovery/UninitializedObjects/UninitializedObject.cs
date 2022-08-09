@@ -18,8 +18,7 @@ public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TB
 	}
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// ReSharper disable once PossibleMistakenCallToGetType.2
-	public static implicit operator Type(UninitializedObject<TBaseType> uninitializedObject) => uninitializedObject.GetType();
+	public static implicit operator Type(UninitializedObject<TBaseType> uninitializedObject) => uninitializedObject.Type;
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static implicit operator UninitializedObject<TBaseType>(Type type) => Create(type);
 
@@ -28,8 +27,7 @@ public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TB
 	
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public virtual bool Equals(UninitializedObject<TBaseType>? other) 
-		// ReSharper disable once CheckForReferenceEqualityInstead.1
-		=> this.Type.Equals(other?.Type);
+		=> this.Type == other?.Type;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override int GetHashCode()

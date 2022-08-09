@@ -16,5 +16,8 @@ public class MagicDiscoveredImplementationsEnumTest
 		Assert.Equal(MagicDiscoveredImplementationsEnumMock.Cat.Value,	MagicDiscoveredImplementationsEnumMock.Cat.Value);
 		Assert.Equal(MagicDiscoveredImplementationsEnumMock.Dog,		MagicDiscoveredImplementationsEnumMock.Dog);
 		Assert.Equal(MagicDiscoveredImplementationsEnumMock.Dog.Value,	MagicDiscoveredImplementationsEnumMock.Dog.Value);
+		
+		Assert.Equal(UninitializedObjects.UninitializedObject<Animal>.Create(typeof(Cat)),	MagicDiscoveredImplementationsEnumMock.Cat.Value);
+		Assert.Equal(UninitializedObjects.UninitializedObject<Animal>.Create(typeof(Dog)),	MagicDiscoveredImplementationsEnumMock.Dog.Value);
 	}
 }
