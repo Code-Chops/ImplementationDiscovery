@@ -101,19 +101,15 @@ using CodeChops.ImplementationDiscovery;
 
 			code.AppendLine($@"
 {definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}>{implementStaticIdInterface}" : null)}
-{{
-");
+{{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
-				code.AppendLine($@"
-		public abstract {definition.Name} TypeId {{ get; }}
-	");
+				code.AppendLine($@"public abstract {definition.Name} TypeId {{ get; }}");
 			}
 			
 			code.Append($@"
-}}
-");
+}}");
 
 			return code.ToString();
 		}
@@ -147,7 +143,7 @@ using CodeChops.ImplementationDiscovery;
 				: "UninitializedObject";
 			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{definition.BaseTypeName}>>";
 
-			code.Append($@" // {definition.TypeParameters}
+			code.Append($@"
 {definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
 {definition.BaseTypeGenericConstraints}
 {{	
