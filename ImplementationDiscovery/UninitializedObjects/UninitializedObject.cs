@@ -1,6 +1,4 @@
-﻿using CodeChops.MagicEnums.Core;
-
-namespace CodeChops.ImplementationDiscovery.UninitializedObjects;
+﻿namespace CodeChops.ImplementationDiscovery.UninitializedObjects;
 
 public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TBaseType>>
 	where TBaseType : class

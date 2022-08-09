@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>0.17.8</VersionPrefix>
-		<PackageReleaseNotes>Added implicit converters from UninitializedObject to Type et vice versa.</PackageReleaseNotes>
+		<VersionPrefix>0.17.9</VersionPrefix>
+		<PackageReleaseNotes>Upgraded MagicEnums package and created public API.</PackageReleaseNotes>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>10</LangVersion>
 	</PropertyGroup>
@@ -58,7 +58,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="2.3.4" />
+	  <PackageReference Include="CodeChops.MagicEnums" Version="2.3.8" />
 	</ItemGroup>
 
 	<PropertyGroup>
