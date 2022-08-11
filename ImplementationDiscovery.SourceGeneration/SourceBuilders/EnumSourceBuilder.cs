@@ -105,7 +105,8 @@ using CodeChops.ImplementationDiscovery;
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
-				code.AppendLine($@"public abstract new {definition.Name} TypeId {{ get; }}");
+				code.AppendLine($@"
+	public new abstract {definition.Name} TypeId {{ get; }}");
 			}
 			
 			code.Append($@"
