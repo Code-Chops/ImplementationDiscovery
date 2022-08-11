@@ -1,74 +1,62 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<VersionPrefix>0.18.4</VersionPrefix>
-		<PackageReleaseNotes>Fixed inconsistent modifiers declaration order.</PackageReleaseNotes>
-		<TargetFramework>net6.0</TargetFramework>
-		<LangVersion>10</LangVersion>
-	</PropertyGroup>
+    <PropertyGroup Label="Main">
+        <AssemblyName>CodeChops.ImplementationDiscovery</AssemblyName>
+        <RootNamespace>CodeChops.ImplementationDiscovery</RootNamespace>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<Title>CodeChops.ImplementationDiscovery</Title>
-		<AssemblyName>CodeChops.ImplementationDiscovery</AssemblyName>
-		<RootNamespace>CodeChops.ImplementationDiscovery</RootNamespace>
-		<PackageId>CodeChops.ImplementationDiscovery</PackageId>
-		<Authors>CodeChops (@Code-Chops), Max Bergman</Authors>
-		<Company>CodeChops</Company>
-		<PackageProjectUrl>https://github.com/code-chops/ImplementationDiscovery</PackageProjectUrl>
-		<PackageTags>CodeChops;CodeChops.ImplementationDiscovery;ImplementationDiscovery;Implementation discovery;Implementation discoverability</PackageTags>
-		<RepositoryUrl>https://github.com/code-chops/ImplementationDiscovery</RepositoryUrl>
-		<RepositoryType>Git</RepositoryType>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<Copyright>Copyright (c) CodeChops $([System.DateTime]::Now.ToString(yyyy))</Copyright>
-		<Description>
-			Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.
-		</Description>
-		<AnalysisLevel>latest</AnalysisLevel>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<EnablePreviewFeatures>true</EnablePreviewFeatures>
-	</PropertyGroup>
+    <PropertyGroup Label="Package">
+        <VersionPrefix>0.18.5</VersionPrefix>
+        <PackageReleaseNotes>Updated package references.</PackageReleaseNotes>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>CodeChops.ImplementationDiscovery</Title>
+        <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
+        <PackageId>CodeChops.ImplementationDiscovery</PackageId>
+        <PackageProjectUrl>https://github.com/code-chops/ImplementationDiscovery</PackageProjectUrl>
+        <PackageTags>CodeChops;CodeChops.ImplementationDiscovery;ImplementationDiscovery;Implementation discovery;Implementation discoverability</PackageTags>
+        <RepositoryUrl>https://github.com/code-chops/ImplementationDiscovery</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <Authors>CodeChops (@Code-Chops), Max Bergman</Authors>
+        <Company>CodeChops</Company>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <Copyright>Copyright (c) CodeChops $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<!-- Package the generator in the analyzer directory of the nuget package -->
-		<None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/$(AssemblyName).SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-		<None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/CodeChops.SourceGeneration.Utilities.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-	</ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-	</PropertyGroup>
+    <!-- Creates local nuget packages if in release mode and environment variable LocalNuGetPackagesFolder is configured -->
+    <Target Name="AddNugetPackage" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release' AND '$(LocalNuGetPackagesFolder)' != null">
+        <Exec Command="$(LocalNuGetPackagesFolder)\nuget.exe add $(OutputPath)..\$(PackageId).$(PackageVersion).nupkg -source $(LocalNuGetPackagesFolder)"/>
+    </Target>
 
-	<!-- Creates local nuget packages if in release mode and environment variable LocalNuGetPackagesFolder is configured -->
-	<Target Name="AddNugetPackage" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release' AND '$(LocalNuGetPackagesFolder)' != null">
-		<Exec Command="$(LocalNuGetPackagesFolder)\nuget.exe add $(OutputPath)..\$(PackageId).$(PackageVersion).nupkg -source $(LocalNuGetPackagesFolder)" />
-	</Target>
+    <ItemGroup Label="PackageAssets">
+        <None Include="Properties\LICENSE" Pack="true" PackagePath=""/>
+        <None Include="Properties\icon.png" Pack="true" Visible="true" PackagePath=""/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<None Include="Properties\LICENSE" Pack="true" PackagePath="" />
-		<None Include="Properties\icon.png" Pack="true" Visible="true" PackagePath="" />
-	</ItemGroup>
+    <ItemGroup Label="InternalsVisibleTo">
+        <InternalsVisibleTo Include="$(AssemblyName).UnitTests"/>
+        <InternalsVisibleTo Include="$(AssemblyName).IntegrationTests"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
-	</ItemGroup>
+    <ItemGroup Label="ProjectReferences">
+        <ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <!-- Package the generator in the analyzer directory of the nuget package -->
+        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/$(AssemblyName).SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/CodeChops.SourceGeneration.Utilities.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="CodeChops.MagicEnums" Version="2.3.8" />
-	</ItemGroup>
-
-	<PropertyGroup>
-		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<!-- CS1591: Missing XML comment for publicly visible type -->
-		<!-- CS1573: Undocumented public symbol while -doc compiler option is used -->
-		<!-- CA1822: Instance member does not access instance data and can be marked as static -->
-		<NoWarn>CS1591,CS1573,CA1822</NoWarn>
-	</PropertyGroup>
+    <ItemGroup Label="PackageReferences">
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.3.9"/>
+    </ItemGroup>
+	
 </Project>
