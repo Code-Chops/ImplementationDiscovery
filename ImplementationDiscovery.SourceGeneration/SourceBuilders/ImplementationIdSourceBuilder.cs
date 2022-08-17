@@ -8,7 +8,8 @@ internal static class ImplementationIdSourceBuilder
     /// <summary>
     /// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
     /// </summary>
-    public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, Dictionary<string, EnumDefinition> enumDefinitionsByIdentifier)
+    public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
+        Dictionary<string, EnumDefinition> enumDefinitionsByIdentifier, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
         if (enumDefinitionsByIdentifier.Count == 0) return;
 
@@ -27,11 +28,12 @@ internal static class ImplementationIdSourceBuilder
             
             var members = discoveredMembersByDefinition.Value.ToList();
 
-            CreateStaticDiscoveredTypeIdFiles(context, definition, members);
+            CreateStaticDiscoveredTypeIdFiles(context, definition, members, configOptionsProvider);
         }
     }
     
-    private static void CreateStaticDiscoveredTypeIdFiles(SourceProductionContext context, EnumDefinition definition, IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers)
+    private static void CreateStaticDiscoveredTypeIdFiles(SourceProductionContext context, EnumDefinition definition, 
+        IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
         if (definition.DiscoverabilityMode != DiscoverabilityMode.Implementation || !definition.GenerateTypeIdsForImplementations) return;
 
@@ -69,7 +71,7 @@ using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
 #nullable restore
 ");
 			
-            var typeIdFileName = FileNameHelpers.GetValidFileName($"{member.Namespace}.{member.Name}.TypeId.g.cs");
+            var typeIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.Name}.TypeId", configOptionsProvider);
             context.AddSource(typeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 
 

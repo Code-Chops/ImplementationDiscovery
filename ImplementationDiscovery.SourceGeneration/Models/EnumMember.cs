@@ -9,8 +9,7 @@ internal record EnumMember : IEnumModel
 	public string Name { get; }
 	public object? Value { get; }
 	public string? Comment { get; }
-
-	/// <param name="enumIdentifier">Be aware of global namespaces!</param>
+	
 	public EnumMember(string enumIdentifier, string name, object? value = null, string? comment = null)
 	{
 		this.EnumIdentifier = String.IsNullOrWhiteSpace(enumIdentifier) ? throw new ArgumentNullException(nameof(enumIdentifier)) : enumIdentifier;

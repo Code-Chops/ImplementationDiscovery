@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <VersionPrefix>0.18.5</VersionPrefix>
-        <PackageReleaseNotes>Updated package references.</PackageReleaseNotes>
+        <Version>0.19.0</Version>
+        <PackageReleaseNotes>Cleanup.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -35,28 +35,28 @@
 
     <!-- Creates local nuget packages if in release mode and environment variable LocalNuGetPackagesFolder is configured -->
     <Target Name="AddNugetPackage" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release' AND '$(LocalNuGetPackagesFolder)' != null">
-        <Exec Command="$(LocalNuGetPackagesFolder)\nuget.exe add $(OutputPath)..\$(PackageId).$(PackageVersion).nupkg -source $(LocalNuGetPackagesFolder)"/>
+        <Exec Command="$(LocalNuGetPackagesFolder)\nuget.exe add $(OutputPath)..\$(PackageId).$(PackageVersion).nupkg -source $(LocalNuGetPackagesFolder)" />
     </Target>
 
     <ItemGroup Label="PackageAssets">
-        <None Include="Properties\LICENSE" Pack="true" PackagePath=""/>
-        <None Include="Properties\icon.png" Pack="true" Visible="true" PackagePath=""/>
+        <None Include="Properties\LICENSE" Pack="true" PackagePath="" />
+        <None Include="Properties\icon.png" Pack="true" Visible="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup Label="InternalsVisibleTo">
-        <InternalsVisibleTo Include="$(AssemblyName).UnitTests"/>
-        <InternalsVisibleTo Include="$(AssemblyName).IntegrationTests"/>
+        <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+        <InternalsVisibleTo Include="$(AssemblyName).IntegrationTests" />
     </ItemGroup>
 
     <ItemGroup Label="ProjectReferences">
-        <ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <!-- Package the generator in the analyzer directory of the nuget package -->
-        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/$(AssemblyName).SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/CodeChops.SourceGeneration.Utilities.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/$(AssemblyName).SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/CodeChops.SourceGeneration.Utilities.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.3.9"/>
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.4.0" />
     </ItemGroup>
 	
 </Project>

@@ -9,8 +9,6 @@ internal record DiscoveredEnumMember : EnumMember
 	public string? Namespace { get; }
 	public string Declaration { get; }
 	
-	/// <param name="enumIdentifier">Be aware of global namespaces!</param>
-	/// <param name="namespace">Be aware of global namespaces!</param>
 	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value,
 		string? comment, DiscoverabilityMode discoverabilityMode, string filePath, LinePosition linePosition)
 		: base(enumIdentifier, name, value, comment)

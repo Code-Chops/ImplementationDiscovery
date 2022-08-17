@@ -81,7 +81,7 @@ public class SourceGenerator : IIncrementalGenerator
 		
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
 		
-		EnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier);
-		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier);
+		EnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
+		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
 	}
 }

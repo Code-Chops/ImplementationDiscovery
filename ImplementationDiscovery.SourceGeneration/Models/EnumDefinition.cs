@@ -39,7 +39,6 @@ internal record EnumDefinition : IEnumModel
 	{
 	}
 
-	/// <param name="enumNamespace">Be aware of global namespaces!</param>
 	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, DiscoverabilityMode discoverabilityMode, 
 		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateTypeIdsForImplementations, bool hasNewableImplementations)
 	{

@@ -16,7 +16,7 @@ public abstract record MagicDiscoveredImplementationsEnum<TSelf, TBaseType, TUni
 	where TUninitializedObject : UninitializedObject<TBaseType>, IEquatable<TUninitializedObject>
 {
 	/// <inheritdoc cref="MagicEnumCore{TSelf,TValue}.CreateMember"/>
-	public new static TSelf CreateMember(TUninitializedObject value, [CallerMemberName] string? name = null) 
+	protected new static TSelf CreateMember(TUninitializedObject value, [CallerMemberName] string? name = null) 
 		=> MagicEnumCore<TSelf, TUninitializedObject>.CreateMember(value: value, name: name!);
 	
 	/// <inheritdoc cref="MagicEnumCore{TSelf,TValue}.GetOrCreateMember"/>

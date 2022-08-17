@@ -8,7 +8,8 @@ internal static class EnumSourceBuilder
 	/// <summary>
 	/// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
 	/// </summary>
-	public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, Dictionary<string, EnumDefinition> enumDefinitionsByIdentifier)
+	public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
+		Dictionary<string, EnumDefinition> enumDefinitionsByIdentifier, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
 		if (enumDefinitionsByIdentifier.Count == 0) return;
 
@@ -25,11 +26,12 @@ internal static class EnumSourceBuilder
 				? members.ToList()
 				: new List<DiscoveredEnumMember>();
 
-			CreateEnumFile(context, definition!, relevantDiscoveredMembers);
+			CreateEnumFile(context, definition!, relevantDiscoveredMembers, configOptionsProvider);
 		}
 	}
 	
-	private static void CreateEnumFile(SourceProductionContext context, EnumDefinition definition, List<DiscoveredEnumMember> relevantDiscoveredMembers)
+	private static void CreateEnumFile(SourceProductionContext context, EnumDefinition definition, List<DiscoveredEnumMember> relevantDiscoveredMembers, 
+		AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
 		var code = new StringBuilder();
 
@@ -67,7 +69,7 @@ using CodeChops.ImplementationDiscovery;
 #nullable restore
 ");
 
-		var enumCodeFileName = FileNameHelpers.GetValidFileName($"{definition.Namespace}.{definition.Name}.g.cs");
+		var enumCodeFileName = FileNameHelpers.GetFileName($"{definition.Namespace}.{definition.Name}", configOptionsProvider);
 		context.AddSource(enumCodeFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 		return;
 
