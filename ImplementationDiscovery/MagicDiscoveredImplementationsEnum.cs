@@ -22,4 +22,9 @@ public abstract record MagicDiscoveredImplementationsEnum<TSelf, TBaseType, TUni
 	/// <inheritdoc cref="MagicEnumCore{TSelf,TValue}.GetOrCreateMember"/>
 	public new static TSelf GetOrCreateMember(TUninitializedObject value, [CallerMemberName] string? name = null) 
 		=> MagicEnumCore<TSelf, TUninitializedObject>.GetOrCreateMember(value: value, name: name!);
+
+	/// <summary>
+	/// Get an enumerable over the uninitialized objects.
+	/// </summary>
+	public static IEnumerable<TBaseType> GetUninitializedObjects() => GetMembers().Select(member => member.Value.UninitializedInstance);
 }
