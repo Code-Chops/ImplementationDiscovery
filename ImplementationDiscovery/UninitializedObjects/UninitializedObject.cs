@@ -3,29 +3,9 @@
 public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TBaseType>>
 	where TBaseType : class
 {
-	public TBaseType UninitializedInstance { get; }
-	private Type Type { get; } 
-	
-	protected UninitializedObject(Type type)
-	{
-		this.UninitializedInstance = (TBaseType)FormatterServices.GetUninitializedObject(type);
-		this.Type = type;
-	}
-
-	public static UninitializedObject<TBaseType> Create(Type type)
-	{
-		return new UninitializedObject<TBaseType>(type);
-	}
-	
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static implicit operator Type(UninitializedObject<TBaseType> uninitializedObject) => uninitializedObject.Type;
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static implicit operator UninitializedObject<TBaseType>(Type type) => Create(type);
-
-	
 	#region Comparison
 	
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public virtual bool Equals(UninitializedObject<TBaseType>? other) 
 		=> this.Type == other?.Type;
 
@@ -46,5 +26,26 @@ public record UninitializedObject<TBaseType>: IComparable<UninitializedObject<TB
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool operator >=(UninitializedObject<TBaseType> left, UninitializedObject<TBaseType> right)	=> left.CompareTo(right) >= 0;
 
-    #endregion
+	#endregion
+	
+	public TBaseType UninitializedInstance { get; }
+	private Type Type { get; } 
+	
+	protected UninitializedObject(Type type)
+	{
+		this.UninitializedInstance = (TBaseType)FormatterServices.GetUninitializedObject(type);
+		this.Type = type;
+	}
+
+	public static UninitializedObject<TBaseType> Create(Type type)
+	{
+		return new UninitializedObject<TBaseType>(type);
+	}
+	
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static implicit operator UninitializedObject<TBaseType>(Type type) => Create(type);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static implicit operator TBaseType(UninitializedObject<TBaseType> uninitializedObject) => uninitializedObject.UninitializedInstance;
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static implicit operator Type(UninitializedObject<TBaseType> uninitializedObject) => uninitializedObject.Type;
 }

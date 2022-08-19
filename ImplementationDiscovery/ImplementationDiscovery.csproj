@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.19.2</Version>
-        <PackageReleaseNotes>Updated MagicEnums package reference 2.</PackageReleaseNotes>
+        <Version>0.19.3</Version>
+        <PackageReleaseNotes>Updated package references and added implicit conversion from UninitializedObject to object.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -27,6 +27,11 @@
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Copyright>Copyright (c) CodeChops $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+        <NoWarn>
+            CS1591, <!-- Missing XML comment for publicly visible type or member -->
+            CS1573, <!-- Parameter has no matching param tag in the XML comment -->
+            CS1712, <!-- Type parameter has no matching typeparam tag in the XML comment (but other type parameters do) -->
+        </NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -56,7 +61,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.4.2" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.5.1" />
     </ItemGroup>
 	
 </Project>
