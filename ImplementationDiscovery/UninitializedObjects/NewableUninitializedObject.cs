@@ -25,7 +25,7 @@ public record NewableUninitializedObject<TBaseType> : UninitializedObject<TBaseT
 
 	private Func<TBaseType> InstanceFactory { get; }
 
-	internal static NewableUninitializedObject<TBaseType> Create<TImplementation>() 
+	public static NewableUninitializedObject<TBaseType> Create<TImplementation>() 
 		where TImplementation : TBaseType, new()
 	{
 		return new NewableUninitializedObject<TBaseType>(type: typeof(TImplementation), instanceFactory: () => new TImplementation());

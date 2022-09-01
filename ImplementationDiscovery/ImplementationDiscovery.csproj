@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.20.1</Version>
-        <PackageReleaseNotes>Updated magic enums package.</PackageReleaseNotes>
+        <Version>0.20.2</Version>
+        <PackageReleaseNotes>Changed creators of uninitialized objects to public.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

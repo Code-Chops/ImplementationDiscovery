@@ -50,5 +50,5 @@ public record UninitializedObject<TBaseType> : IComparable<UninitializedObject<T
 		this.Type = type;
 	}
 
-	internal static UninitializedObject<TBaseType> Create(Type type) => new(type);
+	public static UninitializedObject<TBaseType> Create(Type type) => new(type);
 }
