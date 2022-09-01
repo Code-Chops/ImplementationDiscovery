@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.20.0</Version>
-        <PackageReleaseNotes>Separated (newable) uninitialized object and updated magic enums package.</PackageReleaseNotes>
+        <Version>0.20.1</Version>
+        <PackageReleaseNotes>Updated magic enums package.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -61,7 +61,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.8.1" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.8.2" />
     </ItemGroup>
 	
 </Project>
