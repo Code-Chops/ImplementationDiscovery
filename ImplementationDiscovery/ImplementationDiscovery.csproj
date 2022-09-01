@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.20.2</Version>
-        <PackageReleaseNotes>Changed creators of uninitialized objects to public.</PackageReleaseNotes>
+        <Version>0.20.3</Version>
+        <PackageReleaseNotes>Updated MagicEnums package.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -61,7 +61,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.8.2" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.9.2" />
     </ItemGroup>
 	
 </Project>
