@@ -2,7 +2,7 @@
 
 namespace CodeChops.ImplementationDiscovery.UnitTests.MagicDiscoveredImplementationsEnum;
 
-public record MagicDiscoveredImplementationsEnumMock : MagicDiscoveredImplementationsEnum<MagicDiscoveredImplementationsEnumMock, Animal, UninitializedObject<Animal>>
+public record MagicDiscoveredImplementationsEnumMock : MagicDiscoveredImplementationsEnum<MagicDiscoveredImplementationsEnumMock, UninitializedObject<Animal>, Animal>
 {
 	public static MagicDiscoveredImplementationsEnumMock Cat { get; } = CreateMember(UninitializedObject<Animal>.Create(typeof(Cat)));
 	public static MagicDiscoveredImplementationsEnumMock Dog { get; } = CreateMember(UninitializedObject<Animal>.Create(typeof(Dog)));

@@ -19,11 +19,11 @@ public partial interface IDayOfWeek<TDay>
 {
 }
 
-public abstract record DayOfWeek<TDayOfWeek, TDay> : MagicDiscoveredImplementationsEnum<TDayOfWeek, TDay, UninitializedObject<TDay>>, IDayOfWeek<TDay>
-	where TDayOfWeek : DayOfWeek<TDayOfWeek, TDay>
+public abstract record DayOfWeek<TSelf, TDay> : MagicDiscoveredImplementationsEnum<TSelf, UninitializedObject<TDay>, TDay>, IDayOfWeek<TDay>
+	where TSelf : DayOfWeek<TSelf, TDay>, new()
 	where TDay : class
 {
-	public static TDayOfWeek CreateDay(string dayName)
+	public static TSelf CreateDay()
 	{
 		var member = CreateMember(null!);
 		return member;
@@ -33,6 +33,6 @@ public abstract record DayOfWeek<TDayOfWeek, TDay> : MagicDiscoveredImplementati
 public record DayOfWeek<TDay> : DayOfWeek<DayOfWeek<TDay>, TDay>
 	where TDay : class
 {
-	public static DayOfWeek<TDay> Monday { get; }   = CreateDay("Maandag");
-	public static DayOfWeek<TDay> Tuesday { get; }  = CreateDay("Dinsdag");
+	public static DayOfWeek<TDay> Monday { get; }   = CreateDay();
+	public static DayOfWeek<TDay> Tuesday { get; }  = CreateDay();
 }

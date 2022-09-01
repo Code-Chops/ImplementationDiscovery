@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.19.4</Version>
-        <PackageReleaseNotes>Added GetUninitializedObjects.</PackageReleaseNotes>
+        <Version>0.20.0</Version>
+        <PackageReleaseNotes>Separated (newable) uninitialized object and updated magic enums package.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -61,7 +61,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.5.2" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.8.1" />
     </ItemGroup>
 	
 </Project>

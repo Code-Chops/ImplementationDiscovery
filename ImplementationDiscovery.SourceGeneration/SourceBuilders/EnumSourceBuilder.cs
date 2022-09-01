@@ -144,7 +144,7 @@ using CodeChops.ImplementationDiscovery;
 			var uninitializedObject = definition.HasNewableImplementations
 				? "NewableUninitializedObject"
 				: "UninitializedObject";
-			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{definition.BaseTypeName}>>";
+			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{definition.TypeParameters}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{definition.BaseTypeName}>, {definition.BaseTypeName}>";
 
 			code.Append($@"
 {definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
