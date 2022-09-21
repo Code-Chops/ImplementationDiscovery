@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.20.8</Version>
-        <PackageReleaseNotes>Updated MagicEnum package reference 3.</PackageReleaseNotes>
+        <Version>0.20.9</Version>
+        <PackageReleaseNotes>Trying to fix sourcegenerator failure.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -56,12 +56,11 @@
     <ItemGroup Label="ProjectReferences">
         <ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <!-- Package the generator in the analyzer directory of the nuget package -->
-        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/$(AssemblyName).SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)/netstandard2.0/CodeChops.SourceGeneration.Utilities.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\ImplementationDiscovery.SourceGeneration/bin/$(Configuration)\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.9.9" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.10.8" />
     </ItemGroup>
 	
 </Project>

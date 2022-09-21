@@ -21,7 +21,7 @@ internal record EnumDefinition : IEnumModel
 		IEnumerable<EnumMember> membersFromAttribute, bool generateIdsForImplementations, bool hasNewableImplementations)
 		: this(
 			customName: customName,
-			name: $"{NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name)}{SourceGenerator.ImplementationsEnumName}",
+			name: $"{NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}",
 			typeParameters: baseTypeDeclarationSyntax.TypeParameterList?.ToFullString(),
 			enumNamespace: baseTypeSymbol.ContainingNamespace.IsGlobalNamespace 
 				? null 

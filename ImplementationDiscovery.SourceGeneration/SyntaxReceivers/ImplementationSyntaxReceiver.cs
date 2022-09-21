@@ -30,7 +30,7 @@ internal static class ImplementationSyntaxReceiver
 			if (syntaxNode is not AttributeSyntax attribute || attribute.ArgumentList?.Arguments.Count > 3) return false;
 			if (attribute.Parent?.Parent is not TypeDeclarationSyntax) return false;
 
-			var isProbablyBaseType = attribute.Name.HasAttributeName(SourceGenerator.DiscoverableAttributeName, cancellationToken);
+			var isProbablyBaseType = attribute.Name.HasAttributeName(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, cancellationToken);
 			return isProbablyBaseType;
 		}
 	}
@@ -48,17 +48,17 @@ internal static class ImplementationSyntaxReceiver
 		if (type.IsStatic || type.IsAbstract) return null;
 
 		AttributeData? attribute = null;
-		var implementsInterface = type.IsOrImplementsInterface(t => t.HasAttribute(SourceGenerator.DiscoverableAttributeName, SourceGenerator.DiscoverableAttributeNamespace, out attribute), out var baseType);
+		var implementsInterface = type.IsOrImplementsInterface(t => t.HasAttribute(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, ImplementationDiscoverySourceGenerator.DiscoverableAttributeNamespace, out attribute), out var baseType);
 		if (!implementsInterface)
 		{
-			var implementsClass = type.IsOrInheritsClass(t => t.HasAttribute(SourceGenerator.DiscoverableAttributeName, SourceGenerator.DiscoverableAttributeNamespace, out attribute), out baseType);
+			var implementsClass = type.IsOrInheritsClass(t => t.HasAttribute(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, ImplementationDiscoverySourceGenerator.DiscoverableAttributeNamespace, out attribute), out baseType);
 			if (!implementsClass) return null;
 		}
 
 		if (attribute is null) return null;
 
 		var member = new DiscoveredEnumMember(
-			enumIdentifier: $"{(baseType.ContainingNamespace.IsGlobalNamespace ? null : $"{baseType.ContainingNamespace}.")}{NameHelpers.GetNameWithoutGenerics(baseType.Name)}{SourceGenerator.ImplementationsEnumName}",
+			enumIdentifier: $"{(baseType.ContainingNamespace.IsGlobalNamespace ? null : $"{baseType.ContainingNamespace}.")}{NameHelpers.GetNameWithoutGenerics(baseType.Name)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}",
 			name: type.Name,
 			isPartial: typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword)),
 			@namespace: type.ContainingNamespace.IsGlobalNamespace 
@@ -87,7 +87,7 @@ internal static class ImplementationSyntaxReceiver
 		// ReSharper disable once SimplifyLinqExpressionUseAll
 		if (baseType.IsStatic || !typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword))) return null;
 
-		var hasDiscoverableAttribute = baseType.HasAttribute(SourceGenerator.DiscoverableAttributeName, SourceGenerator.DiscoverableAttributeNamespace, out var discoverableAttribute);
+		var hasDiscoverableAttribute = baseType.HasAttribute(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, ImplementationDiscoverySourceGenerator.DiscoverableAttributeNamespace, out var discoverableAttribute);
 		if (!hasDiscoverableAttribute) return null;
 
 		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;

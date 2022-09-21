@@ -207,7 +207,7 @@ $@"
 /// </summary>
 {definition.AccessModifier}static class {definition.Name}Extensions
 {{
-	public static {definition.Name} {SourceGenerator.GenerateMethodName}(this {definition.Name} member, {definition.BaseTypeName}? value = null, string? comment = null) => member;
+	public static {definition.Name} {ImplementationDiscoverySourceGenerator.GenerateMethodName}(this {definition.Name} member, {definition.BaseTypeName}? value = null, string? comment = null) => member;
 }}
 ";			
 		}
