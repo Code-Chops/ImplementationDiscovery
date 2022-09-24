@@ -98,11 +98,10 @@ using CodeChops.ImplementationDiscovery;
 		{
 			if (definition.BaseTypeDeclaration is null) return null;
 
-			var implementStaticIdInterface = definition.GenerateTypeIdsForImplementations && definition.BaseTypeTypeKind != TypeKind.Class ? ", IHasStaticTypeId" : null;
 			var code = new StringBuilder();
 
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>{implementStaticIdInterface}" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
