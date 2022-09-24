@@ -13,7 +13,7 @@ internal record ImplementationWithoutGenericTypeMock : ClassWithGenericTypeToImp
 [DiscoverImplementations]
 // ReSharper disable once UnusedTypeParameter
 internal abstract partial record ClassWithExtraGenericTypeToImplement<TDirection, TDeltaPointNumber>
-	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>, IConvertible;
+	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>;
 
 internal record ImplementationWithExtraGenericTypeMock<TDeltaPointNumber> : ClassWithExtraGenericTypeToImplement<TDeltaPointNumber, TDeltaPointNumber>
-	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>, IConvertible;
+	where TDeltaPointNumber : struct, IComparable<TDeltaPointNumber>, IEquatable<TDeltaPointNumber>;
