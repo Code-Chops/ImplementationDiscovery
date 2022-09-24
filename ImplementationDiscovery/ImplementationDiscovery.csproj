@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.20.9</Version>
-        <PackageReleaseNotes>Trying to fix sourcegenerator failure.</PackageReleaseNotes>
+        <Version>0.20.10</Version>
+        <PackageReleaseNotes>Updated MagicEnums package reference.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -60,7 +60,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.10.8" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.10.10" />
     </ItemGroup>
 	
 </Project>

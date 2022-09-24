@@ -11,7 +11,7 @@ namespace CodeChops.ImplementationDiscovery;
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
 public abstract record MagicDiscoveredImplementationsEnum<TSelf, TValue, TBaseType> : MagicEnumCore<TSelf, TValue>
 	where TSelf : MagicDiscoveredImplementationsEnum<TSelf, TValue, TBaseType>, new()
-	where TValue : UninitializedObject<TBaseType>, IEquatable<TValue>
+	where TValue : UninitializedObject<TBaseType>, IEquatable<TValue>, IConvertible
 	where TBaseType : class
 {
 	/// <summary>

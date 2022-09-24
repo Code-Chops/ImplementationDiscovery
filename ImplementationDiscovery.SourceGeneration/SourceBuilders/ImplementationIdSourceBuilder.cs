@@ -62,7 +62,7 @@ using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
 {member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
 {{
 
-	public new static Id StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
+	public new static IId StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
     {GetNonStaticTypeId(typeIdName)}
 }}");
             }
