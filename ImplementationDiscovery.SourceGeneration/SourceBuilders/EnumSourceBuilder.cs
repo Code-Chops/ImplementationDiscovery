@@ -102,13 +102,13 @@ using CodeChops.ImplementationDiscovery;
 			var code = new StringBuilder();
 
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}>{implementStaticIdInterface}" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>{implementStaticIdInterface}" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
 				code.AppendLine($@"
-	public new abstract {definition.Name} TypeId {{ get; }}");
+	public new abstract {definition.Name} TypeId{definition.TypeParameters} {{ get; }}");
 			}
 			
 			code.Append($@"
