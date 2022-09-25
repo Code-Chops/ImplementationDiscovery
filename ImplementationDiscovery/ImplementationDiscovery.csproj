@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.20.13</Version>
-        <PackageReleaseNotes>Removed IHasStaticTypeId implementation.</PackageReleaseNotes>
+        <Version>0.20.14</Version>
+        <PackageReleaseNotes>Updated MagicEnums package reference.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -60,7 +60,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="2.10.11" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="2.10.12" />
     </ItemGroup>
 	
 </Project>
