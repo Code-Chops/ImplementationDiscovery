@@ -59,10 +59,10 @@ using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
             {
                 var typeIdName = $"global::{definition.Namespace}.{definition.Name}";
                 code.AppendLine($@"
-{member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
+{member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>, IHasStaticTypeId<{typeIdName}>
 {{
 
-	public new static IId StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
+	public new static {typeIdName} StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
     {GetNonStaticTypeId(typeIdName)}
 }}");
             }
