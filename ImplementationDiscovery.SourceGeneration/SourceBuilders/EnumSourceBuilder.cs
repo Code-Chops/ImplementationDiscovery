@@ -59,8 +59,7 @@ internal static class EnumSourceBuilder
 #nullable enable
 #pragma warning disable CS0109
 
-using System;
-using CodeChops.ImplementationDiscovery;
+{GetUsings()}
 {GetBaseTypeUsing()}
 {GetNamespaceDeclaration()}
 {GetTypeIdProperty()}
@@ -73,6 +72,14 @@ using CodeChops.ImplementationDiscovery;
 		context.AddSource(enumCodeFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 		return;
 
+		
+		string GetUsings()
+		{
+			var usings = definition.Usings.Concat(new[] { "using System;", "using CodeChops.ImplementationDiscovery;" });
+			
+			return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();
+		}
+		
 		
 		// Creates a using for the definition of the enum value type (or null if not applicable).
 		string? GetBaseTypeUsing()

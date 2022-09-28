@@ -5,7 +5,7 @@ public class InterfaceImplementationDiscoverabilityTests
 	[Fact]
 	public void InterfaceImplementationHasCorrectMemberName()
 	{
-		Assert.True(IInterfaceToImplementEnum.InterfaceImplementationMock.Name										== nameof(InterfaceImplementationMock));
+		Assert.True(IInterfaceToImplementEnum.InterfaceImplementationMock.Name									== nameof(InterfaceImplementationMock));
 	}
 
 	[Fact]

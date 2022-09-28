@@ -77,7 +77,8 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 					filePath: AllImplementationsEnumName,
 					linePosition: new LinePosition())),
 			generateTypeIdsForImplementations: false,
-			hasNewableImplementations: false);
+			hasNewableImplementations: false,
+			usings: new List<string>());
 		
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
 		
