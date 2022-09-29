@@ -2,7 +2,7 @@
 
 namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
 
-[DiscoverImplementations(generateTypeIdsForImplementations: true)]
+[DiscoverImplementations(generateImplementationIds: true)]
 // ReSharper disable once UnusedTypeParameter
 internal abstract partial record ClassWithGenericTypeToImplement<TGenericType> where TGenericType : struct;
 

@@ -61,7 +61,7 @@ internal static class EnumSourceBuilder
 
 {GetUsings()}
 {GetNamespaceDeclaration()}
-{GetTypeIdProperty()}
+{GetImplementationIdProperty()}
 {GetEnumRecord()}
 {GetExtensionMethod()}
 #nullable restore
@@ -89,21 +89,21 @@ internal static class EnumSourceBuilder
 		}
 
 
-		string? GetTypeIdProperty()
+		string? GetImplementationIdProperty()
 		{
 			if (definition.BaseTypeDeclaration is null) return null;
 
 			var code = new StringBuilder();
 
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateTypeIdsForImplementations ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateImplementationIds ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>" : null)}
 {{");
 				
-			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
+			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateImplementationIds)
 			{
 				code.AppendLine($@"
-	public new static {definition.Name}{definition.TypeParameters} StaticImplementationEnum {{ get; }} = new {definition.Name}{definition.TypeParameters}();
-	public new abstract {definition.Name}{definition.TypeParameters} ImplementationEnum {{ get; }}");
+	public new static {definition.Name}{definition.TypeParameters} StaticImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+	public new abstract {definition.Name}{definition.TypeParameters} ImplementationId {{ get; }}");
 			}
 			
 			code.Append($@"

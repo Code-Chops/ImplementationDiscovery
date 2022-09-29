@@ -3,11 +3,8 @@ using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
-internal static class ImplementationSourceBuilder
+internal static class ImplementationIdSourceBuilder
 {
-    /// <summary>
-    /// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
-    /// </summary>
     public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
         Dictionary<string, EnumDefinition> enumDefinitionsByIdentifier, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
@@ -25,14 +22,14 @@ internal static class ImplementationSourceBuilder
             var definition = discoveredMembersByDefinition.Key!;
             var members = discoveredMembersByDefinition.Value.ToList();
 
-            CreateDiscoveredTypeIdFiles(context, definition, members, configOptionsProvider);
+            CreateDiscoveredImplementationIdFiles(context, definition, members, configOptionsProvider);
         }
     }
     
-    private static void CreateDiscoveredTypeIdFiles(SourceProductionContext context, EnumDefinition definition, 
+    private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, EnumDefinition definition, 
         IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
-        if (definition.DiscoverabilityMode != DiscoverabilityMode.Implementation || !definition.GenerateTypeIdsForImplementations) return;
+        if (definition.DiscoverabilityMode != DiscoverabilityMode.Implementation || !definition.GenerateImplementationIds) return;
 
         var partialMembers = relevantDiscoveredMembers.Where(m => m.IsPartial);
 		
@@ -49,22 +46,22 @@ internal static class ImplementationSourceBuilder
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
-            var typeIdName = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
+            var implementationIdName = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
             
             code.AppendLine($@"
-{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
+{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{implementationIdName}>
 {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {typeIdName} StaticImplementationEnum {{ get; }} = {typeIdName}.{member.Name};
-    {GetNonStaticTypeId(typeIdName)}
+	public new static {implementationIdName} StaticImplementationId {{ get; }} = {implementationIdName}.{member.Name};
+    {GetNonStaticImplementationId(implementationIdName)}
 }}
        
 #nullable restore
 ");
 			
-            var typeIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.Name}.ImplementationEnum", configOptionsProvider);
-            context.AddSource(typeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
+            var implementationIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.Name}.ImplementationId", configOptionsProvider);
+            context.AddSource(implementationIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 
             
             string GetUsings()
@@ -75,12 +72,12 @@ internal static class ImplementationSourceBuilder
             }
             
 
-            string? GetNonStaticTypeId(string typeIdName)
+            string? GetNonStaticImplementationId(string implementationIdName)
             {
-                if (!definition.GenerateTypeIdsForImplementations) return null;
+                if (!definition.GenerateImplementationIds) return null;
 
                 var code = $@"
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} ImplementationEnum => StaticImplementationEnum;
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationIdName} ImplementationId => StaticImplementationId;
 ";
                 return code;
             }

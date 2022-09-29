@@ -99,7 +99,7 @@ internal static class ImplementationSyntaxReceiver
 			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: filePath,
 			membersFromAttribute: Array.Empty<EnumMember>(),
-			generateIdsForImplementations: discoverableAttribute?.ConstructorArguments.Skip(1).FirstOrDefault().Value is true,
+			generateImplementationIds: discoverableAttribute?.ConstructorArguments.Skip(1).FirstOrDefault().Value is true,
 			hasNewableImplementations: discoverableAttribute?.ConstructorArguments.Skip(2).FirstOrDefault().Value is true,
 			usings: typeDeclarationSyntax.GetUsings().ToList());
 

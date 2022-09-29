@@ -76,13 +76,13 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,
 					linePosition: new LinePosition())),
-			generateTypeIdsForImplementations: false,
+			generateImplementationIds: false,
 			hasNewableImplementations: false,
 			usings: new List<string>());
 		
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
 		
 		EnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
-		ImplementationSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
+		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
 	}
 }
