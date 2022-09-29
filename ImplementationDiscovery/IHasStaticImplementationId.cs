@@ -3,8 +3,8 @@ namespace CodeChops.ImplementationDiscovery;
 /// <summary>
 /// Contains a static type discriminator. 
 /// </summary>
-public interface IHasStaticImplementationId<TBaseType>
-	where TBaseType : class
+public interface IHasStaticImplementationId<out TEnum>
+	where TEnum : IDiscoveredImplementationsEnum
 {
-	public static abstract IDiscoveredImplementationsEnum<TBaseType> StaticImplementationId { get; }
+	public static abstract TEnum StaticImplementationId { get; }
 }

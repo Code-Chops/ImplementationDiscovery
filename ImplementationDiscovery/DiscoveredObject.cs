@@ -52,13 +52,10 @@ public record DiscoveredObject<TBaseType> : IComparable<DiscoveredObject<TBaseTy
 		return (TBaseType)(this.EmptyConstructor?.Invoke(Array.Empty<object>()) ?? FormatterServices.GetUninitializedObject(this.Type));	
 	}
 
-	private DiscoveredObject(Type type)
+	public DiscoveredObject(Type type)
 	{
 		this.Type = type;
 		this.EmptyConstructor = this.Type.GetConstructor(Type.EmptyTypes);
 		this.UninitializedInstance = this.CreateInstance();
 	}
-
-	public static DiscoveredObject<TBaseType> Create(Type type) => new(type);
-	public static DiscoveredObject<TBaseType> Create<TImplementation>() where TImplementation : TBaseType, new() => new(typeof(TImplementation));
 }

@@ -1,6 +1,6 @@
 ﻿namespace CodeChops.ImplementationDiscovery;
 
-public interface IHasDiscoverableImplementations<TBaseType> : IHasImplementationId<TBaseType>, IHasStaticImplementationId<TBaseType> 
-	where TBaseType : class
+public interface IHasDiscoverableImplementations<out TEnum> : IHasImplementationId<TEnum>, IHasStaticImplementationId<TEnum> 
+	where TEnum : IDiscoveredImplementationsEnum
 {
 }

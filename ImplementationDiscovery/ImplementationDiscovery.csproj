@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.24.0</Version>
-        <PackageReleaseNotes>Simplified discoverd objects.</PackageReleaseNotes>
+        <Version>0.25.0</Version>
+        <PackageReleaseNotes>Fixed ImplementationDiscovery.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

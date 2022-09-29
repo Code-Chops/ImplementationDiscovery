@@ -7,7 +7,7 @@ namespace CodeChops.ImplementationDiscovery;
 /// </summary>
 /// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
-public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>, IDiscoveredImplementationsEnum<TBaseType>
+public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>, IDiscoveredImplementationsEnum
 	where TSelf : ImplementationsEnum<TSelf, TBaseType>, new()
 	where TBaseType : class
 {

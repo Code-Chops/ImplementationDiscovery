@@ -3,8 +3,8 @@
 /// <summary>
 /// Contains a implementation type discriminator. 
 /// </summary>
-public interface IHasImplementationId<TBaseType>
-	where TBaseType : class
+public interface IHasImplementationId<out TEnum>
+	where TEnum : IDiscoveredImplementationsEnum
 {
-	IDiscoveredImplementationsEnum<TBaseType> ImplementationId { get; }
+	TEnum ImplementationId { get; }
 }

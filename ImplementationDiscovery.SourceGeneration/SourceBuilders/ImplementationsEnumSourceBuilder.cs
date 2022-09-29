@@ -96,14 +96,14 @@ internal static class ImplementationsEnumSourceBuilder
 			var code = new StringBuilder();
 
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateImplementationIds ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.BaseTypeName}>" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateImplementationIds ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateImplementationIds)
 			{
 				code.AppendLine($@"
-	public new static IDiscoveredImplementationsEnum<{definition.BaseTypeName}> StaticImplementationId {{ get; }} = (IDiscoveredImplementationsEnum<{definition.BaseTypeName}>)new {definition.Name}{definition.TypeParameters}();
-	public new abstract IDiscoveredImplementationsEnum<{definition.BaseTypeName}> ImplementationId {{ get; }}");
+	public new static {definition.Name}{definition.TypeParameters} StaticImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+	public new abstract {definition.Name}{definition.TypeParameters} ImplementationId {{ get; }}");
 			}
 			
 			code.Append($@"
@@ -162,13 +162,9 @@ internal static class ImplementationsEnumSourceBuilder
 
 				// Create the enum member itself.
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
-				
-				var memberInitialization = definition.HasNewableImplementations
-					? $"global::CodeChops.ImplementationDiscovery.NewableDiscoveredObject<{definition.BaseTypeName}>.Create<{member.Value}>()"
-					: $"global::CodeChops.ImplementationDiscovery.DiscoveredObject<{definition.BaseTypeName}>.Create(typeof({member.Value}))";
-				
+
 				code.Append(@$"
-	public static {definition.Name}{definition.TypeParameters} {member.Name} {{ get; }} {outlineSpaces}= CreateMember({memberInitialization});
+	public static {definition.Name}{definition.TypeParameters} {member.Name} {{ get; }} {outlineSpaces}= CreateMember(new global::CodeChops.ImplementationDiscovery.DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value})));
 ");
 			}
 
