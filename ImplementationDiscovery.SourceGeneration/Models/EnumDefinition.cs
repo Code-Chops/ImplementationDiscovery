@@ -40,8 +40,8 @@ internal record EnumDefinition : IEnumModel
 	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind,
 		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, List<string> usings)
 	{
-		this.Name = customName ?? name;
-		this.TypeParameters = typeParameters;
+		this.Name = customName ?? name.Trim();
+		this.TypeParameters = typeParameters?.Trim();
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 		
 		this.Identifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
