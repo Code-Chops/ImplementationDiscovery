@@ -3,7 +3,7 @@
 namespace CodeChops.ImplementationDiscovery;
 
 public record DiscoveredObject<TBaseType> : IComparable<DiscoveredObject<TBaseType>>
-	where TBaseType : class
+	where TBaseType : notnull
 {
 	#region Comparison
 
@@ -47,10 +47,7 @@ public record DiscoveredObject<TBaseType> : IComparable<DiscoveredObject<TBaseTy
 	private Type Type { get; }
 	private ConstructorInfo? EmptyConstructor { get; }
 	
-	public TBaseType CreateInstance()
-	{
-		return (TBaseType)(this.EmptyConstructor?.Invoke(Array.Empty<object>()) ?? FormatterServices.GetUninitializedObject(this.Type));	
-	}
+	public TBaseType CreateInstance() => (TBaseType)(this.EmptyConstructor?.Invoke(Array.Empty<object>()) ?? FormatterServices.GetUninitializedObject(this.Type));
 
 	public DiscoveredObject(Type type)
 	{

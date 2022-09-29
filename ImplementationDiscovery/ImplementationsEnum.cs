@@ -8,8 +8,8 @@ namespace CodeChops.ImplementationDiscovery;
 /// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
 public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>, IDiscoveredImplementationsEnum
-	where TSelf : ImplementationsEnum<TSelf, TBaseType>, new()
-	where TBaseType : class
+	where TSelf : ImplementationsEnum<TSelf, TBaseType>, new() 
+	where TBaseType : notnull
 {
 	/// <summary>
 	/// Creates a new enum member and returns it.
@@ -38,6 +38,8 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	/// Get an enumerable over the uninitialized objects.
 	/// </summary>
 	public static IEnumerable<TBaseType> GetDiscoveredObjects() => GetMembers().Select(member => member.Value.UninitializedInstance);
+
+	public TBaseType CreateInstance() => this.Value.CreateInstance();
 
 	private static string GetNameWithoutBacktick(DiscoveredObject<TBaseType> value)
 	{

@@ -5,12 +5,10 @@ public sealed class DiscoverImplementations : Attribute
 {
     public string? EnumName { get; }
     public bool GenerateImplementationIds { get; }
-    public bool HasNewableImplementations { get; }
-    
-    public DiscoverImplementations(string? enumName = null, bool generateImplementationIds = false, bool hasNewableImplementations = false)
+
+    public DiscoverImplementations(string? enumName = null, bool generateImplementationIds = false)
     {
         this.EnumName = enumName;
         this.GenerateImplementationIds = generateImplementationIds;
-        this.HasNewableImplementations = hasNewableImplementations;
     }
 }

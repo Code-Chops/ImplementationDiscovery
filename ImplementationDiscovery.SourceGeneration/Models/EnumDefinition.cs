@@ -14,11 +14,10 @@ internal record EnumDefinition : IEnumModel
 	public string AccessModifier { get; }
 	public List<EnumMember> MembersFromAttribute { get; }
 	public bool GenerateImplementationIds { get; }
-	public bool HasNewableImplementations { get; }
 	public List<string> Usings { get; }
 	
 	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, 
-		IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, bool hasNewableImplementations, List<string> usings)
+		IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, List<string> usings)
 		: this(
 			customName: customName,
 			name: $"{NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}",
@@ -34,13 +33,12 @@ internal record EnumDefinition : IEnumModel
 			accessModifier: baseTypeDeclarationSyntax.Modifiers.ToFullString(), 
 			membersFromAttribute: membersFromAttribute,
 			generateImplementationIds: generateImplementationIds,
-			hasNewableImplementations: hasNewableImplementations,
 			usings: usings)
 	{
 	}
 
 	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind,
-		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, bool hasNewableImplementations, List<string> usings)
+		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, List<string> usings)
 	{
 		this.Name = customName ?? name;
 		this.TypeParameters = typeParameters;
@@ -59,7 +57,6 @@ internal record EnumDefinition : IEnumModel
 		this.MembersFromAttribute = membersFromAttribute as List<EnumMember> ?? membersFromAttribute.ToList();
 
 		this.GenerateImplementationIds = generateImplementationIds;
-		this.HasNewableImplementations = hasNewableImplementations;
 
 		this.Usings = usings;
 	}
