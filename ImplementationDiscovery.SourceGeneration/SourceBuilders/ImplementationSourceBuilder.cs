@@ -3,7 +3,7 @@ using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
-internal static class ImplementationIdSourceBuilder
+internal static class ImplementationSourceBuilder
 {
     /// <summary>
     /// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
@@ -56,14 +56,14 @@ internal static class ImplementationIdSourceBuilder
 {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {typeIdName} StaticTypeEnum {{ get; }} = {typeIdName}.{member.Name};
+	public new static {typeIdName} StaticImplementationEnum {{ get; }} = {typeIdName}.{member.Name};
     {GetNonStaticTypeId(typeIdName)}
 }}
        
 #nullable restore
 ");
 			
-            var typeIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.Name}.TypeEnum", configOptionsProvider);
+            var typeIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.Name}.ImplementationEnum", configOptionsProvider);
             context.AddSource(typeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 
             
@@ -80,7 +80,7 @@ internal static class ImplementationIdSourceBuilder
                 if (!definition.GenerateTypeIdsForImplementations) return null;
 
                 var code = $@"
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeEnum => StaticTypeEnum;
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} ImplementationEnum => StaticImplementationEnum;
 ";
                 return code;
             }

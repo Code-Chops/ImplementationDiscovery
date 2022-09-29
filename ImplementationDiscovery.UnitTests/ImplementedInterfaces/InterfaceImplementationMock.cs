@@ -19,7 +19,7 @@ public partial interface IDayOfWeek<TDay>
 {
 }
 
-public abstract record DayOfWeek<TSelf, TDay> : MagicDiscoveredImplementationsEnum<TSelf, UninitializedObject<TDay>, TDay>, IDayOfWeek<TDay>
+public abstract record DayOfWeek<TSelf, TDay> : ImplementationsEnum<TSelf, UninitializedObject<TDay>, TDay>, IDayOfWeek<TDay>
 	where TSelf : DayOfWeek<TSelf, TDay>, new()
 	where TDay : class
 {

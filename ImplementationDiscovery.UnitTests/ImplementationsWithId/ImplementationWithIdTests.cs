@@ -14,7 +14,7 @@ public class ImplementationWithIdTests
     [Fact]
     public void IdsAreCreated()
     {
-        Assert.Equal(typeof(UninitializedObject<ImplementationWithIdMockBase>), ImplementationWithIdMock1.StaticTypeEnum.GetValue().GetType());
-        Assert.Equal(typeof(UninitializedObject<ImplementationWithIdMockBase>), ImplementationWithIdMock2.StaticTypeEnum.GetValue().GetType());
+        Assert.Equal(typeof(UninitializedObject<ImplementationWithIdMockBase>), ImplementationWithIdMock1.StaticImplementationEnum.GetValue().GetType());
+        Assert.Equal(typeof(UninitializedObject<ImplementationWithIdMockBase>), ImplementationWithIdMock2.StaticImplementationEnum.GetValue().GetType());
     }
 }

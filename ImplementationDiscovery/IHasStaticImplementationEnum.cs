@@ -4,8 +4,8 @@ namespace CodeChops.DomainDrivenDesign.DomainModeling.Identities;
 /// <summary>
 /// Contains a static type discriminator. 
 /// </summary>
-public interface IHasStaticDiscoveredTypeEnum<out TTypeId>
+public interface IHasStaticImplementationEnum<out TTypeId>
 	where TTypeId : IId
 {
-	public static abstract TTypeId StaticTypeEnum { get; }
+	public static abstract TTypeId StaticImplementationEnum { get; }
 }

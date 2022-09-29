@@ -83,6 +83,6 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
 		
 		EnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
-		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
+		ImplementationSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
 	}
 }

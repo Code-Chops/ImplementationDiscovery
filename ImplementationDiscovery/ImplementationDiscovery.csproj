@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.21.0</Version>
-        <PackageReleaseNotes>Renamed TypeId to TypeEnum and added support for generic type parameters.</PackageReleaseNotes>
+        <Version>0.22.0</Version>
+        <PackageReleaseNotes>Renamed TypeId to ImplementationEnum.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

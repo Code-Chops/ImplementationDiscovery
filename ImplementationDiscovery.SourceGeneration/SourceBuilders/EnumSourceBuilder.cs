@@ -102,8 +102,8 @@ internal static class EnumSourceBuilder
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
 				code.AppendLine($@"
-	public new static {definition.Name}{definition.TypeParameters} StaticTypeEnum {{ get; }} = new {definition.Name}{definition.TypeParameters}();
-	public new abstract {definition.Name}{definition.TypeParameters} TypeEnum {{ get; }}");
+	public new static {definition.Name}{definition.TypeParameters} StaticImplementationEnum {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+	public new abstract {definition.Name}{definition.TypeParameters} ImplementationEnum {{ get; }}");
 			}
 			
 			code.Append($@"
@@ -139,7 +139,7 @@ internal static class EnumSourceBuilder
 			var uninitializedObject = definition.HasNewableImplementations
 				? "NewableUninitializedObject"
 				: "UninitializedObject";
-			var parentDefinition = $"MagicDiscoveredImplementationsEnum<{definition.Name}{definition.TypeParameters}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{definition.BaseTypeName}>, {definition.BaseTypeName}>";
+			var parentDefinition = $"ImplementationsEnum<{definition.Name}{definition.TypeParameters}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{definition.BaseTypeName}>, {definition.BaseTypeName}>";
 
 			code.Append($@"
 {definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
