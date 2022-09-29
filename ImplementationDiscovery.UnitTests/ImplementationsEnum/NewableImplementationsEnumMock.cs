@@ -1,11 +1,9 @@
-﻿using CodeChops.ImplementationDiscovery.UninitializedObjects;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsEnum;
 
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsEnum;
-
-public record NewableImplementationsEnumMock : ImplementationsEnum<NewableImplementationsEnumMock, NewableUninitializedObject<Color>, Color>
+public record NewableImplementationsEnumMock : ImplementationsEnum<NewableImplementationsEnumMock, Color>
 {
-	public static NewableImplementationsEnumMock Blue { get; }	= CreateMember(NewableUninitializedObject<Color>.Create<Blue>());
-	public static NewableImplementationsEnumMock Red { get; }	= CreateMember(NewableUninitializedObject<Color>.Create<Red>());
+	public static NewableImplementationsEnumMock Blue { get; }	= CreateMember(DiscoveredObject<Color>.Create<Blue>());
+	public static NewableImplementationsEnumMock Red { get; }	= CreateMember(DiscoveredObject<Color>.Create<Red>());
 }
 
 public sealed record Blue : Color;

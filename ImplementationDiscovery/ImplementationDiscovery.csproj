@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.23.0</Version>
-        <PackageReleaseNotes>Renamed TypeId to ImplementationId.</PackageReleaseNotes>
+        <Version>0.24.0</Version>
+        <PackageReleaseNotes>Simplified discoverd objects.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

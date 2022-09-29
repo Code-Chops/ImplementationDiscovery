@@ -3,7 +3,7 @@ using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
-internal static class EnumSourceBuilder
+internal static class ImplementationsEnumSourceBuilder
 {
 	/// <summary>
 	/// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
@@ -18,7 +18,7 @@ internal static class EnumSourceBuilder
 		var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
 			.GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
 			.Where(grouping => grouping.Key is not null)
-			.ToDictionary(grouping => grouping.Key, grouping => grouping.Where(member => grouping.Key!.DiscoverabilityMode == member.DiscoverabilityMode));
+			.ToDictionary(grouping => grouping.Key);
 
 		foreach (var definition in enumDefinitionsByIdentifier.Values)
 		{
@@ -96,14 +96,14 @@ internal static class EnumSourceBuilder
 			var code = new StringBuilder();
 
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateImplementationIds ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.GenerateImplementationIds ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.BaseTypeName}>" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateImplementationIds)
 			{
 				code.AppendLine($@"
-	public new static {definition.Name}{definition.TypeParameters} StaticImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
-	public new abstract {definition.Name}{definition.TypeParameters} ImplementationId {{ get; }}");
+	public new static IDiscoveredImplementationsEnum<{definition.BaseTypeName}> StaticImplementationId {{ get; }} = (IDiscoveredImplementationsEnum<{definition.BaseTypeName}>)new {definition.Name}{definition.TypeParameters}();
+	public new abstract IDiscoveredImplementationsEnum<{definition.BaseTypeName}> ImplementationId {{ get; }}");
 			}
 			
 			code.Append($@"
@@ -135,14 +135,8 @@ internal static class EnumSourceBuilder
 /// </list>
 /// </summary>");
 			
-			// Define the magic enum record.
-			var uninitializedObject = definition.HasNewableImplementations
-				? "NewableUninitializedObject"
-				: "UninitializedObject";
-			var parentDefinition = $"ImplementationsEnum<{definition.Name}{definition.TypeParameters}, global::CodeChops.ImplementationDiscovery.UninitializedObjects.{uninitializedObject}<{definition.BaseTypeName}>, {definition.BaseTypeName}>";
-
 			code.Append($@"
-{definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} {(definition.DiscoverabilityMode == DiscoverabilityMode.Implementation ? $": {parentDefinition}" : null)}
+{definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} : ImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}>
 {definition.BaseTypeGenericConstraints}
 {{	
 ");
@@ -151,16 +145,10 @@ internal static class EnumSourceBuilder
 			foreach (var member in members)
 			{
 				// Create the comment on the enum member.
-				if (member.Value is not null || member.Comment is not null)
+				if (member.Value is not null)
 				{
 					code.Append($@"
 	/// <summary>");
-
-					if (member.Comment is not null)
-					{
-						code.Append($@"
-	/// <para>{member.Comment}</para>");
-					}
 
 					if (member.Value is not null)
 					{
@@ -176,8 +164,9 @@ internal static class EnumSourceBuilder
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 				
 				var memberInitialization = definition.HasNewableImplementations
-					? $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.NewableUninitializedObject<{definition.BaseTypeName}>.Create<{member.Value}>()"
-					: $"global::CodeChops.ImplementationDiscovery.UninitializedObjects.UninitializedObject<{definition.BaseTypeName}>.Create(typeof({member.Value}))";
+					? $"global::CodeChops.ImplementationDiscovery.NewableDiscoveredObject<{definition.BaseTypeName}>.Create<{member.Value}>()"
+					: $"global::CodeChops.ImplementationDiscovery.DiscoveredObject<{definition.BaseTypeName}>.Create(typeof({member.Value}))";
+				
 				code.Append(@$"
 	public static {definition.Name}{definition.TypeParameters} {member.Name} {{ get; }} {outlineSpaces}= CreateMember({memberInitialization});
 ");
@@ -191,20 +180,16 @@ internal static class EnumSourceBuilder
 		}
 
 
-		string? GetExtensionMethod()
-		{
-			if (definition.DiscoverabilityMode == DiscoverabilityMode.Implementation) return null;
-
-			return
-$@"
+		string GetExtensionMethod() => $@"
 /// <summary>
 /// Call this method in order to create discovered enum members while invoking them (on the fly). So enum members are automatically deleted when not being used.
 /// </summary>
-{definition.AccessModifier}static class {definition.Name}Extensions
+{definition.AccessModifier} static class {definition.Name}Extensions
 {{
-	public static {definition.Name} {ImplementationDiscoverySourceGenerator.GenerateMethodName}(this {definition.Name} member, {definition.BaseTypeName}? value = null, string? comment = null) => member;
+	public static {definition.Name}{definition.TypeParameters} {ImplementationDiscoverySourceGenerator.GenerateMethodName}{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} member, {definition.BaseTypeName}? value = null, string? comment = null) 
+	{definition.BaseTypeGenericConstraints}
+		=> member;
 }}
-";			
-		}
+";
 	}
 }

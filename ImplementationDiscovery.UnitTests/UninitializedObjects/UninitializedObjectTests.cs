@@ -1,15 +1,13 @@
-﻿using CodeChops.ImplementationDiscovery.UninitializedObjects;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.UninitializedObjects;
 
-namespace CodeChops.ImplementationDiscovery.UnitTests.UninitializedObjects;
-
-public class UninitializedObjectTests
+public class DiscoveredObjectTests
 {
 	[Fact]
-	public void UninitializedObjects_OfSameType_AreEqual()
+	public void DiscoveredObjects_OfSameType_AreEqual()
 	{
-		Assert.Equal((UninitializedObject<object>)typeof(UninitializedObjectTests), UninitializedObject<object>.Create(typeof(UninitializedObjectTests)));
+		Assert.Equal((DiscoveredObject<object>)typeof(DiscoveredObjectTests), DiscoveredObject<object>.Create(typeof(DiscoveredObjectTests)));
 
-		var test = new UninitializedObjectTests();
-		Assert.True((UninitializedObject<object>)typeof(UninitializedObjectTests) == UninitializedObject<object>.Create(test.GetType()));
+		var test = new DiscoveredObjectTests();
+		Assert.True((DiscoveredObject<object>)typeof(DiscoveredObjectTests) == DiscoveredObject<object>.Create(test.GetType()));
 	}
 }

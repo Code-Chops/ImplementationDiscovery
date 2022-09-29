@@ -8,13 +8,11 @@ internal record EnumMember : IEnumModel
 	public string EnumIdentifier { get; }
 	public string Name { get; }
 	public object? Value { get; }
-	public string? Comment { get; }
-	
-	public EnumMember(string enumIdentifier, string name, object? value = null, string? comment = null)
+
+	public EnumMember(string enumIdentifier, string name, object? value = null)
 	{
 		this.EnumIdentifier = String.IsNullOrWhiteSpace(enumIdentifier) ? throw new ArgumentNullException(nameof(enumIdentifier)) : enumIdentifier;
 		this.Name = String.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name;
 		this.Value = value;
-		this.Comment = String.IsNullOrWhiteSpace(comment) ? null : comment;
 	}
 }

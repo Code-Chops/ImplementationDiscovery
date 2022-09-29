@@ -61,7 +61,6 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			baseTypeDeclaration: null,
 			baseTypeGenericConstraints: null,
 			baseTypeTypeKind: null,
-			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: AllImplementationsEnumName,
 			accessModifier: "public",
 			membersFromAttribute: globallyListableEnumMembers
@@ -72,8 +71,6 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 					@namespace: definition.Namespace, 
 					declaration: "public class", 
 					value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
-					comment: null,
-					discoverabilityMode: DiscoverabilityMode.Implementation,
 					filePath: AllImplementationsEnumName,
 					linePosition: new LinePosition())),
 			generateImplementationIds: false,
@@ -82,7 +79,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
 		
-		EnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
+		ImplementationsEnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
 		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
 	}
 }

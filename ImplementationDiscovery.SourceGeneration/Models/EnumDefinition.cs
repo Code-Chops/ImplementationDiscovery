@@ -10,7 +10,6 @@ internal record EnumDefinition : IEnumModel
 	public string? BaseTypeDeclaration { get; }
 	public string? BaseTypeGenericConstraints { get; }
 	public TypeKind? BaseTypeTypeKind { get; }
-	public DiscoverabilityMode DiscoverabilityMode { get; }
 	public string FilePath { get; }
 	public string AccessModifier { get; }
 	public List<EnumMember> MembersFromAttribute { get; }
@@ -18,7 +17,7 @@ internal record EnumDefinition : IEnumModel
 	public bool HasNewableImplementations { get; }
 	public List<string> Usings { get; }
 	
-	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, DiscoverabilityMode discoverabilityMode, string filePath, 
+	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, 
 		IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, bool hasNewableImplementations, List<string> usings)
 		: this(
 			customName: customName,
@@ -31,7 +30,6 @@ internal record EnumDefinition : IEnumModel
 			baseTypeDeclaration: baseTypeSymbol.GetObjectDeclaration(),
 			baseTypeGenericConstraints: baseTypeDeclarationSyntax.GetClassGenericConstraints(),
 			baseTypeTypeKind: baseTypeSymbol.TypeKind,
-			discoverabilityMode: discoverabilityMode, 
 			filePath: filePath, 
 			accessModifier: baseTypeDeclarationSyntax.Modifiers.ToFullString(), 
 			membersFromAttribute: membersFromAttribute,
@@ -41,7 +39,7 @@ internal record EnumDefinition : IEnumModel
 	{
 	}
 
-	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, DiscoverabilityMode discoverabilityMode, 
+	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind,
 		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, bool hasNewableImplementations, List<string> usings)
 	{
 		this.Name = customName ?? name;
@@ -50,12 +48,11 @@ internal record EnumDefinition : IEnumModel
 		
 		this.Identifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
 
-		this.BaseTypeName = baseTypeNameIncludingGenerics;
-		this.BaseTypeDeclaration = baseTypeDeclaration;
-		this.BaseTypeGenericConstraints = baseTypeGenericConstraints;
+		this.BaseTypeName = baseTypeNameIncludingGenerics?.Trim();
+		this.BaseTypeDeclaration = baseTypeDeclaration?.Trim();
+		this.BaseTypeGenericConstraints = baseTypeGenericConstraints?.Trim();
 		this.BaseTypeTypeKind = baseTypeTypeKind;
 		
-		this.DiscoverabilityMode = discoverabilityMode;
 		this.FilePath = filePath;
 		this.AccessModifier = accessModifier.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
 

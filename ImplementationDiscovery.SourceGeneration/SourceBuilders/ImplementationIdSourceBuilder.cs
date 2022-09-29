@@ -15,7 +15,7 @@ internal static class ImplementationIdSourceBuilder
         var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
             .GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
             .Where(grouping => grouping.Key is not null)
-            .ToDictionary(grouping => grouping.Key, grouping => grouping.Where(member => grouping.Key!.DiscoverabilityMode == member.DiscoverabilityMode));
+            .ToDictionary(grouping => grouping.Key);
         
         foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
         {
@@ -29,7 +29,7 @@ internal static class ImplementationIdSourceBuilder
     private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, EnumDefinition definition, 
         IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
-        if (definition.DiscoverabilityMode != DiscoverabilityMode.Implementation || !definition.GenerateImplementationIds) return;
+        if (!definition.GenerateImplementationIds) return;
 
         var partialMembers = relevantDiscoveredMembers.Where(m => m.IsPartial);
 		
@@ -46,15 +46,15 @@ internal static class ImplementationIdSourceBuilder
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
-            var implementationIdName = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
+            var baseTypeName = $"global::{definition.Namespace}.{definition.BaseTypeName}";
             
             code.AppendLine($@"
-{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{implementationIdName}>
+{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{baseTypeName}>
 {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {implementationIdName} StaticImplementationId {{ get; }} = {implementationIdName}.{member.Name};
-    {GetNonStaticImplementationId(implementationIdName)}
+	public new static IDiscoveredImplementationsEnum<{baseTypeName}> StaticImplementationId {{ get; }} = global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}.{member.Name};
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}IDiscoveredImplementationsEnum<{baseTypeName}> ImplementationId => StaticImplementationId;
 }}
        
 #nullable restore
@@ -69,17 +69,6 @@ internal static class ImplementationIdSourceBuilder
                 var usings = definition.Usings.Concat(new[] { "using System;", "using CodeChops.ImplementationDiscovery;" });
 			
                 return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();
-            }
-            
-
-            string? GetNonStaticImplementationId(string implementationIdName)
-            {
-                if (!definition.GenerateImplementationIds) return null;
-
-                var code = $@"
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationIdName} ImplementationId => StaticImplementationId;
-";
-                return code;
             }
         }
     }

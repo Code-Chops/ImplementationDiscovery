@@ -66,8 +66,6 @@ internal static class ImplementationSyntaxReceiver
 				: type.ContainingNamespace.ToDisplayString(), 
 			declaration: type.GetObjectDeclaration(),
 			value: type.GetFullTypeNameWithGenericParameters(),
-			comment: null,
-			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: typeDeclarationSyntax.SyntaxTree.FilePath,
 			linePosition: typeDeclarationSyntax.SyntaxTree.GetLineSpan(typeDeclarationSyntax.Span, cancellationToken).StartLinePosition);
 
@@ -96,7 +94,6 @@ internal static class ImplementationSyntaxReceiver
 			customName: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value?.ToString(),
 			baseTypeDeclarationSyntax: typeDeclarationSyntax,
 			baseTypeSymbol: baseType,
-			discoverabilityMode: DiscoverabilityMode.Implementation,
 			filePath: filePath,
 			membersFromAttribute: Array.Empty<EnumMember>(),
 			generateImplementationIds: discoverableAttribute?.ConstructorArguments.Skip(1).FirstOrDefault().Value is true,

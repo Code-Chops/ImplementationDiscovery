@@ -1,6 +1,4 @@
-﻿using CodeChops.ImplementationDiscovery.UninitializedObjects;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsWithId;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsWithId;
 
 public class ImplementationWithIdTests
 {
@@ -14,7 +12,7 @@ public class ImplementationWithIdTests
     [Fact]
     public void IdsAreCreated()
     {
-        Assert.Equal(typeof(UninitializedObject<ImplementationWithIdMockBase>), ImplementationWithIdMock1.StaticImplementationId.GetValue().GetType());
-        Assert.Equal(typeof(UninitializedObject<ImplementationWithIdMockBase>), ImplementationWithIdMock2.StaticImplementationId.GetValue().GetType());
+        Assert.Equal(typeof(DiscoveredObject<ImplementationWithIdMockBase>), ImplementationWithIdMock1.StaticImplementationId.GetValue().GetType());
+        Assert.Equal(typeof(DiscoveredObject<ImplementationWithIdMockBase>), ImplementationWithIdMock2.StaticImplementationId.GetValue().GetType());
     }
 }

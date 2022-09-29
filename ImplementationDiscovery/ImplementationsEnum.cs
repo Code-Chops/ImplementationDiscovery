@@ -1,5 +1,4 @@
-﻿using CodeChops.ImplementationDiscovery.UninitializedObjects;
-using CodeChops.MagicEnums.Core;
+﻿using CodeChops.MagicEnums.Core;
 
 namespace CodeChops.ImplementationDiscovery;
 
@@ -7,11 +6,9 @@ namespace CodeChops.ImplementationDiscovery;
 /// An enum with discovered members (uninitialized objects) as values.
 /// </summary>
 /// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
-/// <typeparam name="TValue">The uninitialized enum object.</typeparam>
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
-public abstract record ImplementationsEnum<TSelf, TValue, TBaseType> : MagicEnumCore<TSelf, TValue>, IDiscoveredImplementations
-	where TSelf : ImplementationsEnum<TSelf, TValue, TBaseType>, new()
-	where TValue : UninitializedObject<TBaseType>, IEquatable<TValue>
+public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>, IDiscoveredImplementationsEnum<TBaseType>
+	where TSelf : ImplementationsEnum<TSelf, TBaseType>, new()
 	where TBaseType : class
 {
 	/// <summary>
@@ -20,8 +17,8 @@ public abstract record ImplementationsEnum<TSelf, TValue, TBaseType> : MagicEnum
 	/// <param name="value">The (newable) uninitialized object.</param>
 	/// <returns>The newly created member.</returns>
 	/// <exception cref="InvalidOperationException">When a member with the same name already exists.</exception>
-	protected static TSelf CreateMember(TValue value) 
-		=> MagicEnumCore<TSelf, TValue>.CreateMember(
+	protected static TSelf CreateMember(DiscoveredObject<TBaseType> value) 
+		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.CreateMember(
 			valueCreator: () => value, 
 			memberCreator: () => new TSelf(), 
 			name: GetNameWithoutBacktick(value));
@@ -31,8 +28,8 @@ public abstract record ImplementationsEnum<TSelf, TValue, TBaseType> : MagicEnum
 	/// </summary>
 	/// <param name="value">The (newable) uninitialized object.</param>
 	/// <returns>The newly created member or an existing member with the same name.</returns>
-	public static TSelf GetOrCreateMember(TValue value) 
-		=> MagicEnumCore<TSelf, TValue>.GetOrCreateMember(
+	public static TSelf GetOrCreateMember(DiscoveredObject<TBaseType> value) 
+		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(
 			name: GetNameWithoutBacktick(value),
 			valueCreator: () => value, 
 			memberCreator: () => new TSelf());
@@ -40,9 +37,9 @@ public abstract record ImplementationsEnum<TSelf, TValue, TBaseType> : MagicEnum
 	/// <summary>
 	/// Get an enumerable over the uninitialized objects.
 	/// </summary>
-	public static IEnumerable<TBaseType> GetUninitializedObjects() => GetMembers().Select(member => member.Value.UninitializedInstance);
+	public static IEnumerable<TBaseType> GetDiscoveredObjects() => GetMembers().Select(member => member.Value.UninitializedInstance);
 
-	private static string GetNameWithoutBacktick(TValue value)
+	private static string GetNameWithoutBacktick(DiscoveredObject<TBaseType> value)
 	{
 		var name = value.UninitializedInstance.GetType().Name;
 		var index = name.IndexOf('`');
