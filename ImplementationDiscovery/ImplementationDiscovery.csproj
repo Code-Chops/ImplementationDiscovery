@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.25.2</Version>
-        <PackageReleaseNotes>Generate (Static)ImplementationId for base type.</PackageReleaseNotes>
+        <Version>0.25.3</Version>
+        <PackageReleaseNotes>Generate (Static)ImplementationId for base type (fix for interface base types).</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

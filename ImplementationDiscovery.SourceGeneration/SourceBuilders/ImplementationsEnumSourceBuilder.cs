@@ -96,7 +96,7 @@ internal static class ImplementationsEnumSourceBuilder
 			var code = new StringBuilder();
 
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
