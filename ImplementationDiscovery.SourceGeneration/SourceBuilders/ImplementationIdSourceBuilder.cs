@@ -48,12 +48,12 @@ internal static class ImplementationIdSourceBuilder
 ");
   
             code.AppendLine($@"
-{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}>
-{definition.BaseTypeGenericConstraints}
+{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IDiscoverable<global::{definition.Namespace}.{definition.BaseTypeName}>
+    {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {definition.Name}{definition.TypeParameters} StaticImplementationId {{ get; }} = global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}.{member.Name};
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{definition.Name}{definition.TypeParameters} ImplementationId => StaticImplementationId;
+	public new static IImplementationsEnum<{definition.BaseTypeName}> StaticImplementationId {{ get; }} = global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}.{member.Name};
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => StaticImplementationId;
 }}
        
 #nullable restore

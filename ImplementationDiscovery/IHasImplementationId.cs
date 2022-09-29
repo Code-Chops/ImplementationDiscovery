@@ -1,10 +1,10 @@
 ﻿namespace CodeChops.ImplementationDiscovery;
 
 /// <summary>
-/// Contains a implementation type discriminator. 
+/// Contains an implementation enum value.
 /// </summary>
-public interface IHasImplementationId<out TEnum>
-	where TEnum : IDiscoveredImplementationsEnum
+public interface IHasImplementationId<TBaseType>
+	where TBaseType : IDiscoverable<TBaseType>
 {
-	TEnum ImplementationId { get; }
+	IImplementationsEnum<TBaseType> ImplementationId { get; }
 }

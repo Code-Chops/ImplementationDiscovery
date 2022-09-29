@@ -96,14 +96,14 @@ internal static class ImplementationsEnumSourceBuilder
 			var code = new StringBuilder();
 
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{definition.Name}{definition.TypeParameters}>" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": global::CodeChops.ImplementationDiscovery.IDiscoverable<{definition.BaseTypeName}>" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
 			{
 				code.AppendLine($@"
-	public new static {definition.Name}{definition.TypeParameters} StaticImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
-	public new virtual {definition.Name}{definition.TypeParameters} ImplementationId => StaticImplementationId;");
+	public new static IImplementationsEnum<{definition.BaseTypeName}> StaticImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+	public new virtual IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => StaticImplementationId;");
 			}
 			
 			code.Append($@"
@@ -137,7 +137,7 @@ internal static class ImplementationsEnumSourceBuilder
 			
 			code.Append($@"
 {definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} : ImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}>
-{definition.BaseTypeGenericConstraints}
+	{definition.BaseTypeGenericConstraints}
 {{	
 ");
 
