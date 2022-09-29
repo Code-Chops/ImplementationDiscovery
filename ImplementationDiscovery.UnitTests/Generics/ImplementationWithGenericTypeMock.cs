@@ -2,13 +2,14 @@
 
 namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
 
-[DiscoverImplementations]
+[DiscoverImplementations(generateTypeIdsForImplementations: true)]
 // ReSharper disable once UnusedTypeParameter
-internal abstract partial record ClassWithGenericTypeToImplement<TGenericType>;
+internal abstract partial record ClassWithGenericTypeToImplement<TGenericType> where TGenericType : struct;
 
-internal record ImplementationWithGenericTypeMock<TGenericType> : ClassWithGenericTypeToImplement<TGenericType>;
+internal partial record ImplementationWithGenericTypeMock<TGenericType> : ClassWithGenericTypeToImplement<TGenericType> where TGenericType : struct;
 
-internal record ImplementationWithoutGenericTypeMock : ClassWithGenericTypeToImplement<int>;
+// Base class with open generic and implementation without open generic is not supported because it is costly to find out the correct implementation of the base type generic parameter.
+//internal partial record ImplementationWithoutGenericTypeMock : ClassWithGenericTypeToImplement<int>;
 
 [DiscoverImplementations]
 // ReSharper disable once UnusedTypeParameter

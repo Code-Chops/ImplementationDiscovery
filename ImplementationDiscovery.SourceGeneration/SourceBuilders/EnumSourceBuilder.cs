@@ -60,7 +60,6 @@ internal static class EnumSourceBuilder
 #pragma warning disable CS0109
 
 {GetUsings()}
-{GetBaseTypeUsing()}
 {GetNamespaceDeclaration()}
 {GetTypeIdProperty()}
 {GetEnumRecord()}
@@ -75,21 +74,10 @@ internal static class EnumSourceBuilder
 		
 		string GetUsings()
 		{
-			var usings = definition.Usings.Concat(new[] { "using System;", "using CodeChops.ImplementationDiscovery;" });
+			var usings = definition.Usings.Concat(new[] { "using System;", "using CodeChops.ImplementationDiscovery;", $"using {definition.Namespace ?? "System"};" });
 			
 			return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();
 		}
-		
-		
-		// Creates a using for the definition of the enum value type (or null if not applicable).
-		string? GetBaseTypeUsing()
-		{
-			if (definition.BaseTypeDeclaration is null || definition.Namespace is null or "System") return null;
-
-			var @namespace = $"using {definition.Namespace};{Environment.NewLine}";
-			return @namespace;
-		}
-
 
 		// Creates the namespace definition of the location of the enum definition (or null if the namespace is not defined).
 		string? GetNamespaceDeclaration()
@@ -114,7 +102,8 @@ internal static class EnumSourceBuilder
 			if (definition.BaseTypeTypeKind == TypeKind.Class && definition.GenerateTypeIdsForImplementations)
 			{
 				code.AppendLine($@"
-	public new abstract {definition.Name} TypeId{definition.TypeParameters} {{ get; }}");
+	public new static {definition.Name}{definition.TypeParameters} StaticTypeEnum {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+	public new abstract {definition.Name}{definition.TypeParameters} TypeEnum {{ get; }}");
 			}
 			
 			code.Append($@"

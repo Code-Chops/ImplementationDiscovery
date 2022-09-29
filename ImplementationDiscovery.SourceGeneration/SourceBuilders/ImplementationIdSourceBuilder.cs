@@ -23,16 +23,13 @@ internal static class ImplementationIdSourceBuilder
         foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
         {
             var definition = discoveredMembersByDefinition.Key!;
-
-            if (NameHelpers.HasGenericParameter(definition.BaseTypeName!)) continue;
-            
             var members = discoveredMembersByDefinition.Value.ToList();
 
-            CreateStaticDiscoveredTypeIdFiles(context, definition, members, configOptionsProvider);
+            CreateDiscoveredTypeIdFiles(context, definition, members, configOptionsProvider);
         }
     }
     
-    private static void CreateStaticDiscoveredTypeIdFiles(SourceProductionContext context, EnumDefinition definition, 
+    private static void CreateDiscoveredTypeIdFiles(SourceProductionContext context, EnumDefinition definition, 
         IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
         if (definition.DiscoverabilityMode != DiscoverabilityMode.Implementation || !definition.GenerateTypeIdsForImplementations) return;
@@ -48,39 +45,42 @@ internal static class ImplementationIdSourceBuilder
 #nullable enable
 #pragma warning disable CS0109
 
-using System;
-using CodeChops.DomainDrivenDesign.DomainModeling.Identities;
-using CodeChops.ImplementationDiscovery;
-using BaseType = global::{definition.Namespace}.{definition.BaseTypeName};
+{GetUsings()}
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
-            if (!NameHelpers.HasGenericParameter(member.Name))
-            {
-                var typeIdName = $"global::{definition.Namespace}.{definition.Name}";
-                code.AppendLine($@"
-{member.Declaration} {member.Name} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>, IHasStaticTypeId<{typeIdName}>
+            var typeIdName = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
+            
+            code.AppendLine($@"
+{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IHasDiscoverableImplementations<{typeIdName}>
+{definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {typeIdName} StaticTypeId {{ get; }} = {typeIdName}.{member.Name};
+	public new static {typeIdName} StaticTypeEnum {{ get; }} = {typeIdName}.{member.Name};
     {GetNonStaticTypeId(typeIdName)}
-}}");
-            }
-
-            code.AppendLine(@"                
+}}
+       
 #nullable restore
 ");
 			
-            var typeIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.Name}.TypeId", configOptionsProvider);
+            var typeIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.Name}.TypeEnum", configOptionsProvider);
             context.AddSource(typeIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 
+            
+            string GetUsings()
+            {
+                var usings = definition.Usings.Concat(new[] { "using System;", "using CodeChops.ImplementationDiscovery;" });
+			
+                return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();
+            }
+            
 
             string? GetNonStaticTypeId(string typeIdName)
             {
                 if (!definition.GenerateTypeIdsForImplementations) return null;
 
                 var code = $@"
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeId => ({typeIdName})StaticTypeId;
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{typeIdName} TypeEnum => StaticTypeEnum;
 ";
                 return code;
             }

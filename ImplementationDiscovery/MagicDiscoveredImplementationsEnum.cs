@@ -9,7 +9,7 @@ namespace CodeChops.ImplementationDiscovery;
 /// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
 /// <typeparam name="TValue">The uninitialized enum object.</typeparam>
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
-public abstract record MagicDiscoveredImplementationsEnum<TSelf, TValue, TBaseType> : MagicEnumCore<TSelf, TValue>
+public abstract record MagicDiscoveredImplementationsEnum<TSelf, TValue, TBaseType> : MagicEnumCore<TSelf, TValue>, IDiscoveredImplementations
 	where TSelf : MagicDiscoveredImplementationsEnum<TSelf, TValue, TBaseType>, new()
 	where TValue : UninitializedObject<TBaseType>, IEquatable<TValue>
 	where TBaseType : class

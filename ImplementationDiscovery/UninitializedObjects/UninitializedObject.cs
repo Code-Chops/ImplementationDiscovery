@@ -1,6 +1,6 @@
 ﻿namespace CodeChops.ImplementationDiscovery.UninitializedObjects;
 
-public record UninitializedObject<TBaseType> : IComparable<UninitializedObject<TBaseType>> 
+public record UninitializedObject<TBaseType> : IComparable<UninitializedObject<TBaseType>>
 	where TBaseType : class
 {
 	#region Comparison
