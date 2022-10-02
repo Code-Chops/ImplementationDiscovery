@@ -12,12 +12,10 @@ internal record EnumDefinition : IEnumModel
 	public TypeKind? BaseTypeTypeKind { get; }
 	public string FilePath { get; }
 	public string AccessModifier { get; }
-	public List<EnumMember> MembersFromAttribute { get; }
 	public bool GenerateImplementationIds { get; }
 	public List<string> Usings { get; }
 	
-	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, 
-		IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, List<string> usings)
+	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, bool generateImplementationIds, List<string> usings)
 		: this(
 			customName: customName,
 			name: $"{NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}",
@@ -30,15 +28,14 @@ internal record EnumDefinition : IEnumModel
 			baseTypeGenericConstraints: baseTypeDeclarationSyntax.GetClassGenericConstraints(),
 			baseTypeTypeKind: baseTypeSymbol.TypeKind,
 			filePath: filePath, 
-			accessModifier: baseTypeDeclarationSyntax.Modifiers.ToFullString(), 
-			membersFromAttribute: membersFromAttribute,
+			accessModifier: baseTypeDeclarationSyntax.Modifiers.ToFullString(),
 			generateImplementationIds: generateImplementationIds,
 			usings: usings)
 	{
 	}
 
-	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind,
-		string filePath, string accessModifier, IEnumerable<EnumMember> membersFromAttribute, bool generateImplementationIds, List<string> usings)
+	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, 
+		string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessModifier, bool generateImplementationIds, List<string> usings)
 	{
 		this.Name = customName ?? name.Trim();
 		this.TypeParameters = typeParameters?.Trim();
@@ -53,8 +50,6 @@ internal record EnumDefinition : IEnumModel
 		
 		this.FilePath = filePath;
 		this.AccessModifier = accessModifier.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
-
-		this.MembersFromAttribute = membersFromAttribute as List<EnumMember> ?? membersFromAttribute.ToList();
 
 		this.GenerateImplementationIds = generateImplementationIds;
 

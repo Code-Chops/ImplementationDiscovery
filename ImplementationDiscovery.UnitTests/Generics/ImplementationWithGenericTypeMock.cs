@@ -1,6 +1,4 @@
-﻿using CodeChops.ImplementationDiscovery.Attributes;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.Generics;
 
 [DiscoverImplementations(generateImplementationIds: true)]
 // ReSharper disable once UnusedTypeParameter

@@ -95,7 +95,6 @@ internal static class ImplementationSyntaxReceiver
 			baseTypeDeclarationSyntax: typeDeclarationSyntax,
 			baseTypeSymbol: baseType,
 			filePath: filePath,
-			membersFromAttribute: Array.Empty<EnumMember>(),
 			generateImplementationIds: discoverableAttribute?.ConstructorArguments.Skip(1).FirstOrDefault().Value is true,
 			usings: typeDeclarationSyntax.GetUsings().ToList());
 

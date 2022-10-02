@@ -30,7 +30,7 @@ internal static class ImplementationsEnumSourceBuilder
 		}
 	}
 	
-	private static void CreateEnumFile(SourceProductionContext context, EnumDefinition definition, List<DiscoveredEnumMember> relevantDiscoveredMembers, 
+	private static void CreateEnumFile(SourceProductionContext context, EnumDefinition definition, List<DiscoveredEnumMember> members, 
 		AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
 		var code = new StringBuilder();
@@ -38,15 +38,13 @@ internal static class ImplementationsEnumSourceBuilder
 		// Place the members that are discovered in the enum definition file itself first. The order can be relevant because the value of enum members can be implicitly incremental.
 		// Do a distinct on the file path and line position so the members will be deduplicated while typing their invocation.
 		// Also do a distinct on the member name.		
-		relevantDiscoveredMembers = relevantDiscoveredMembers
+		members = members
 			.OrderByDescending(member => member.FilePath == definition.FilePath)
 			.GroupBy(member => (member.FilePath, member.LinePosition))
 			.Select(group => group.First())
 			.GroupBy(member => member.Name)
 			.Select(membersByName => membersByName.First())
 			.ToList();
-
-		var members = definition.MembersFromAttribute.Concat(relevantDiscoveredMembers).ToList();
 
 		// Is used for correct enum member outlining.
 		var longestMemberNameLength = members
@@ -95,15 +93,17 @@ internal static class ImplementationsEnumSourceBuilder
 
 			var code = new StringBuilder();
 
+			var implementationsEnum = $"{definition.Name}{definition.TypeParameters}";
+			
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": global::CodeChops.ImplementationDiscovery.IDiscoverable<{definition.BaseTypeName}>" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
 			{
 				code.AppendLine($@"
-	public new static IImplementationsEnum<{definition.BaseTypeName}> StaticImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
-	public new virtual IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => StaticImplementationId;");
+	public new static {implementationsEnum} GetImplementationId() => new();
+	public new virtual {implementationsEnum} ImplementationId => GetImplementationId();");
 			}
 			
 			code.Append($@"
@@ -164,7 +164,7 @@ internal static class ImplementationsEnumSourceBuilder
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 
 				code.Append(@$"
-	public static {definition.Name}{definition.TypeParameters} {member.Name} {{ get; }} {outlineSpaces}= CreateMember(new global::CodeChops.ImplementationDiscovery.DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value})));
+	public static DiscoveredObject<{definition.BaseTypeName}> {member.Name} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value;
 ");
 			}
 

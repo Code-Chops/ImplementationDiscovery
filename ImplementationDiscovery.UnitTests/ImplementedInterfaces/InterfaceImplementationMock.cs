@@ -1,6 +1,4 @@
-﻿using CodeChops.ImplementationDiscovery.Attributes;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
 
 [DiscoverImplementations]
 public partial interface IInterfaceToImplement

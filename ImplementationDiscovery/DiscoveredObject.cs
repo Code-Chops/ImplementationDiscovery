@@ -1,20 +1,22 @@
 ﻿using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace CodeChops.ImplementationDiscovery;
 
-public record DiscoveredObject<TBaseType> : IComparable<DiscoveredObject<TBaseType>>
+[StructLayout(LayoutKind.Auto)] 
+public readonly record struct DiscoveredObject<TBaseType> : IComparable<DiscoveredObject<TBaseType>>
 	where TBaseType : notnull
 {
 	#region Comparison
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public virtual bool Equals(DiscoveredObject<TBaseType>? other) => this.Type == other?.Type;
+	public bool Equals(DiscoveredObject<TBaseType> other) => this.Type == other.Type;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override int GetHashCode() => String.GetHashCode(this.Type.Name, StringComparison.Ordinal);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int CompareTo(DiscoveredObject<TBaseType>? other) => String.Compare(this.Type.FullName, other?.Type.FullName, StringComparison.Ordinal);
+	public int CompareTo(DiscoveredObject<TBaseType> other) => String.Compare(this.Type.FullName, other.Type.FullName, StringComparison.Ordinal);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool operator <(DiscoveredObject<TBaseType> left, DiscoveredObject<TBaseType> right) => left.CompareTo(right) < 0;
@@ -47,6 +49,9 @@ public record DiscoveredObject<TBaseType> : IComparable<DiscoveredObject<TBaseTy
 	private Type Type { get; }
 	private ConstructorInfo? EmptyConstructor { get; }
 	
+	/// <summary>
+	/// Creates a new instance by trying to access the parameterless constructor. If not possible it creates a new uninitialized object.
+	/// </summary>
 	public TBaseType CreateInstance() => (TBaseType)(this.EmptyConstructor?.Invoke(Array.Empty<object>()) ?? FormatterServices.GetUninitializedObject(this.Type));
 
 	public DiscoveredObject(Type type)

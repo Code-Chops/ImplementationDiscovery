@@ -1,10 +1,9 @@
 ﻿namespace CodeChops.ImplementationDiscovery;
 
-public interface IImplementationsEnum<TBaseType> : IImplementationsEnum, IMagicEnum<DiscoveredObject<TBaseType>>
+public interface IImplementationsEnum<out TBaseType> : IImplementationsEnum, IMagicEnum
 	where TBaseType : notnull
 {
-	static abstract IEnumerable<TBaseType> GetDiscoveredObjects();
-	TBaseType CreateInstance();
+	IEnumerable<TBaseType> GetDiscoveredObjects();
 }
 
 public interface IImplementationsEnum

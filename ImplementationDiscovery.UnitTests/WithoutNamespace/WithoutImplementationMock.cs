@@ -1,6 +1,4 @@
-﻿using CodeChops.ImplementationDiscovery.Attributes;
-
-namespace CodeChops.ImplementationDiscovery.UnitTests.WithoutNamespace;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.WithoutNamespace;
 
 [DiscoverImplementations]
 public partial interface IInterfaceToImplementWithoutNamespace { } 

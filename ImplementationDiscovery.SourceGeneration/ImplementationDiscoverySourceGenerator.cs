@@ -14,7 +14,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 {
 	internal const string GenerateMethodName				= "CreateMember";
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
-	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery.Attributes";
+	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
 	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
 	internal const string ImplementationsEnumName			= "Enum";
 	
@@ -63,20 +63,21 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			baseTypeTypeKind: null,
 			filePath: AllImplementationsEnumName,
 			accessModifier: "public",
-			membersFromAttribute: globallyListableEnumMembers
-				.Select(definition => new DiscoveredEnumMember(
-					enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}", 
-					name: NameHelpers.GetNameWithoutGenerics(definition.BaseTypeName!), 
-					isPartial: false, 
-					@namespace: definition.Namespace, 
-					declaration: "public class", 
-					value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
-					filePath: AllImplementationsEnumName,
-					linePosition: new LinePosition())),
 			generateImplementationIds: false,
 			usings: new List<string>());
 		
 		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
+		
+		members.AddRange(globallyListableEnumMembers
+			.Select(definition => new DiscoveredEnumMember(
+				enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}", 
+				name: NameHelpers.GetNameWithoutGenerics(definition.BaseTypeName!), 
+				isPartial: false, 
+				@namespace: definition.Namespace, 
+				declaration: "public class", 
+				value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
+				filePath: AllImplementationsEnumName,
+				linePosition: new LinePosition())));
 		
 		ImplementationsEnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
 		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);

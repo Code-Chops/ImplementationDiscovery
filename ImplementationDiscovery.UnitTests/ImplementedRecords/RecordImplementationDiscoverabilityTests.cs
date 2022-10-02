@@ -5,12 +5,12 @@ public class RecordImplementationDiscoverabilityTests
 	[Fact]
 	public void RecordImplementationHasCorrectMemberName()
 	{
-		Assert.True(AbstractRecordToImplementEnum.RecordImplementationMock.Name									== nameof(RecordImplementationMock));
+		Assert.True(AbstractRecordToImplementEnum.RecordImplementationMock.UninitializedInstance.GetType().Name	== nameof(RecordImplementationMock));
 	}
 
 	[Fact]
 	public void RecordImplementationHasCorrectMemberValue()
 	{
-		Assert.True(AbstractRecordToImplementEnum.RecordImplementationMock.Value.UninitializedInstance.GetType()	== typeof(RecordImplementationMock));
+		Assert.True(AbstractRecordToImplementEnum.RecordImplementationMock.UninitializedInstance.GetType()		== typeof(RecordImplementationMock));
 	}
 }

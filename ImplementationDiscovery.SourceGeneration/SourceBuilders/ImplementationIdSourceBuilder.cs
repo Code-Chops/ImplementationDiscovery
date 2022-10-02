@@ -46,14 +46,16 @@ internal static class ImplementationIdSourceBuilder
 
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
-  
+
+            var implementationsEnum = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
+            
             code.AppendLine($@"
-{member.Declaration} {member.Name}{definition.TypeParameters} : global::CodeChops.ImplementationDiscovery.IDiscoverable<global::{definition.Namespace}.{definition.BaseTypeName}>
+{member.Declaration} {member.Name}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
     {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static IImplementationsEnum<{definition.BaseTypeName}> StaticImplementationId {{ get; }} = global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}.{member.Name};
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => StaticImplementationId;
+	public new static {implementationsEnum} GetImplementationId() => {implementationsEnum}.GetSingleMember(""{member.Name}"");
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationsEnum} ImplementationId => GetImplementationId();
 }}
        
 #nullable restore
