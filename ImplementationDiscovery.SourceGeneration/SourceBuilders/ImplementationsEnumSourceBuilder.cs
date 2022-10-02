@@ -189,6 +189,10 @@ internal static class ImplementationsEnumSourceBuilder
 	public static {definition.Name}{definition.TypeParameters} {ImplementationDiscoverySourceGenerator.GenerateMethodName}{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} member, {definition.BaseTypeName}? value = null, string? comment = null) 
 	{definition.BaseTypeGenericConstraints}
 		=> member;
+
+	public static IEnumerable<{definition.BaseTypeName}> GetDiscoveredObjects{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
+	{definition.BaseTypeGenericConstraints}
+		=> {definition.Name}{definition.TypeParameters}.GetMembers().Select(member => member.Value.UninitializedInstance);
 }}
 ";
 	}

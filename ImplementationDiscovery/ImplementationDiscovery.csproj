@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.26.1</Version>
-        <PackageReleaseNotes>Static enum access now returns concrete type.</PackageReleaseNotes>
+        <Version>0.26.2</Version>
+        <PackageReleaseNotes>Made changes to GetDiscoveredObjects.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

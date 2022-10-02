@@ -3,7 +3,7 @@
 public interface IImplementationsEnum<out TBaseType> : IImplementationsEnum, IMagicEnum
 	where TBaseType : notnull
 {
-	IEnumerable<TBaseType> GetDiscoveredObjects();
+	static abstract IEnumerable<TBaseType> GetDiscoveredObjects();
 }
 
 public interface IImplementationsEnum
