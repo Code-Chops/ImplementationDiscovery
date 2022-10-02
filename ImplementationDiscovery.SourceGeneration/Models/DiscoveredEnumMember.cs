@@ -7,8 +7,9 @@ internal record DiscoveredEnumMember : EnumMember
 	public bool IsPartial { get; }
 	public string? Namespace { get; }
 	public string Declaration { get; }
+	public string? TypeParameters { get; }
 	
-	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value, string filePath, LinePosition linePosition)
+	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value, string filePath, LinePosition linePosition, string? typeParameters)
 		: base(enumIdentifier, name, value)
 	{
 		this.FilePath = filePath;
@@ -16,5 +17,6 @@ internal record DiscoveredEnumMember : EnumMember
 		this.IsPartial = isPartial;
 		this.Namespace = @namespace;
 		this.Declaration = declaration;
+		this.TypeParameters = typeParameters;
 	}
 }

@@ -163,8 +163,12 @@ internal static class ImplementationsEnumSourceBuilder
 				// Create the enum member itself.
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 
+				var typeName = member.TypeParameters is null
+					? $"global::{member.Namespace}.{member.Name}"
+					: $"global::{definition.Namespace}.{definition.BaseTypeName}";
+				
 				code.Append(@$"
-	public static DiscoveredObject<{definition.BaseTypeName}> {member.Name} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value;
+	public static {typeName} {member.Name} {{ get; }} {outlineSpaces}= ({typeName})CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value;
 ");
 			}
 

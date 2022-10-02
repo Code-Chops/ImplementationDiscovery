@@ -5,12 +5,12 @@ public class ClassImplementationDiscoverabilityTests
 	[Fact]
 	public void ClassImplementationHasCorrectMemberName()
 	{
-		Assert.True(AbstractClassToImplementEnum.ClassImplementationMock.UninitializedInstance.GetType().Name	== nameof(ClassImplementationMock));
+		Assert.True(AbstractClassToImplementEnum.ClassImplementationMock.GetType().Name	== nameof(ClassImplementationMock));
 	}
 
 	[Fact]
 	public void ClassImplementationHasCorrectMemberValue()
 	{
-		Assert.True(AbstractClassToImplementEnum.ClassImplementationMock.UninitializedInstance.GetType()		== typeof(ClassImplementationMock));
+		Assert.True(AbstractClassToImplementEnum.ClassImplementationMock.GetType()		== typeof(ClassImplementationMock));
 	}
 }

@@ -67,7 +67,8 @@ internal static class ImplementationSyntaxReceiver
 			declaration: type.GetObjectDeclaration(),
 			value: type.GetFullTypeNameWithGenericParameters(),
 			filePath: typeDeclarationSyntax.SyntaxTree.FilePath,
-			linePosition: typeDeclarationSyntax.SyntaxTree.GetLineSpan(typeDeclarationSyntax.Span, cancellationToken).StartLinePosition);
+			linePosition: typeDeclarationSyntax.SyntaxTree.GetLineSpan(typeDeclarationSyntax.Span, cancellationToken).StartLinePosition,
+			typeParameters: typeDeclarationSyntax.TypeParameterList?.ToFullString());
 
 		return member;
 	}
