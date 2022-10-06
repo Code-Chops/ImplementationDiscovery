@@ -96,14 +96,14 @@ internal static class ImplementationsEnumSourceBuilder
 			var implementationsEnum = $"{definition.Name}{definition.TypeParameters}";
 			
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{definition.BaseTypeName}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
 			{
 				code.AppendLine($@"
 	public new static {implementationsEnum} GetImplementationId() => new();
-	public new virtual {implementationsEnum} ImplementationId => GetImplementationId();");
+	public new virtual IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => GetImplementationId();");
 			}
 			
 			code.Append($@"

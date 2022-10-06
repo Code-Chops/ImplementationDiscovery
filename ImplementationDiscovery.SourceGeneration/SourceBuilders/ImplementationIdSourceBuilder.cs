@@ -50,12 +50,12 @@ internal static class ImplementationIdSourceBuilder
             var implementationsEnum = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
             
             code.AppendLine($@"
-{member.Declaration} {member.Name}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
+{member.Declaration} {member.Name}{definition.TypeParameters} : IHasImplementationId<{definition.BaseTypeName}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
     {definition.BaseTypeGenericConstraints}
 {{
 
 	public new static {implementationsEnum} GetImplementationId() => {implementationsEnum}.GetSingleMember(""{member.Name}"");
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationsEnum} ImplementationId => GetImplementationId();
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => GetImplementationId();
 }}
        
 #nullable restore

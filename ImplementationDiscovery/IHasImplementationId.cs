@@ -3,8 +3,8 @@
 /// <summary>
 /// Contains an implementation enum value.
 /// </summary>
-public interface IHasImplementationId<out TImplementationsEnum>
-	where TImplementationsEnum : IImplementationsEnum
+public interface IHasImplementationId<TBaseType>
+	where TBaseType : notnull
 {
-	TImplementationsEnum ImplementationId { get; }
+	IImplementationsEnum<TBaseType> ImplementationId { get; }
 }
