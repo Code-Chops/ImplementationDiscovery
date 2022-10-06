@@ -163,7 +163,7 @@ internal static class ImplementationsEnumSourceBuilder
 				// Create the enum member itself.
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
 
-				var typeName = member.TypeParameters is null
+				var typeName = member.TypeParameters is null && !member.IsConvertibleToConcreteType
 					? $"global::{member.Namespace}.{member.Name}"
 					: $"global::{definition.Namespace}.{definition.BaseTypeName}";
 				

@@ -78,7 +78,8 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 				value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
 				filePath: AllImplementationsEnumName,
 				linePosition: new LinePosition(),
-				typeParameters: null)));
+				typeParameters: null,
+				isConvertibleToConcreteType: true)));
 		
 		ImplementationsEnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
 		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
