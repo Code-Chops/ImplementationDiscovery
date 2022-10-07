@@ -45,10 +45,10 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumModel> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
 		entities = entities as List<IEnumModel> ?? entities.ToList();
-		var definitionsByIdentifier = entities.OfType<EnumDefinition>().ToDictionary(d => d.Identifier);
+		var definitions = entities.OfType<EnumDefinition>().ToList();
 		var members = entities.OfType<DiscoveredEnumMember>().ToList();
 
-		var globallyListableEnumMembers = definitionsByIdentifier.Values.Where(definition => definition.BaseTypeName is null || !NameHelpers.HasGenericParameter(definition.BaseTypeName));
+		var globallyListableEnumMembers = definitions.Where(definition => definition.TypeParameters is null && definition.BaseTypeName != nameof(Object));
 
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
 
@@ -66,22 +66,22 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			generateImplementationIds: false,
 			usings: new List<string>());
 		
-		definitionsByIdentifier.Add(AllImplementationsEnumName, globalEnumDefinition);
-		
+		definitions.Add(globalEnumDefinition);
+
 		members.AddRange(globallyListableEnumMembers
-			.Select(definition => new DiscoveredEnumMember(
+			.Select((definition, index) => new DiscoveredEnumMember(
 				enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}", 
-				name: NameHelpers.GetNameWithoutGenerics(definition.BaseTypeName!), 
+				name: NameHelpers.GetNameWithoutGenerics(definition.Name!), 
 				isPartial: false, 
 				@namespace: definition.Namespace, 
 				declaration: "public class", 
 				value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
 				filePath: AllImplementationsEnumName,
-				linePosition: new LinePosition(),
+				linePosition: new LinePosition(index, 0),
 				typeParameters: null,
-				isConvertibleToConcreteType: true)));
-		
-		ImplementationsEnumSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
-		ImplementationIdSourceBuilder.CreateSource(context, members, definitionsByIdentifier, configOptionsProvider);
+				isConvertibleToConcreteType: false)));
+
+		ImplementationsEnumSourceBuilder.CreateSource(context, members, definitions, configOptionsProvider);
+		ImplementationIdSourceBuilder.CreateSource(context, members, definitions, configOptionsProvider);
 	}
 }

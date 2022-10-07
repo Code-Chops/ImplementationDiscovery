@@ -6,13 +6,15 @@ namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 internal static class ImplementationIdSourceBuilder
 {
     public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
-        Dictionary<string, EnumDefinition> enumDefinitionsByIdentifier, AnalyzerConfigOptionsProvider configOptionsProvider)
+        List<EnumDefinition> definitions, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
-        if (enumDefinitionsByIdentifier.Count == 0) return;
+        if (definitions.Count == 0) return;
 
-        // Get the discovered members and their definition.
-        // Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
-        var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
+		var enumDefinitionsByIdentifier = definitions.ToDictionary(d => d.EnumIdentifier);
+
+		// Get the discovered members and their definition.
+		// Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
+		var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
             .GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
             .Where(grouping => grouping.Key is not null)
             .ToDictionary(grouping => grouping.Key);
@@ -54,7 +56,7 @@ internal static class ImplementationIdSourceBuilder
     {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {implementationsEnum} GetImplementationId() => {implementationsEnum}.GetSingleMember(""{member.Name}"");
+	public new static {implementationsEnum} GetImplementationId() => ({implementationsEnum})ImplementationsEnum<{implementationsEnum}, {definition.BaseTypeName}>.GetSingleMember(""{member.Name}"");
     public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => GetImplementationId();
 }}
        

@@ -2,7 +2,7 @@
 
 internal record EnumDefinition : IEnumModel
 {
-	public string Identifier { get; }
+	public string EnumIdentifier { get; }
 	public string Name { get; }
 	public string? TypeParameters { get; }
 	public string? Namespace { get; }
@@ -41,7 +41,7 @@ internal record EnumDefinition : IEnumModel
 		this.TypeParameters = typeParameters?.Trim();
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 		
-		this.Identifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
+		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
 
 		this.BaseTypeName = baseTypeNameIncludingGenerics?.Trim();
 		this.BaseTypeDeclaration = baseTypeDeclaration?.Trim();

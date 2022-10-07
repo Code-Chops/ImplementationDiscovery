@@ -37,7 +37,8 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	/// <summary>
 	/// Get an enumerable over the uninitialized objects.
 	/// </summary>
-	public static IEnumerable<TBaseType> GetDiscoveredObjects() => GetMembers().Select(member => member.Value.UninitializedInstance);
+	public static IEnumerable<TBaseType> GetDiscoveredObjects() 
+		=> GetMembers().Select(member => member.Value.UninitializedInstance);
 
 	private static string GetNameWithoutBacktick(DiscoveredObject<TBaseType> value)
 	{
