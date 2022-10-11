@@ -177,7 +177,7 @@ internal static class ImplementationsEnumSourceBuilder
 					: $"global::{definition.Namespace}.{definition.BaseTypeName}";
 				
 				code.Append(@$"
-	public static {typeName} {member.Name} {{ get; }} {outlineSpaces}= ({typeName})CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value;
+	public static {typeName} {member.Name} {{ get; }} {outlineSpaces}= ({typeName})CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value.UninitializedInstance;
 ");
 			}
 
