@@ -16,8 +16,9 @@ internal static class ImplementationIdSourceBuilder
 		// Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
 		var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
             .GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
-            .Where(grouping => grouping.Key is not null)
-            .ToDictionary(grouping => grouping.Key);
+            .Where(group => group.Key is not null)
+            .GroupBy(group => group.Key)
+            .ToDictionary(group => group.Key, group => group.First());
         
         foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
         {
@@ -52,12 +53,12 @@ internal static class ImplementationIdSourceBuilder
             var implementationsEnum = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
             
             code.AppendLine($@"
-{member.Declaration} {member.Name}{definition.TypeParameters} : IHasImplementationId<{definition.BaseTypeName}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
+{member.Declaration} {member.Name}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
     {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {implementationsEnum} GetImplementationId() => ({implementationsEnum})ImplementationsEnum<{implementationsEnum}, {definition.BaseTypeName}>.GetSingleMember(""{member.Name}"");
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => GetImplementationId();
+	public new static {implementationsEnum} ImplementationId {{ get; }} = ({implementationsEnum})ImplementationsEnum<{implementationsEnum}, {definition.BaseTypeName}>.GetSingleMember(""{member.Name}"");
+    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationsEnum} GetImplementationId() => ImplementationId;
 }}
        
 #nullable restore

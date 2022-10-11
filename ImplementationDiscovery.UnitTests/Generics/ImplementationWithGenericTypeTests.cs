@@ -5,7 +5,7 @@ public class ImplementationWithGenericTypeTests
     [Fact]
     public void ClassImplementationHasCorrectMemberName()
     {
-        Assert.Equal(nameof(ImplementationWithGenericTypeMock<int>),		ClassWithGenericTypeToImplementEnum<int>.ImplementationWithGenericTypeMock.ImplementationId.Name);
+        Assert.Equal(nameof(ImplementationWithGenericTypeMock<int>),		ClassWithGenericTypeToImplementEnum<int>.ImplementationWithGenericTypeMock.GetImplementationId().Name);
     }
 
     [Fact]

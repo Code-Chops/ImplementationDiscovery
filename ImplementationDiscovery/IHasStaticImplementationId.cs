@@ -6,5 +6,5 @@ namespace CodeChops.ImplementationDiscovery;
 public interface IHasStaticImplementationId<out TImplementationsEnum>
 	where TImplementationsEnum : IImplementationsEnum
 {
-	public static abstract TImplementationsEnum GetImplementationId();
+	public static abstract TImplementationsEnum ImplementationId { get; }
 }

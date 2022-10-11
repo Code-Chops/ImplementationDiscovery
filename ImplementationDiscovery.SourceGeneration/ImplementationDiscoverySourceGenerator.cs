@@ -71,7 +71,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		members.AddRange(globallyListableEnumMembers
 			.Select((definition, index) => new DiscoveredEnumMember(
 				enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}", 
-				name: NameHelpers.GetNameWithoutGenerics(definition.Name!), 
+				name: NameHelpers.GetNameWithoutGenerics(definition.Name), 
 				isPartial: false, 
 				@namespace: definition.Namespace, 
 				declaration: "public class", 

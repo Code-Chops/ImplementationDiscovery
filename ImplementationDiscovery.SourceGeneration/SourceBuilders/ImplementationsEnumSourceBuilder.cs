@@ -18,8 +18,9 @@ internal static class ImplementationsEnumSourceBuilder
 		// Exclude the members that have no definition.
 		var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
 			.GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
-			.Where(grouping => grouping.Key is not null)
-			.ToDictionary(grouping => grouping.Key!.EnumIdentifier);
+			.Where(group => group.Key is not null)
+			.GroupBy(group => group.Key!.EnumIdentifier)
+			.ToDictionary(group => group.Key, group => group.First());
 
 		foreach (var definition in enumDefinitionsByIdentifier.Values)
 		{
@@ -27,7 +28,7 @@ internal static class ImplementationsEnumSourceBuilder
 				? members.ToList()
 				: new List<DiscoveredEnumMember>();
 
-			CreateEnumFile(context, definition!, relevantDiscoveredMembers, configOptionsProvider);
+			CreateEnumFile(context, definition, relevantDiscoveredMembers, configOptionsProvider);
 		}
 	}
 	
@@ -104,14 +105,14 @@ internal static class ImplementationsEnumSourceBuilder
 			var implementationsEnum = $"{definition.Name}{definition.TypeParameters}";
 			
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{definition.BaseTypeName}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
+{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
 			{
 				code.AppendLine($@"
-	public new static {implementationsEnum} GetImplementationId() => new();
-	public new virtual IImplementationsEnum<{definition.BaseTypeName}> ImplementationId => GetImplementationId();");
+	public new static {implementationsEnum} ImplementationId => new();
+	public new virtual {implementationsEnum} GetImplementationId() => ImplementationId;");
 			}
 			
 			code.Append($@"
