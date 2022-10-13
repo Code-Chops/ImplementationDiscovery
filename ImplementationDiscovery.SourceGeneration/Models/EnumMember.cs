@@ -22,17 +22,15 @@ internal record EnumMember : IEnumModel
 
 	public string GetName(EnumDefinition definition)
 	{
+		if (definition.BaseTypeName is null) return this.Name;
+		
 		var name = this.Name;
 
-		if (name.StartsWith(definition.Name))
-			name = name.Substring(definition.Name.Length);
+		if (name.StartsWith(definition.BaseTypeName))
+			name = name.Substring(definition.BaseTypeName.Length);
 		
-		if (name.EndsWith(definition.Name))
-			name = name.Substring(0, name.Length - definition.Name.Length);
-
-		var definitionName = $"{definition.Name}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}";
-		if (name.EndsWith(definitionName))
-			name = name.Substring(0, name.Length - definitionName.Length);
+		if (name.EndsWith(definition.BaseTypeName))
+			name = name.Substring(0, name.Length - definition.BaseTypeName.Length);
 		
 		return IsValidName.IsMatch(name) ? name : this.Name;
 	}
