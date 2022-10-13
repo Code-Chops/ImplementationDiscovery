@@ -30,6 +30,10 @@ internal record EnumMember : IEnumModel
 		if (name.EndsWith(definition.Name))
 			name = name.Substring(0, name.Length - definition.Name.Length);
 
+		var definitionName = $"{definition.Name}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}";
+		if (name.EndsWith(definitionName))
+			name = name.Substring(0, name.Length - definitionName.Length);
+		
 		return IsValidName.IsMatch(name) ? name : this.Name;
 	}
 }

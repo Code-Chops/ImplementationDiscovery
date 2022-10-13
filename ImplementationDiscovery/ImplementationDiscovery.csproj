@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.29.1</Version>
-        <PackageReleaseNotes>Include symbol file with release.</PackageReleaseNotes>
+        <Version>0.29.2</Version>
+        <PackageReleaseNotes>Enhanced friendly enum member name.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
