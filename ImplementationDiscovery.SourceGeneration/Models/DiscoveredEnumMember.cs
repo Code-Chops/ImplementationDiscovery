@@ -9,8 +9,9 @@ internal record DiscoveredEnumMember : EnumMember
 	public string Declaration { get; }
 	public string? TypeParameters { get; }
 	public bool IsConvertibleToConcreteType { get; }
+	public string Accessibility { get; }
 	
-	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value, string filePath, LinePosition linePosition, string? typeParameters, bool isConvertibleToConcreteType)
+	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value, string filePath, LinePosition linePosition, string? typeParameters, bool isConvertibleToConcreteType, string accessibility)
 		: base(enumIdentifier, name, value)
 	{
 		this.FilePath = filePath;
@@ -20,5 +21,6 @@ internal record DiscoveredEnumMember : EnumMember
 		this.Declaration = declaration;
 		this.TypeParameters = typeParameters;
 		this.IsConvertibleToConcreteType = isConvertibleToConcreteType;
+		this.Accessibility = accessibility;
 	}
 }

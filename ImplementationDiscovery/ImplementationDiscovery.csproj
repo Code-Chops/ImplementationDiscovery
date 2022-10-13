@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.27.3</Version>
-        <PackageReleaseNotes>Changed IHas(Static)ImplementationId.</PackageReleaseNotes>
+        <Version>0.28.0</Version>
+        <PackageReleaseNotes>Added exception handler to source generator. Added accessibility for AllImplementationsEnum.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

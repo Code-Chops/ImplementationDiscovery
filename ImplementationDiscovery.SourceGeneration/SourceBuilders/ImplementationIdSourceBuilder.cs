@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -8,25 +9,36 @@ internal static class ImplementationIdSourceBuilder
     public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
         List<EnumDefinition> definitions, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
-        if (definitions.Count == 0) return;
-
-		var enumDefinitionsByIdentifier = definitions.ToDictionary(d => d.EnumIdentifier);
-
-		// Get the discovered members and their definition.
-		// Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
-		var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
-            .GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
-            .Where(group => group.Key is not null)
-            .GroupBy(group => group.Key)
-            .ToDictionary(group => group.Key, group => group.First());
-        
-        foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
+        try
         {
-            var definition = discoveredMembersByDefinition.Key!;
-            var members = discoveredMembersByDefinition.Value.ToList();
-
-            CreateDiscoveredImplementationIdFiles(context, definition, members, configOptionsProvider);
+            if (definitions.Count == 0) return;
+            
+		    var enumDefinitionsByIdentifier = definitions.ToDictionary(d => d.EnumIdentifier);
+            
+		    // Get the discovered members and their definition.
+		    // Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
+		    var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
+                .GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
+                .Where(group => group.Key is not null)
+                .GroupBy(group => group.Key)
+                .ToDictionary(group => group.Key, group => group.First());
+            
+            foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
+            {
+                var definition = discoveredMembersByDefinition.Key!;
+                var members = discoveredMembersByDefinition.Value.ToList();
+            
+                CreateDiscoveredImplementationIdFiles(context, definition, members, configOptionsProvider);
+            }
         }
+#pragma warning disable CS0168
+        catch (Exception e)
+#pragma warning restore CS0168
+        {
+            Debugger.Launch();
+            throw;
+        }
+        
     }
     
     private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, EnumDefinition definition, 

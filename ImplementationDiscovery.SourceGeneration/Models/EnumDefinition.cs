@@ -11,7 +11,7 @@ internal record EnumDefinition : IEnumModel
 	public string? BaseTypeGenericConstraints { get; }
 	public TypeKind? BaseTypeTypeKind { get; }
 	public string FilePath { get; }
-	public string AccessModifier { get; }
+	public string Accessibility { get; }
 	public bool GenerateImplementationIds { get; }
 	public List<string> Usings { get; }
 	
@@ -28,14 +28,14 @@ internal record EnumDefinition : IEnumModel
 			baseTypeGenericConstraints: baseTypeDeclarationSyntax.GetClassGenericConstraints(),
 			baseTypeTypeKind: baseTypeSymbol.TypeKind,
 			filePath: filePath, 
-			accessModifier: baseTypeDeclarationSyntax.Modifiers.ToFullString(),
+			accessibility: baseTypeSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
 			generateImplementationIds: generateImplementationIds,
 			usings: usings)
 	{
 	}
 
 	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, 
-		string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessModifier, bool generateImplementationIds, List<string> usings)
+		string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, bool generateImplementationIds, List<string> usings)
 	{
 		this.Name = customName ?? name.Trim();
 		this.TypeParameters = typeParameters?.Trim();
@@ -49,7 +49,7 @@ internal record EnumDefinition : IEnumModel
 		this.BaseTypeTypeKind = baseTypeTypeKind;
 		
 		this.FilePath = filePath;
-		this.AccessModifier = accessModifier.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
+		this.Accessibility = accessibility.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
 
 		this.GenerateImplementationIds = generateImplementationIds;
 

@@ -1,4 +1,5 @@
-﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
+﻿using System.Diagnostics;
+using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
@@ -19,12 +20,22 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 	internal const string ImplementationsEnumName			= "Enum";
 	
 	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
-	{		
-		var valueProvider = FindImplementations(initializationContext).Combine(initializationContext.AnalyzerConfigOptionsProvider);
-
-		initializationContext.RegisterSourceOutput(
-			source: valueProvider,
-			action: (c, provider) => CreateSource(c, provider.Left, provider.Right!));
+	{
+		try
+		{
+			var valueProvider = FindImplementations(initializationContext).Combine(initializationContext.AnalyzerConfigOptionsProvider);
+	
+			initializationContext.RegisterSourceOutput(
+				source: valueProvider,
+				action: (c, provider) => CreateSource(c, provider.Left, provider.Right!));
+		}
+#pragma warning disable CS0168
+		catch (Exception e)
+#pragma warning restore CS0168
+		{
+			Debugger.Launch();
+			throw;
+		}
 	}
 
 	/// <summary>
@@ -62,7 +73,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			baseTypeGenericConstraints: null,
 			baseTypeTypeKind: null,
 			filePath: AllImplementationsEnumName,
-			accessModifier: "public",
+			accessibility: "public",
 			generateImplementationIds: false,
 			usings: new List<string>());
 		
@@ -79,7 +90,8 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 				filePath: AllImplementationsEnumName,
 				linePosition: new LinePosition(index, 0),
 				typeParameters: null,
-				isConvertibleToConcreteType: false)));
+				isConvertibleToConcreteType: false,
+				accessibility: definition.Accessibility)));
 
 		ImplementationsEnumSourceBuilder.CreateSource(context, members, definitions, configOptionsProvider);
 		ImplementationIdSourceBuilder.CreateSource(context, members, definitions, configOptionsProvider);

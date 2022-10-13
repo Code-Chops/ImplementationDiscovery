@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -11,29 +12,39 @@ internal static class ImplementationsEnumSourceBuilder
 	public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
 		List<EnumDefinition> definitions, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
-		if (definitions.Count == 0) return;
-		var enumDefinitionsByIdentifier = definitions.ToDictionary(d => d.EnumIdentifier);
-
-		// Get the discovered members and their definition.
-		// Exclude the members that have no definition.
-		var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
-			.GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
-			.Where(group => group.Key is not null)
-			.GroupBy(group => group.Key!.EnumIdentifier)
-			.ToDictionary(group => group.Key, group => group.First());
-
-		foreach (var definition in enumDefinitionsByIdentifier.Values)
+		try
 		{
-			var relevantDiscoveredMembers = relevantDiscoveredMembersByDefinitions.TryGetValue(definition.EnumIdentifier, out var members)
-				? members.ToList()
-				: new List<DiscoveredEnumMember>();
+			if (definitions.Count == 0) return;
+			var enumDefinitionsByIdentifier = definitions.ToDictionary(d => d.EnumIdentifier);
+	
+			// Get the discovered members and their definition.
+			// Exclude the members that have no definition.
+			var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
+				.GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
+				.Where(group => group.Key is not null)
+				.GroupBy(group => group.Key!.EnumIdentifier)
+				.ToDictionary(group => group.Key, group => group.First());
+	
+			foreach (var definition in enumDefinitionsByIdentifier.Values)
+			{
+				var relevantDiscoveredMembers = relevantDiscoveredMembersByDefinitions.TryGetValue(definition.EnumIdentifier, out var members)
+					? members.ToList()
+					: new List<DiscoveredEnumMember>();
+	
+				CreateEnumFile(context, definition, relevantDiscoveredMembers, configOptionsProvider);
+			}
 
-			CreateEnumFile(context, definition, relevantDiscoveredMembers, configOptionsProvider);
 		}
+#pragma warning disable CS0168
+		catch (Exception e)
+#pragma warning restore CS0168
+        {
+            Debugger.Launch();
+            throw;
+        }		
 	}
 	
-	private static void CreateEnumFile(SourceProductionContext context, EnumDefinition definition, List<DiscoveredEnumMember> members, 
-		AnalyzerConfigOptionsProvider configOptionsProvider)
+	private static void CreateEnumFile(SourceProductionContext context, EnumDefinition definition, List<DiscoveredEnumMember> members, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
 		var code = new StringBuilder();
 
@@ -145,7 +156,7 @@ internal static class ImplementationsEnumSourceBuilder
 /// </summary>");
 			
 			code.Append($@"
-{definition.AccessModifier} partial record {definition.Name}{definition.TypeParameters} : ImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}>
+{definition.Accessibility} partial record {definition.Name}{definition.TypeParameters} : ImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}>
 	{definition.BaseTypeGenericConstraints}
 {{	
 ");
@@ -175,9 +186,9 @@ internal static class ImplementationsEnumSourceBuilder
 				var typeName = member.TypeParameters is null && !member.IsConvertibleToConcreteType
 					? $"global::{member.Namespace}.{member.Name}"
 					: $"global::{definition.Namespace}.{definition.BaseTypeName}";
-				
+
 				code.Append(@$"
-	public static {typeName} {member.Name} {{ get; }} {outlineSpaces}= ({typeName})CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value.UninitializedInstance;
+	{member.Accessibility} static {typeName} {member.Name} {{ get; }} {outlineSpaces}= ({typeName})CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value.UninitializedInstance;
 ");
 			}
 
@@ -193,7 +204,7 @@ internal static class ImplementationsEnumSourceBuilder
 /// <summary>
 /// Call this method in order to create discovered enum members while invoking them (on the fly). So enum members are automatically deleted when not being used.
 /// </summary>
-{definition.AccessModifier} static class {definition.Name}Extensions
+{definition.Accessibility} static class {definition.Name}Extensions
 {{
 	public static {definition.Name}{definition.TypeParameters} {ImplementationDiscoverySourceGenerator.GenerateMethodName}{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} member, {definition.BaseTypeName}? value = null, string? comment = null) 
 	{definition.BaseTypeGenericConstraints}

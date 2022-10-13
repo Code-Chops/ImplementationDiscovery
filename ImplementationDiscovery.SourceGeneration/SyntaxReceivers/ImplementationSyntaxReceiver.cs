@@ -69,7 +69,8 @@ internal static class ImplementationSyntaxReceiver
 			filePath: typeDeclarationSyntax.SyntaxTree.FilePath,
 			linePosition: typeDeclarationSyntax.SyntaxTree.GetLineSpan(typeDeclarationSyntax.Span, cancellationToken).StartLinePosition,
 			typeParameters: typeDeclarationSyntax.TypeParameterList?.ToFullString(),
-			isConvertibleToConcreteType: type.IsOrInheritsClass(type => type.Equals(baseType, SymbolEqualityComparer.Default), out _));
+			isConvertibleToConcreteType: type.IsOrInheritsClass(type => type.Equals(baseType, SymbolEqualityComparer.Default), out _),
+			accessibility: type.DeclaredAccessibility.ToString().ToLowerInvariant());
 
 		return member;
 	}
