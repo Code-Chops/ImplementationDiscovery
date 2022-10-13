@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.29.0</Version>
-        <PackageReleaseNotes>Added friendly enum and member names.</PackageReleaseNotes>
+        <Version>0.29.1</Version>
+        <PackageReleaseNotes>Include symbol file with release.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -36,10 +36,6 @@
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <DebugType>none</DebugType>
     </PropertyGroup>
     
     <!-- Creates local nuget packages if in release mode and environment variable LocalNuGetPackagesFolder is configured -->
