@@ -66,18 +66,18 @@ internal static class ImplementationIdSourceBuilder
             var implementationsEnum = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
             
             code.AppendLine($@"
-{member.Declaration} {member.GetName(definition)}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
+{member.Declaration} {member.GetClassName()}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
     {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {implementationsEnum} ImplementationId {{ get; }} = ({implementationsEnum})ImplementationsEnum<{implementationsEnum}, {definition.BaseTypeName}>.GetSingleMember(""{member.GetName(definition)}"");
+	public new static {implementationsEnum} ImplementationId {{ get; }} = ({implementationsEnum})ImplementationsEnum<{implementationsEnum}, {definition.BaseTypeName}>.GetSingleMember(""{member.GetSimpleName(definition)}"");
     public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationsEnum} GetImplementationId() => ImplementationId;
 }}
        
 #nullable restore
 ");
 			
-            var implementationIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.GetName(definition)}.ImplementationId", configOptionsProvider);
+            var implementationIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.GetSimpleName(definition)}.ImplementationId", configOptionsProvider);
             context.AddSource(implementationIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 
             

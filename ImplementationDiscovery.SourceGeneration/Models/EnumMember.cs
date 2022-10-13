@@ -20,7 +20,9 @@ internal record EnumMember : IEnumModel
 		this.Value = value;
 	}
 
-	public string GetName(EnumDefinition definition)
+	public string GetClassName() => this.Name;
+
+	public string GetSimpleName(EnumDefinition definition)
 	{
 		if (definition.BaseTypeName is null) return this.Name;
 		
