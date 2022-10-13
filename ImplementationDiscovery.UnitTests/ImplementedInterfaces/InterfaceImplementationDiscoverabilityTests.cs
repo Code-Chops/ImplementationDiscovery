@@ -5,12 +5,12 @@ public class InterfaceImplementationDiscoverabilityTests
 	[Fact]
 	public void InterfaceImplementationHasCorrectMemberName()
 	{
-		Assert.True(IInterfaceToImplementEnum.InterfaceImplementationMock.GetType().Name	== nameof(InterfaceImplementationMock));
+		Assert.True(InterfaceToImplementEnum.InterfaceImplementationMock.GetType().Name	== nameof(InterfaceImplementationMock));
 	}
 
 	[Fact]
 	public void InterfaceImplementationHasCorrectMemberValue()
 	{
-		Assert.True(IInterfaceToImplementEnum.InterfaceImplementationMock.GetType()			== typeof(InterfaceImplementationMock));
+		Assert.True(InterfaceToImplementEnum.InterfaceImplementationMock.GetType()		== typeof(InterfaceImplementationMock));
 	}
 }

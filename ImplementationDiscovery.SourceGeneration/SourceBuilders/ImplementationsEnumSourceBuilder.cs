@@ -55,13 +55,13 @@ internal static class ImplementationsEnumSourceBuilder
 			.OrderByDescending(member => member.FilePath == definition.FilePath)
 			.GroupBy(member => (member.FilePath, member.LinePosition))
 			.Select(group => group.First())
-			.GroupBy(member => member.Name)
+			.GroupBy(member => member.GetName(definition))
 			.Select(membersByName => membersByName.First())
 			.ToList();
 
 		// Is used for correct enum member outlining.
 		var longestMemberNameLength = members
-			.Select(member => member.Name)
+			.Select(member => member.GetName(definition))
 			.OrderByDescending(name => name.Length)
 			.FirstOrDefault()?.Length ?? 0;
 
@@ -145,10 +145,10 @@ internal static class ImplementationsEnumSourceBuilder
 			
 			foreach (var member in members)
 			{
-				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
+				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetName(definition).Length);
 				
 				code.Append($@"
-/// <item><c><![CDATA[ {member.Name}{outlineSpaces} = {member.Value ?? "?"} ]]></c></item>");
+/// <item><c><![CDATA[ {member.GetName(definition)}{outlineSpaces} = {member.Value ?? "?"} ]]></c></item>");
 			}
 			
 			code.Append($@"
@@ -181,14 +181,14 @@ internal static class ImplementationsEnumSourceBuilder
 				}
 
 				// Create the enum member itself.
-				var outlineSpaces = new String(' ', longestMemberNameLength - member.Name.Length);
+				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetName(definition).Length);
 
 				var typeName = member.TypeParameters is null && !member.IsConvertibleToConcreteType
-					? $"global::{member.Namespace}.{member.Name}"
+					? $"global::{member.Namespace}.{member.GetName(definition)}"
 					: $"global::{definition.Namespace}.{definition.BaseTypeName}";
 
 				code.Append(@$"
-	{member.Accessibility} static {typeName} {member.Name} {{ get; }} {outlineSpaces}= ({typeName})CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value.UninitializedInstance;
+	{member.Accessibility} static {typeName} {member.GetName(definition)} {{ get; }} {outlineSpaces}= ({typeName})CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value.UninitializedInstance;
 ");
 			}
 

@@ -1,4 +1,6 @@
-﻿  namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
+﻿  using System.Text.RegularExpressions;
+
+  namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 internal record EnumDefinition : IEnumModel
 {
@@ -14,11 +16,13 @@ internal record EnumDefinition : IEnumModel
 	public string Accessibility { get; }
 	public bool GenerateImplementationIds { get; }
 	public List<string> Usings { get; }
+
+	private static Regex IsValidName { get; } = new(@"^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)*$");
 	
 	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, bool generateImplementationIds, List<string> usings)
 		: this(
 			customName: customName,
-			name: $"{NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}",
+			name: NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name),
 			typeParameters: baseTypeDeclarationSyntax.TypeParameterList?.ToFullString(),
 			enumNamespace: baseTypeSymbol.ContainingNamespace.IsGlobalNamespace 
 				? null 
@@ -37,7 +41,7 @@ internal record EnumDefinition : IEnumModel
 	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, 
 		string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, bool generateImplementationIds, List<string> usings)
 	{
-		this.Name = customName ?? name.Trim();
+		this.Name = customName ?? $"{GetName()}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}";
 		this.TypeParameters = typeParameters?.Trim();
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 		
@@ -54,5 +58,19 @@ internal record EnumDefinition : IEnumModel
 		this.GenerateImplementationIds = generateImplementationIds;
 
 		this.Usings = usings;
+
+
+		string GetName()
+		{
+			var newName = name;
+			
+			if (newName.EndsWith("Base"))
+				newName = newName.Substring(0, newName.Length - 4);
+
+			if (baseTypeDeclaration?.Contains("interface") == true && newName[0] == 'I')
+				newName = newName.Substring(1);
+			
+			return IsValidName.IsMatch(newName) ? newName : name;
+		}
 	}
 }

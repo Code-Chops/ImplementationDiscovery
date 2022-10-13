@@ -58,7 +58,7 @@ internal static class ImplementationSyntaxReceiver
 		if (attribute is null) return null;
 
 		var member = new DiscoveredEnumMember(
-			enumIdentifier: $"{(baseType.ContainingNamespace.IsGlobalNamespace ? null : $"{baseType.ContainingNamespace}.")}{NameHelpers.GetNameWithoutGenerics(baseType.Name)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}",
+			enumIdentifier: $"{(baseType.ContainingNamespace.IsGlobalNamespace ? null : $"{baseType.ContainingNamespace}.")}{NameHelpers.GetNameWithoutGenerics(baseType.Name)}",
 			name: type.Name,
 			isPartial: typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword)),
 			@namespace: type.ContainingNamespace.IsGlobalNamespace 
