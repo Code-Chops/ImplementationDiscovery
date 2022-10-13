@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.29.3</Version>
-        <PackageReleaseNotes>Enhanced friendly enum member name 2.</PackageReleaseNotes>
+        <Version>0.29.4</Version>
+        <PackageReleaseNotes>Enhanced source generator exception logging.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
