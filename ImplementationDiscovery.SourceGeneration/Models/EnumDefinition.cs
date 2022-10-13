@@ -8,7 +8,7 @@ internal record EnumDefinition : IEnumModel
 	public string Name { get; }
 	public string? TypeParameters { get; }
 	public string? Namespace { get; }
-	public string? BaseTypeName { get; }
+	public string BaseTypeName { get; }
 	public string? BaseTypeDeclaration { get; }
 	public string? BaseTypeGenericConstraints { get; }
 	public TypeKind? BaseTypeTypeKind { get; }
@@ -38,7 +38,7 @@ internal record EnumDefinition : IEnumModel
 	{
 	}
 
-	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string? baseTypeNameIncludingGenerics, string? baseTypeDeclaration, 
+	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string baseTypeNameIncludingGenerics, string? baseTypeDeclaration, 
 		string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, bool generateImplementationIds, List<string> usings)
 	{
 		this.Name = customName ?? $"{GetName()}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}";
@@ -47,7 +47,7 @@ internal record EnumDefinition : IEnumModel
 		
 		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
 
-		this.BaseTypeName = baseTypeNameIncludingGenerics?.Trim();
+		this.BaseTypeName = baseTypeNameIncludingGenerics.Trim();
 		this.BaseTypeDeclaration = baseTypeDeclaration?.Trim();
 		this.BaseTypeGenericConstraints = baseTypeGenericConstraints?.Trim();
 		this.BaseTypeTypeKind = baseTypeTypeKind;

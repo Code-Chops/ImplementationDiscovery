@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.29.5</Version>
-        <PackageReleaseNotes>Fixed implementation ID class name. Fixed static implementation ID assignment. Fixed text align.</PackageReleaseNotes>
+        <Version>0.29.6</Version>
+        <PackageReleaseNotes>Removed accidental removal of Object in implementation ID name.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

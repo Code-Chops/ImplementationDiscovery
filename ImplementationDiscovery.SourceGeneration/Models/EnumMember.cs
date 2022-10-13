@@ -24,7 +24,7 @@ internal record EnumMember : IEnumModel
 
 	public string GetSimpleName(EnumDefinition definition)
 	{
-		if (definition.BaseTypeName is null) return this.Name;
+		if (definition.BaseTypeDeclaration is null) return this.Name;
 		
 		var name = this.Name;
 
