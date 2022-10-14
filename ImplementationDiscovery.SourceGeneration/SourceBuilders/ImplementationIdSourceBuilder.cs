@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -68,7 +67,7 @@ internal static class ImplementationIdSourceBuilder
     {definition.BaseTypeGenericConstraints}
 {{
 
-	public new static {implementationsEnum} ImplementationId {{ get; }} = ({implementationsEnum})ImplementationsEnum<{implementationsEnum}, {definition.BaseTypeName}>.GetSingleMember(""{member.GetSimpleName(definition)}"");
+	public new static {implementationsEnum} ImplementationId {{ get; }} = {implementationsEnum}.{member.GetSimpleName(definition)};
     public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationsEnum} GetImplementationId() => ImplementationId;
 }}
        

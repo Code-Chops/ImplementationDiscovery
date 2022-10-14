@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -183,7 +182,7 @@ internal static class ImplementationsEnumSourceBuilder
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetSimpleName(definition).Length);
 
 				code.Append(@$"
-	{member.Accessibility} static DiscoveredObject<{definition.BaseTypeName}> {member.GetSimpleName(definition)} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value}))).Value;
+	{member.Accessibility} static {definition.Name}{definition.TypeParameters} {member.GetSimpleName(definition)} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value})));
 ");
 			}
 

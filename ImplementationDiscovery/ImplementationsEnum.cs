@@ -11,6 +11,9 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	where TSelf : ImplementationsEnum<TSelf, TBaseType>, new() 
 	where TBaseType : notnull
 {
+	public TBaseType UninitializedInstance => this.Value.UninitializedInstance;
+	public Type Type => this.Value.Type;
+	
 	/// <summary>
 	/// Creates a new enum member and returns it.
 	/// </summary>
@@ -42,7 +45,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 
 	private static string GetNameWithoutBacktick(DiscoveredObject<TBaseType> value)
 	{
-		var name = value.UninitializedInstance.GetType().Name;
+		var name = value.Type.Name;
 		var index = name.IndexOf('`');
 		
 		return index == -1 

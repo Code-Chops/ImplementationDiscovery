@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.30.0</Version>
-        <PackageReleaseNotes>Removed functionality of returning concrete type in enum.</PackageReleaseNotes>
+        <Version>0.30.1</Version>
+        <PackageReleaseNotes>Removed functionality of returning concrete type in enum 2.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

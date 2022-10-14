@@ -45,8 +45,8 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 
 	#endregion
 
-	public TBaseType UninitializedInstance { get; }
-	private Type Type { get; }
+	internal TBaseType UninitializedInstance { get; }
+	internal Type Type { get; }
 	private ConstructorInfo? EmptyConstructor { get; }
 	
 	/// <summary>

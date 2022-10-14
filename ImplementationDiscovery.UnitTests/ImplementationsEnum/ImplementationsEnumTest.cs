@@ -5,8 +5,8 @@ public class ImplementationsEnumTest
 	[Fact]
 	public void ImplementationsEnum_ProvidedValue_IsCorrect()
 	{
-		Assert.Equal(typeof(Cat), ImplementationsEnumMock.Cat.Value.UninitializedInstance.GetType());
-		Assert.Equal(typeof(Dog), ImplementationsEnumMock.Dog.Value.UninitializedInstance.GetType());
+		Assert.Equal(typeof(Cat), ImplementationsEnumMock.Cat.Value.Type);
+		Assert.Equal(typeof(Dog), ImplementationsEnumMock.Dog.Value.Type);
 	}
 
 	[Fact]
