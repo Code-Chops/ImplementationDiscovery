@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.29.7</Version>
-        <PackageReleaseNotes>Source generation exception doesn't throw anymore.</PackageReleaseNotes>
+        <Version>0.30.0</Version>
+        <PackageReleaseNotes>Removed functionality of returning concrete type in enum.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
