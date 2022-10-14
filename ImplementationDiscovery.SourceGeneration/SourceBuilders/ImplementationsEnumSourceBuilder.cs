@@ -206,7 +206,7 @@ internal static class ImplementationsEnumSourceBuilder
 
 	public static IEnumerable<{definition.BaseTypeName}> GetDiscoveredObjects{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetMembers().Select(member => member.Value.UninitializedInstance);
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetMembers().Select(member => member.UninitializedInstance);
 
 	#region ForwardInstanceMethodsToStatic 
 	
