@@ -40,8 +40,6 @@ internal static class ImplementationsEnumSourceBuilder
 #pragma warning restore CS0168
         {
 	        context.AddSource($"{nameof(ImplementationsEnumSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From(e.ToString(), Encoding.UTF8));
-	        Debugger.Launch();
-            throw;
         }		
 	}
 	

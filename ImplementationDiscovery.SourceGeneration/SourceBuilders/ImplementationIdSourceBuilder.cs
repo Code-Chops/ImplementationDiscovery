@@ -36,8 +36,6 @@ internal static class ImplementationIdSourceBuilder
 #pragma warning restore CS0168
         {
             context.AddSource($"{nameof(ImplementationIdSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From(e.ToString(), Encoding.UTF8));
-            Debugger.Launch();
-            throw;
         }
         
     }

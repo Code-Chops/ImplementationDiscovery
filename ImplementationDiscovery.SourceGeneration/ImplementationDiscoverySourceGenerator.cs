@@ -35,8 +35,6 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 #pragma warning restore CS0168
 		{
 			initializationContext.RegisterPostInitializationOutput(c => c.AddSource($"{nameof(ImplementationDiscoverySourceGenerator)}_Exception_{Guid.NewGuid()}", SourceText.From(e.ToString(), Encoding.UTF8)));
-			Debugger.Launch();
-			throw;
 		}
 	}
 
