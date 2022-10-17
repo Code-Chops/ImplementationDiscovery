@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.30.2</Version>
-        <PackageReleaseNotes>Generated ImplementationsEnum extension methods fix.</PackageReleaseNotes>
+        <Version>0.30.3</Version>
+        <PackageReleaseNotes>Updated package references.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -60,7 +60,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.0.2" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.0.3" />
     </ItemGroup>
 	
 </Project>
