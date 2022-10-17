@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.30.4</Version>
-        <PackageReleaseNotes>Fixed duplicate key error.</PackageReleaseNotes>
+        <Version>0.31.0</Version>
+        <PackageReleaseNotes>Added Singleton implementation ID functionality.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

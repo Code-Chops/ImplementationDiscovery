@@ -94,11 +94,12 @@ internal static class ImplementationSyntaxReceiver
 		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;
 
 		var definition = new EnumDefinition(
-			customName: discoverableAttribute?.ConstructorArguments.FirstOrDefault().Value?.ToString(),
+			customName: discoverableAttribute!.ConstructorArguments.FirstOrDefault().Value?.ToString(),
 			baseTypeDeclarationSyntax: typeDeclarationSyntax,
 			baseTypeSymbol: baseType,
 			filePath: filePath,
-			generateImplementationIds: discoverableAttribute?.ConstructorArguments.Skip(1).FirstOrDefault().Value is true,
+			generateImplementationIds: discoverableAttribute.GetArgumentOrDefault("generateImplementationIds", defaultValue: false),
+			hasSingletonImplementations: discoverableAttribute.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
 			usings: typeDeclarationSyntax.GetUsings().ToList());
 
 		return definition;

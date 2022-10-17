@@ -15,11 +15,13 @@ internal record EnumDefinition : IEnumModel
 	public string FilePath { get; }
 	public string Accessibility { get; }
 	public bool GenerateImplementationIds { get; }
+	public bool HasSingletonImplementations { get; }
 	public List<string> Usings { get; }
 
 	private static Regex IsValidName { get; } = new(@"^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)*$");
 	
-	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, bool generateImplementationIds, List<string> usings)
+	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, 
+		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings)
 		: this(
 			customName: customName,
 			name: NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name),
@@ -34,12 +36,14 @@ internal record EnumDefinition : IEnumModel
 			filePath: filePath, 
 			accessibility: baseTypeSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
 			generateImplementationIds: generateImplementationIds,
+			hasSingletonImplementations: hasSingletonImplementations,
 			usings: usings)
 	{
 	}
 
-	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string baseTypeNameIncludingGenerics, string? baseTypeDeclaration, 
-		string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, bool generateImplementationIds, List<string> usings)
+	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string baseTypeNameIncludingGenerics, 
+		string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, 
+		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings)
 	{
 		this.Name = customName ?? $"{GetName()}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}";
 		this.TypeParameters = typeParameters?.Trim();
@@ -56,7 +60,8 @@ internal record EnumDefinition : IEnumModel
 		this.Accessibility = accessibility.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
 
 		this.GenerateImplementationIds = generateImplementationIds;
-
+		this.HasSingletonImplementations = hasSingletonImplementations;
+		
 		this.Usings = usings;
 
 

@@ -44,8 +44,9 @@ internal static class ImplementationIdSourceBuilder
     private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, EnumDefinition definition, 
         IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
-        if (!definition.GenerateImplementationIds) return;
-
+        if (!definition.GenerateImplementationIds && !definition.HasSingletonImplementations) return;
+        if (definition.HasSingletonImplementations && !definition.GenerateImplementationIds) return;
+        
         var partialMembers = relevantDiscoveredMembers.Where(m => m.IsPartial);
 		
         foreach (var member in partialMembers)
@@ -63,14 +64,26 @@ internal static class ImplementationIdSourceBuilder
 ");
 
             var implementationsEnum = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
-            
+
             code.AppendLine($@"
 {member.Declaration} {member.GetClassName()}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
     {definition.BaseTypeGenericConstraints}
 {{
+");
 
+            if (definition.HasSingletonImplementations)
+            {
+                code.AppendLine($@"
+	public IId Id => ImplementationId;
+");
+            
+                code.AppendLine($@"
 	public new static {implementationsEnum} ImplementationId {{ get; }} = {implementationsEnum}.{member.GetSimpleName(definition)};
     public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationsEnum} GetImplementationId() => ImplementationId;
+");
+            }
+
+            code.AppendLine($@"
 }}
        
 #nullable restore

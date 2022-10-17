@@ -74,13 +74,14 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			filePath: AllImplementationsEnumName,
 			accessibility: "public",
 			generateImplementationIds: false,
+			hasSingletonImplementations: false,
 			usings: new List<string>());
 		
 		definitions.Add(globalEnumDefinition);
 
 		members.AddRange(globallyListableEnumMembers
 			.Select((definition, index) => new DiscoveredEnumMember(
-				enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}", 
+				enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}",
 				name: NameHelpers.GetNameWithoutGenerics(definition.Name), 
 				isPartial: false, 
 				@namespace: definition.Namespace, 
