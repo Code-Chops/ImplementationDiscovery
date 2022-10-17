@@ -14,7 +14,10 @@ internal static class ImplementationsEnumSourceBuilder
 		try
 		{
 			if (definitions.Count == 0) return;
-			var enumDefinitionsByIdentifier = definitions.ToDictionary(d => d.EnumIdentifier);
+			
+			var enumDefinitionsByIdentifier = definitions
+				.GroupBy(d => d.EnumIdentifier)
+				.ToDictionary(group => group.Key, group => group.First());
 	
 			// Get the discovered members and their definition.
 			// Exclude the members that have no definition.
@@ -38,7 +41,7 @@ internal static class ImplementationsEnumSourceBuilder
 		catch (Exception e)
 #pragma warning restore CS0168
         {
-	        context.AddSource($"{nameof(ImplementationsEnumSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From(e.ToString(), Encoding.UTF8));
+	        context.AddSource($"{nameof(ImplementationsEnumSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8));
         }		
 	}
 	

@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.30.3</Version>
-        <PackageReleaseNotes>Updated package references.</PackageReleaseNotes>
+        <Version>0.30.4</Version>
+        <PackageReleaseNotes>Fixed duplicate key error.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

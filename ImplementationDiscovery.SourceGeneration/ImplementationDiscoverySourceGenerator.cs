@@ -33,7 +33,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		catch (Exception e)
 #pragma warning restore CS0168
 		{
-			initializationContext.RegisterPostInitializationOutput(c => c.AddSource($"{nameof(ImplementationDiscoverySourceGenerator)}_Exception_{Guid.NewGuid()}", SourceText.From(e.ToString(), Encoding.UTF8)));
+			initializationContext.RegisterPostInitializationOutput(c => c.AddSource($"{nameof(ImplementationDiscoverySourceGenerator)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8)));
 		}
 	}
 

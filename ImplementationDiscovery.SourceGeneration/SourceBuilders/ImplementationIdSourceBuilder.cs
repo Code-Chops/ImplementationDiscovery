@@ -12,7 +12,9 @@ internal static class ImplementationIdSourceBuilder
         {
             if (definitions.Count == 0) return;
             
-		    var enumDefinitionsByIdentifier = definitions.ToDictionary(d => d.EnumIdentifier);
+		    var enumDefinitionsByIdentifier = definitions
+                .GroupBy(d => d.EnumIdentifier)
+                .ToDictionary(group => group.Key, group => group.First());
             
 		    // Get the discovered members and their definition.
 		    // Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
@@ -34,7 +36,7 @@ internal static class ImplementationIdSourceBuilder
         catch (Exception e)
 #pragma warning restore CS0168
         {
-            context.AddSource($"{nameof(ImplementationIdSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From(e.ToString(), Encoding.UTF8));
+            context.AddSource($"{nameof(ImplementationIdSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8));
         }
         
     }
