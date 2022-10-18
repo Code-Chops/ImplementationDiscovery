@@ -32,13 +32,16 @@ internal static class ImplementationIdSourceBuilder
                 CreateDiscoveredImplementationIdFiles(context, definition, members, configOptionsProvider);
             }
         }
+        
 #pragma warning disable CS0168
         catch (Exception e)
 #pragma warning restore CS0168
         {
+            var descriptor = new DiagnosticDescriptor(nameof(ImplementationIdSourceBuilder), "Error", $"{nameof(ImplementationIdSourceBuilder)} failed to generate due to an error. Please inform CodeChops (www.CodeChops.nl). Error: {e}", "Compilation", DiagnosticSeverity.Error, isEnabledByDefault: true);
+            context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
+
             context.AddSource($"{nameof(ImplementationIdSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8));
         }
-        
     }
     
     private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, EnumDefinition definition, 

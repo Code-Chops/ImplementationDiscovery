@@ -41,6 +41,9 @@ internal static class ImplementationsEnumSourceBuilder
 		catch (Exception e)
 #pragma warning restore CS0168
         {
+	        var descriptor = new DiagnosticDescriptor(nameof(ImplementationsEnumSourceBuilder), "Error", $"{nameof(ImplementationsEnumSourceBuilder)} failed to generate due to an error. Please inform CodeChops (www.CodeChops.nl). Error: {e}", "Compilation", DiagnosticSeverity.Error, isEnabledByDefault: true);
+	        context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
+	        
 	        context.AddSource($"{nameof(ImplementationsEnumSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8));
         }		
 	}
