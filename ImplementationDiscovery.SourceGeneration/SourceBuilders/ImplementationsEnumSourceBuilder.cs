@@ -12,6 +12,8 @@ internal static class ImplementationsEnumSourceBuilder
 	public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
 		List<EnumDefinition> definitions, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
+		if (definitions.Count == 0) return;
+		
 		try
 		{
 			var enumDefinitionsByIdentifier = definitions
@@ -32,8 +34,6 @@ internal static class ImplementationsEnumSourceBuilder
 					? members.ToList()
 					: new List<DiscoveredEnumMember>();
 
-				if (relevantDiscoveredMembers.Count == 0) continue;
-				
 				CreateEnumFile(context, definition, relevantDiscoveredMembers, configOptionsProvider);
 			}
 

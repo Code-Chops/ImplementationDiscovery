@@ -8,11 +8,11 @@ internal static class ImplementationIdSourceBuilder
     public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
         List<EnumDefinition> definitions, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
+        if (definitions.Count == 0) return;
+        
         try
         {
-            if (definitions.Count == 0) return;
-            
-		    var enumDefinitionsByIdentifier = definitions
+            var enumDefinitionsByIdentifier = definitions
                 .GroupBy(d => d.EnumIdentifier)
                 .ToDictionary(group => group.Key, group => group.First());
             
