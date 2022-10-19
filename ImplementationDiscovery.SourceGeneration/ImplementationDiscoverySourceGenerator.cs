@@ -43,8 +43,8 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 	{
 		var enumEntities = context.SyntaxProvider
 			.CreateSyntaxProvider(
-				predicate: ImplementationSyntaxReceiver.CheckIfIsProbablyImplementation,
-				transform: static (context, ct)	=> ImplementationSyntaxReceiver.GetImplementation(context, ct))
+				predicate: ImplementationSyntaxReceiver.CheckIfIsProbablyDiscoverableBaseOrImplementation,
+				transform: static (context, ct)	=> ImplementationSyntaxReceiver.GetImplementation(context, ct).Append(ImplementationSyntaxReceiver.GetBaseType(context, ct)))
 			.Where(static definition => definition is not null)
 			.SelectMany((s, _) => s.ToList())
 			.Collect();

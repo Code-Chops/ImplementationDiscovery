@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.32.2</Version>
-        <PackageReleaseNotes>Create implementation enum when no members 2.</PackageReleaseNotes>
+        <Version>0.32.3</Version>
+        <PackageReleaseNotes>Create implementation enum when no members 3.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
