@@ -100,7 +100,7 @@ internal static class ImplementationSyntaxReceiver
 			return null;
 
 		// ReSharper disable once SimplifyLinqExpressionUseAll
-		if (baseType.IsStatic || !typeDeclarationSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
+		if (baseType.IsStatic)
 			return null;
 
 		if (discoverableAttribute is null)
