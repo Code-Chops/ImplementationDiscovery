@@ -14,8 +14,6 @@ internal static class ImplementationsEnumSourceBuilder
 	{
 		try
 		{
-			if (definitions.Count == 0) return;
-			
 			var enumDefinitionsByIdentifier = definitions
 				.GroupBy(d => d.EnumIdentifier)
 				.ToDictionary(group => group.Key, group => group.First());
