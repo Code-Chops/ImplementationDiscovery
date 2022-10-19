@@ -23,8 +23,4 @@ internal record DiscoveredEnumMember : EnumMember
 		this.IsConvertibleToConcreteType = isConvertibleToConcreteType;
 		this.Accessibility = accessibility;
 	}
-
-	public string GetConcreteTypeName(EnumDefinition definition) => this.TypeParameters is null && !this.IsConvertibleToConcreteType
-		? $"global::{this.Namespace}.{this.GetSimpleName(definition)}"
-		: $"global::{definition.Namespace}.{definition.BaseTypeName}";
 }

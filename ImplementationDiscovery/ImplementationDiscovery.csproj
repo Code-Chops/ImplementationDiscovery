@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.31.1</Version>
-        <PackageReleaseNotes>Updated packages. Added exception diagnostic reporting.</PackageReleaseNotes>
+        <Version>0.32.0</Version>
+        <PackageReleaseNotes>Added cross-package support.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

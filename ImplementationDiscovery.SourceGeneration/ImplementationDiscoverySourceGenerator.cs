@@ -13,7 +13,6 @@ namespace CodeChops.ImplementationDiscovery.SourceGeneration;
 [Generator]
 public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 {
-	internal const string GenerateMethodName				= "CreateMember";
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
 	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
@@ -44,9 +43,10 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 	{
 		var enumEntities = context.SyntaxProvider
 			.CreateSyntaxProvider(
-				predicate: ImplementationSyntaxReceiver.CheckIfIsProbablyDiscoverableBaseOrImplementation,
-				transform: static (context, ct)		=> ImplementationSyntaxReceiver.GetBaseType(context, ct) ?? ImplementationSyntaxReceiver.GetEnumMemberFromImplementation(context, ct))
+				predicate: ImplementationSyntaxReceiver.CheckIfIsProbablyImplementation,
+				transform: static (context, ct)	=> ImplementationSyntaxReceiver.GetImplementation(context, ct))
 			.Where(static definition => definition is not null)
+			.SelectMany((s, _) => s.ToList())
 			.Collect();
 		
 		return enumEntities!;

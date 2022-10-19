@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -32,7 +33,9 @@ internal static class ImplementationsEnumSourceBuilder
 				var relevantDiscoveredMembers = relevantDiscoveredMembersByDefinitions.TryGetValue(definition.EnumIdentifier, out var members)
 					? members.ToList()
 					: new List<DiscoveredEnumMember>();
-	
+
+				if (relevantDiscoveredMembers.Count == 0) continue;
+				
 				CreateEnumFile(context, definition, relevantDiscoveredMembers, configOptionsProvider);
 			}
 
@@ -201,15 +204,8 @@ internal static class ImplementationsEnumSourceBuilder
 
 
 		string GetExtensionMethod() => $@"
-/// <summary>
-/// Call this method in order to create discovered enum members while invoking them (on the fly). So enum members are automatically deleted when not being used.
-/// </summary>
 {definition.Accessibility} static class {definition.Name}Extensions
 {{
-	public static {definition.Name}{definition.TypeParameters} {ImplementationDiscoverySourceGenerator.GenerateMethodName}{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} member, {definition.BaseTypeName}? value = null, string? comment = null) 
-	{definition.BaseTypeGenericConstraints}
-		=> member;
-
 	public static IEnumerable<{definition.BaseTypeName}> GetDiscoveredObjects{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
 		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetMembers().Select(member => member.UninitializedInstance);

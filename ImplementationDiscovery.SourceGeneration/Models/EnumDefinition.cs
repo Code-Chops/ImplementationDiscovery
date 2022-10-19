@@ -29,7 +29,7 @@ internal record EnumDefinition : IEnumModel
 			enumNamespace: baseTypeSymbol.ContainingNamespace.IsGlobalNamespace 
 				? null 
 				: baseTypeSymbol.ContainingNamespace.ToDisplayString(),
-			baseTypeNameIncludingGenerics: baseTypeSymbol.GetTypeNameWithGenericParameters(),
+			baseTypeNameIncludingGenerics: baseTypeSymbol.Name + baseTypeDeclarationSyntax.TypeParameterList?.ToFullString(),
 			baseTypeDeclaration: baseTypeSymbol.GetObjectDeclaration(),
 			baseTypeGenericConstraints: baseTypeDeclarationSyntax.GetClassGenericConstraints(),
 			baseTypeTypeKind: baseTypeSymbol.TypeKind,
