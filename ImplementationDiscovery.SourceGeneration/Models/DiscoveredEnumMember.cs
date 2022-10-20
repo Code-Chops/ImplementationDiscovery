@@ -11,7 +11,8 @@ internal record DiscoveredEnumMember : EnumMember
 	public bool IsConvertibleToConcreteType { get; }
 	public string Accessibility { get; }
 
-	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value, string filePath, LinePosition linePosition, string? typeParameters, bool isConvertibleToConcreteType, string accessibility)
+	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value, 
+		string filePath, LinePosition linePosition, string? typeParameters, bool isConvertibleToConcreteType, string accessibility)
 		: base(enumIdentifier, name, value)
 	{
 		this.FilePath = filePath;

@@ -11,9 +11,9 @@ internal record EnumMember : IEnumModel
 	/// </summary>
 	public string EnumIdentifier { get; }
 	private string Name { get; }
-	public object? Value { get; }
+	public string? Value { get; }
 
-	public EnumMember(string enumIdentifier, string name, object? value = null)
+	public EnumMember(string enumIdentifier, string name, string? value = null)
 	{
 		this.EnumIdentifier = String.IsNullOrWhiteSpace(enumIdentifier) ? throw new ArgumentNullException(nameof(enumIdentifier)) : enumIdentifier;
 		this.Name = String.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name;
@@ -28,11 +28,11 @@ internal record EnumMember : IEnumModel
 		
 		var name = this.Name;
 
-		if (name.StartsWith(definition.BaseTypeName))
-			name = name.Substring(definition.BaseTypeName.Length);
+		if (name.StartsWith(definition.BaseTypeNameIncludingGenerics))
+			name = name.Substring(definition.BaseTypeNameIncludingGenerics.Length);
 		
-		if (name.EndsWith(definition.BaseTypeName))
-			name = name.Substring(0, name.Length - definition.BaseTypeName.Length);
+		if (name.EndsWith(definition.BaseTypeNameIncludingGenerics))
+			name = name.Substring(0, name.Length - definition.BaseTypeNameIncludingGenerics.Length);
 		
 		return IsValidName.IsMatch(name) ? name : this.Name;
 	}

@@ -16,7 +16,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
 	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
-	internal const string ImplementationsEnumName			= "Enum";
+	internal const string ImplementationsEnumNameSuffix		= "Enum";
 	
 	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
 	{
@@ -54,13 +54,15 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 
 	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumModel> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
-		entities = entities as List<IEnumModel> ?? entities.ToList();
-		var definitions = entities.OfType<EnumDefinition>().ToList();
-		var members = entities.OfType<DiscoveredEnumMember>().ToList();
+//		Debugger.Launch();
 
-		var globallyListableEnumMembers = definitions.Where(definition => definition.TypeParameters is null && definition.BaseTypeName != nameof(Object));
+		entities = entities as List<IEnumModel> ?? entities.ToList();
+		var allDefinitions = entities.OfType<EnumDefinition>().ToList();
+		var allMembers = entities.OfType<DiscoveredEnumMember>().ToList();
 
 		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
+
+		var globallyListableEnumMembers = allDefinitions.Where(definition => definition.TypeParameters is null && definition.BaseTypeNameIncludingGenerics != nameof(Object));
 
 		var globalEnumDefinition = new EnumDefinition(
 			customName: null,
@@ -72,14 +74,16 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			baseTypeGenericConstraints: null,
 			baseTypeTypeKind: null,
 			filePath: AllImplementationsEnumName,
-			accessibility: "public",
+			accessibility: "internal",
 			generateImplementationIds: false,
 			hasSingletonImplementations: false,
-			usings: new List<string>());
+			usings: new List<string>(),
+			isPartial: true, 
+			externalDefinition: null);
 		
-		definitions.Add(globalEnumDefinition);
+		allDefinitions.Add(globalEnumDefinition);
 
-		members.AddRange(globallyListableEnumMembers
+		allMembers.AddRange(globallyListableEnumMembers
 			.Select((definition, index) => new DiscoveredEnumMember(
 				enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}",
 				name: NameHelpers.GetNameWithoutGenerics(definition.Name), 
@@ -93,7 +97,26 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 				isConvertibleToConcreteType: false,
 				accessibility: definition.Accessibility)));
 
-		ImplementationsEnumSourceBuilder.CreateSource(context, members, definitions, configOptionsProvider);
-		ImplementationIdSourceBuilder.CreateSource(context, members, definitions, configOptionsProvider);
+		var allEnums = CombineDiscoveredMembersAndDefinitions(allMembers, allDefinitions).ToList();
+
+		ImplementationsEnumSourceBuilder.CreateSource(context, allEnums.ToList(), configOptionsProvider);
+		ImplementationIdSourceBuilder.CreateSource(context, allEnums.ToList(), configOptionsProvider);
+	}
+
+	internal static IEnumerable<DiscoveredEnum> CombineDiscoveredMembersAndDefinitions(IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, IEnumerable<EnumDefinition> definitions)
+	{
+		var definitionsByIdentifier = definitions
+			.GroupBy(definition => definition.EnumIdentifier)
+			.ToDictionary(group => group.Key, group => group.First());
+		
+		var membersByIdentifier = allDiscoveredMembers
+			.GroupBy(d => d.EnumIdentifier)
+			.ToDictionary(group => group.Key, group => group.ToList());
+            
+		var relevantDiscoveredMembersByDefinitions = definitionsByIdentifier
+			.ToDictionary(group => group.Value, group => membersByIdentifier.TryGetValue(group.Key, out var members) ? members : new List<DiscoveredEnumMember>())
+			.Select(group => new DiscoveredEnum(group.Key, group.Value.ToImmutableList()));
+		
+		return relevantDiscoveredMembersByDefinitions;
 	}
 }

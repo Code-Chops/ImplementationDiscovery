@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -9,35 +8,16 @@ internal static class ImplementationsEnumSourceBuilder
 	/// <summary>
 	/// Creates a partial record of the enum definition which includes the discovered enum members. It also generates an extension class for the explicit enum definitions.
 	/// </summary>
-	public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
-		List<EnumDefinition> definitions, AnalyzerConfigOptionsProvider configOptionsProvider)
+	public static void CreateSource(SourceProductionContext context, List<DiscoveredEnum> discoveredEnums, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
-		if (definitions.Count == 0) return;
+		if (discoveredEnums.Count == 0) return;
 		
 		try
 		{
-			var enumDefinitionsByIdentifier = definitions
-				.GroupBy(d => d.EnumIdentifier)
-				.ToDictionary(group => group.Key, group => group.First());
-	
-			// Get the discovered members and their definition.
-			// Exclude the members that have no definition.
-			var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
-				.GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
-				.Where(group => group.Key is not null)
-				.GroupBy(group => group.Key!.EnumIdentifier)
-				.ToDictionary(group => group.Key, group => group.First());
-	
-			foreach (var definition in enumDefinitionsByIdentifier.Values)
-			{
-				var relevantDiscoveredMembers = relevantDiscoveredMembersByDefinitions.TryGetValue(definition.EnumIdentifier, out var members)
-					? members.ToList()
-					: new List<DiscoveredEnumMember>();
-
-				CreateEnumFile(context, definition, relevantDiscoveredMembers, configOptionsProvider);
-			}
-
+			foreach (var discoveredEnum in discoveredEnums)
+				CreateEnumFile(context, discoveredEnum, configOptionsProvider);
 		}
+		
 #pragma warning disable CS0168
 		catch (Exception e)
 #pragma warning restore CS0168
@@ -49,14 +29,16 @@ internal static class ImplementationsEnumSourceBuilder
         }		
 	}
 	
-	private static void CreateEnumFile(SourceProductionContext context, EnumDefinition definition, List<DiscoveredEnumMember> members, AnalyzerConfigOptionsProvider configOptionsProvider)
+	private static void CreateEnumFile(SourceProductionContext context, DiscoveredEnum discoveredEnum, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
 		var code = new StringBuilder();
 
+		var definition = discoveredEnum.Definition;
+		
 		// Place the members that are discovered in the enum definition file itself first. The order can be relevant because the value of enum members can be implicitly incremental.
 		// Do a distinct on the file path and line position so the members will be deduplicated while typing their invocation.
 		// Also do a distinct on the member name.		
-		members = members
+		var members = discoveredEnum.Members
 			.OrderByDescending(member => member.FilePath == definition.FilePath)
 			.GroupBy(member => (member.FilePath, member.LinePosition))
 			.Select(group => group.First())
@@ -114,14 +96,14 @@ internal static class ImplementationsEnumSourceBuilder
 
 		string? GetImplementationIdProperty()
 		{
-			if (definition.BaseTypeDeclaration is null) return null;
+			if (definition.BaseTypeDeclaration is null || !definition.IsPartial || definition.ExternalDefinition is not null) return null;
 
 			var code = new StringBuilder();
 
 			var implementationsEnum = $"{definition.Name}{definition.TypeParameters}";
 			
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeName} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
+{definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
@@ -159,9 +141,15 @@ internal static class ImplementationsEnumSourceBuilder
 			code.Append($@"
 /// </list>
 /// </summary>");
+
+			var baseType = definition.ExternalDefinition is not null
+				? $"{definition.ExternalDefinition.Namespace}.{definition.ExternalDefinition.Name}{definition.ExternalDefinition.TypeParameters}"
+				: $"ImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeNameIncludingGenerics}>";
+			
+			var concreteDefinition = definition.ExternalDefinition ?? definition;
 			
 			code.Append($@"
-{definition.Accessibility} partial record {definition.Name}{definition.TypeParameters} : ImplementationsEnum<{definition.Name}{definition.TypeParameters}, {definition.BaseTypeName}>
+{definition.Accessibility} partial record {definition.Name}{definition.TypeParameters} : {baseType}
 	{definition.BaseTypeGenericConstraints}
 {{	
 ");
@@ -189,7 +177,7 @@ internal static class ImplementationsEnumSourceBuilder
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetSimpleName(definition).Length);
 
 				code.Append(@$"
-	{member.Accessibility} static {definition.Name}{definition.TypeParameters} {member.GetSimpleName(definition)} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeName}>(typeof({member.Value})));
+	{member.Accessibility} static {concreteDefinition.Name}{concreteDefinition.TypeParameters} {member.GetSimpleName(definition)} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value})));
 ");
 			}
 
@@ -201,45 +189,50 @@ internal static class ImplementationsEnumSourceBuilder
 		}
 
 
-		string GetExtensionMethod() => $@"
+		string? GetExtensionMethod()
+		{
+			if (definition.ExternalDefinition is not null)
+				return null;
+			
+			return $@"
 {definition.Accessibility} static class {definition.Name}Extensions
 {{
-	public static IEnumerable<{definition.BaseTypeName}> GetDiscoveredObjects{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
+	public static IEnumerable<{definition.BaseTypeNameIncludingGenerics}> GetDiscoveredObjects{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetMembers().Select(member => member.UninitializedInstance);
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMembers().Select(member => member.UninitializedInstance);
 
 	#region ForwardInstanceMethodsToStatic 
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetDefaultValue""/>
-	public static DiscoveredObject<{definition.BaseTypeName}> GetDefaultValue{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetDefaultValue""/>
+	public static DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> GetDefaultValue{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetDefaultValue();
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetDefaultValue();
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetMemberCount""/>
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetMemberCount""/>
 	public static int GetMemberCount{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetMemberCount();
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMemberCount();
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetUniqueValueCount""/>
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetUniqueValueCount""/>
 	public static int GetUniqueValueCount{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetUniqueValueCount();
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetUniqueValueCount();
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetMembers()""/>
-	public static IEnumerable<IImplementationsEnum<{definition.BaseTypeName}>> GetMembers{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetMembers()""/>
+	public static IEnumerable<IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>> GetMembers{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetMembers();
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMembers();
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetValues()""/>
-	public static IEnumerable<DiscoveredObject<{definition.BaseTypeName}>> GetValues{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetValues()""/>
+	public static IEnumerable<DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>> GetValues{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetValues();
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetValues();
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.TryGetSingleMember(string, out {definition.BaseTypeName})""/>
-	public static bool TryGetSingleMember{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, string memberName, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeName}>? member)
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.TryGetSingleMember(string, out {definition.BaseTypeNameIncludingGenerics})""/>
+	public static bool TryGetSingleMember{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, string memberName, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>? member)
 	{definition.BaseTypeGenericConstraints}
 	{{
-		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.TryGetSingleMember(memberName, out {definition.Name}{definition.TypeParameters}? foundMember))
+		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberName, out {definition.Name}{definition.TypeParameters}? foundMember))
 		{{
 			member = null;
 			return false;
@@ -249,16 +242,16 @@ internal static class ImplementationsEnumSourceBuilder
 		return true;
 	}}
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetSingleMember(string)""/>
-	public static IImplementationsEnum<{definition.BaseTypeName}> GetSingleMember{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, string memberName) 
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetSingleMember(string)""/>
+	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetSingleMember{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, string memberName) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetSingleMember(memberName);
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetSingleMember(memberName);
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.TryGetSingleMember(DiscoveredObject, out {definition.BaseTypeName}?)""/>
-	public static bool TryGetSingleMember{definition.TypeParameters}(DiscoveredObject<{definition.BaseTypeName}> memberValue, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeName}>? member)
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.TryGetSingleMember(DiscoveredObject, out {definition.BaseTypeNameIncludingGenerics}?)""/>
+	public static bool TryGetSingleMember{definition.TypeParameters}(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>? member)
 	{definition.BaseTypeGenericConstraints}
 	{{
-		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.TryGetSingleMember(memberValue, out {definition.Name}{definition.TypeParameters}? foundMember))
+		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberValue, out {definition.Name}{definition.TypeParameters}? foundMember))
 		{{
 			member = null;
 			return false;
@@ -268,16 +261,16 @@ internal static class ImplementationsEnumSourceBuilder
 		return true;
 	}}
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetSingleMember(DiscoveredObject)""/>
-	public static IImplementationsEnum<{definition.BaseTypeName}> GetSingleMember{definition.TypeParameters}(DiscoveredObject<{definition.BaseTypeName}> memberValue) 
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetSingleMember(DiscoveredObject)""/>
+	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetSingleMember{definition.TypeParameters}(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetSingleMember(memberValue);
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetSingleMember(memberValue);
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.TryGetMembers(DiscoveredObject, out IReadOnlyCollection{{{definition.BaseTypeName}}}?)""/>
-	public static bool TryGetMembers{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, DiscoveredObject<{definition.BaseTypeName}> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<IImplementationsEnum<{definition.BaseTypeName}>>? members)
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.TryGetMembers(DiscoveredObject, out IReadOnlyCollection{{{definition.BaseTypeNameIncludingGenerics}}}?)""/>
+	public static bool TryGetMembers{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>>? members)
 	{definition.BaseTypeGenericConstraints}
 	{{
-		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.TryGetMembers(memberValue, out IReadOnlyCollection<{definition.Name}{definition.TypeParameters}>? foundMembers))
+		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetMembers(memberValue, out IReadOnlyCollection<{definition.Name}{definition.TypeParameters}>? foundMembers))
 		{{
 			members = null;
 			return false;
@@ -287,13 +280,14 @@ internal static class ImplementationsEnumSourceBuilder
 		return true;
 	}}
 	
-	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeName}, DiscoveredObject}}.GetMembers(DiscoveredObject)""/>
-	public static IEnumerable<IImplementationsEnum<{definition.BaseTypeName}>> GetMembers{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, DiscoveredObject<{definition.BaseTypeName}> memberValue) 
+	/// <inheritdoc cref=""MagicEnumCore{{{definition.BaseTypeNameIncludingGenerics}, DiscoveredObject}}.GetMembers(DiscoveredObject)""/>
+	public static IEnumerable<IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>> GetMembers{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue) 
 	{definition.BaseTypeGenericConstraints}
-		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeName}>>.GetMembers(memberValue);
+		=> MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMembers(memberValue);
 	
 	#endregion
 }}
 ";
+		}
 	}
 }

@@ -5,32 +5,14 @@ namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 
 internal static class ImplementationIdSourceBuilder
 {
-    public static void CreateSource(SourceProductionContext context, IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, 
-        List<EnumDefinition> definitions, AnalyzerConfigOptionsProvider configOptionsProvider)
+    public static void CreateSource(SourceProductionContext context, List<DiscoveredEnum> discoveredEnums, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
-        if (definitions.Count == 0) return;
+        if (discoveredEnums.Count == 0) return;
         
         try
         {
-            var enumDefinitionsByIdentifier = definitions
-                .GroupBy(d => d.EnumIdentifier)
-                .ToDictionary(group => group.Key, group => group.First());
-            
-		    // Get the discovered members and their definition.
-		    // Exclude the members that have no definition, or the members that are discovered while their definition doesn't allow it.
-		    var relevantDiscoveredMembersByDefinitions = allDiscoveredMembers
-                .GroupBy(member => enumDefinitionsByIdentifier.TryGetValue(member.EnumIdentifier, out var definition) ? definition : null)
-                .Where(group => group.Key is not null)
-                .GroupBy(group => group.Key)
-                .ToDictionary(group => group.Key, group => group.First());
-            
-            foreach (var discoveredMembersByDefinition in relevantDiscoveredMembersByDefinitions)
-            {
-                var definition = discoveredMembersByDefinition.Key!;
-                var members = discoveredMembersByDefinition.Value.ToList();
-            
-                CreateDiscoveredImplementationIdFiles(context, definition, members, configOptionsProvider);
-            }
+            foreach (var discoveredEnum in discoveredEnums)
+                CreateDiscoveredImplementationIdFiles(context, discoveredEnum, configOptionsProvider);
         }
         
 #pragma warning disable CS0168
@@ -44,13 +26,13 @@ internal static class ImplementationIdSourceBuilder
         }
     }
     
-    private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, EnumDefinition definition, 
-        IEnumerable<DiscoveredEnumMember> relevantDiscoveredMembers, AnalyzerConfigOptionsProvider configOptionsProvider)
+    private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, DiscoveredEnum discoveredEnum, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
+        var definition = discoveredEnum.Definition;
         if (!definition.GenerateImplementationIds && !definition.HasSingletonImplementations) return;
         if (definition.HasSingletonImplementations && !definition.GenerateImplementationIds) return;
         
-        var partialMembers = relevantDiscoveredMembers.Where(m => m.IsPartial);
+        var partialMembers = discoveredEnum.Members.Where(m => m.IsPartial);
 		
         foreach (var member in partialMembers)
         {

@@ -1,6 +1,6 @@
-﻿  using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-  namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
+namespace CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 internal record EnumDefinition : IEnumModel
 {
@@ -8,7 +8,7 @@ internal record EnumDefinition : IEnumModel
 	public string Name { get; }
 	public string? TypeParameters { get; }
 	public string? Namespace { get; }
-	public string BaseTypeName { get; }
+	public string BaseTypeNameIncludingGenerics { get; }
 	public string? BaseTypeDeclaration { get; }
 	public string? BaseTypeGenericConstraints { get; }
 	public TypeKind? BaseTypeTypeKind { get; }
@@ -17,11 +17,13 @@ internal record EnumDefinition : IEnumModel
 	public bool GenerateImplementationIds { get; }
 	public bool HasSingletonImplementations { get; }
 	public List<string> Usings { get; }
-
+	public bool IsPartial { get; }
+	public EnumDefinition? ExternalDefinition { get; }
+	
 	private static Regex IsValidName { get; } = new(@"^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)*$");
 	
-	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, 
-		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings)
+	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, bool generateImplementationIds, 
+		bool hasSingletonImplementations, List<string> usings, EnumDefinition? externalDefinition)
 		: this(
 			customName: customName,
 			name: NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name),
@@ -37,21 +39,23 @@ internal record EnumDefinition : IEnumModel
 			accessibility: baseTypeSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
 			generateImplementationIds: generateImplementationIds,
 			hasSingletonImplementations: hasSingletonImplementations,
-			usings: usings)
+			usings: usings,
+			isPartial: baseTypeDeclarationSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
+			externalDefinition: externalDefinition)
 	{
 	}
 
 	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string baseTypeNameIncludingGenerics, 
 		string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, 
-		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings)
+		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings, bool isPartial, EnumDefinition? externalDefinition)
 	{
-		this.Name = customName ?? $"{GetName()}{ImplementationDiscoverySourceGenerator.ImplementationsEnumName}";
+		this.Name = GetName(customName, name, isInterface: baseTypeDeclaration?.Contains("interface") == true, isProxy: externalDefinition is not null);
 		this.TypeParameters = typeParameters?.Trim();
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 		
 		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
 
-		this.BaseTypeName = baseTypeNameIncludingGenerics.Trim();
+		this.BaseTypeNameIncludingGenerics = baseTypeNameIncludingGenerics.Trim();
 		this.BaseTypeDeclaration = baseTypeDeclaration?.Trim();
 		this.BaseTypeGenericConstraints = baseTypeGenericConstraints?.Trim();
 		this.BaseTypeTypeKind = baseTypeTypeKind;
@@ -63,19 +67,24 @@ internal record EnumDefinition : IEnumModel
 		this.HasSingletonImplementations = hasSingletonImplementations;
 		
 		this.Usings = usings;
+		this.IsPartial = isPartial;
+		this.ExternalDefinition = externalDefinition;
+	}
+	
+	public static string GetName(string? customName, string name, bool isInterface, bool isProxy)
+	{
+		var newName = $"{(customName ?? name)}";
 
+		if (customName is not null)
+			return newName;
+		
+		if (newName.EndsWith("Base"))
+			newName = newName.Substring(0, newName.Length - 4);
 
-		string GetName()
-		{
-			var newName = name;
-			
-			if (newName.EndsWith("Base"))
-				newName = newName.Substring(0, newName.Length - 4);
+		if (isInterface && newName[0] == 'I')
+			newName = newName.Substring(1);
 
-			if (baseTypeDeclaration?.Contains("interface") == true && newName[0] == 'I')
-				newName = newName.Substring(1);
-			
-			return IsValidName.IsMatch(newName) ? newName : name;
-		}
+		newName = $"{newName}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
+		return IsValidName.IsMatch(newName) ? newName : name;
 	}
 }

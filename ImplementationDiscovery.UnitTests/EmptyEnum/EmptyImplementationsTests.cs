@@ -1,4 +1,4 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests.EmptyImplementations;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.EmptyEnum;
 
 public class EmptyImplementationsTests
 {

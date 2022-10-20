@@ -1,6 +1,6 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests.EmptyImplementations;
+﻿namespace CodeChops.ImplementationDiscovery.UnitTests.CustomName;
 
-[DiscoverImplementations(enumName: "EmptyEnum")]
+[DiscoverImplementations(enumName: "CustomNameTest")]
 public abstract partial record CustomNameMock;
 
 public record CustomNameImplementation : CustomNameMock;
