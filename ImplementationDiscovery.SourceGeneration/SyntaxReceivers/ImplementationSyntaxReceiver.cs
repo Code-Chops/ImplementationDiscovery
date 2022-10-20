@@ -41,15 +41,13 @@ internal static class ImplementationSyntaxReceiver
 	/// <returns>The probably new enum member. Or null if not applicable for this node.</returns>
 	internal static IEnumerable<IEnumModel> GetImplementation(GeneratorSyntaxContext context, CancellationToken cancellationToken)
 	{
-		//Debugger.Launch();
-		
 		if (context.Node is not TypeDeclarationSyntax typeDeclarationSyntax) 
 			return Array.Empty<IEnumModel>();
 
 		if (ModelExtensions.GetDeclaredSymbol(context.SemanticModel, typeDeclarationSyntax, cancellationToken) is not INamedTypeSymbol type) 
 			return Array.Empty<IEnumModel>();
 		
-		if (type.IsStatic) 
+		if (type.IsStatic || type.IsAbstract) 
 			return Array.Empty<IEnumModel>();
 
 		if (!TryGetBaseType(type, out var baseType, out var attribute, out var externalBaseType))
