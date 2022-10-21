@@ -7,5 +7,7 @@ public class NewableImplementationsEnumTest
 	{
 		Assert.Equal(typeof(Blue),	NewableImplementationsEnumMock.Blue.Value.CreateInstance().GetType());
 		Assert.Equal(typeof(Red),	NewableImplementationsEnumMock.Red.Value.CreateInstance().GetType());
+		
+		Assert.Equal(2, NewableImplementationsEnumMock.GetMemberCount());
 	}
 }

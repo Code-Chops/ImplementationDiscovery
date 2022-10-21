@@ -178,22 +178,11 @@ internal static class ImplementationsEnumSourceBuilder
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetSimpleName(definition).Length);
 
 				code.Append(@$"
-	{member.Accessibility} static {concreteDefinition.Name}{concreteDefinition.TypeParameters} {member.GetSimpleName(definition)} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value})));
+	{member.Accessibility} static {concreteDefinition.Name}{concreteDefinition.TypeParameters} {member.GetSimpleName(definition)} {outlineSpaces}=> CreateMember(new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value})));
 ");
 			}
 
 			code.AppendLine($@"
-	public static new bool IsInitialized {{ get; private set; }}
-	public static void SetInitialized() => IsInitialized = true;");
-			
-			code.Append($@"
-	static {definition.Name}()
-	{{
-		foreach (var property in typeof({definition.Name}{definition.TypeParameters}).GetProperties(BindingFlags.Public | BindingFlags.Static))
-			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
-
-		IsInitialized = true;
-	}}
 }}
 ");
 
