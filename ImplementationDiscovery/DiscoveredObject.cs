@@ -62,5 +62,7 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 		
 		foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Static))
 			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
+		
+		Console.WriteLine($"Constructed {type.Name}");
 	}
 }
