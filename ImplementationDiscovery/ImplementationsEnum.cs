@@ -55,23 +55,6 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 			throw new InvalidOperationException($"Empty name: Unable to retrieve implementation {EnumName}.{name}.");
 
 		if (!IsInitialized)
-			return MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(
-				name: name,
-				valueCreator: valueCreator ?? (() => new DiscoveredObject<TBaseType>(typeof(TBaseType))),
-				memberCreator: memberCreator);
-
-		return TryGetSingleMember(name, out var member) 
-			? member 
-			: throw new InvalidOperationException($"Unable to retrieve resource {EnumName}.");
-	}
-
-	// ReSharper disable once MethodOverloadWithOptionalParameter
-	protected static TSelf GetOrCreateMember([CallerMemberName] string? name = null, DiscoveredObject<TBaseType>? value = null, Func<TSelf>? memberCreator = null)
-	{
-		if (name is null)
-			throw new InvalidOperationException($"Empty name: Unable to retrieve implementation {EnumName}.{name}.");
-
-		if (!IsInitialized)
 		{
 			var properties = typeof(TSelf).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 			
@@ -81,9 +64,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 			IsInitialized = true;
 		}
 
-		return TryGetSingleMember(name, out var member) 
-			? member 
-			: throw new InvalidOperationException($"Unable to retrieve resource {EnumName}.");
+		return MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(name, valueCreator ?? (() => new DiscoveredObject<TBaseType>(typeof(TBaseType))), memberCreator);
 	}
 
 	/// <summary>
