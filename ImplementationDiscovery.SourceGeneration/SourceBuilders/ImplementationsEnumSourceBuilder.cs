@@ -187,6 +187,8 @@ internal static class ImplementationsEnumSourceBuilder
 	{{
 		foreach (var property in typeof({definition.Name}{definition.TypeParameters}).GetProperties(BindingFlags.Public | BindingFlags.Static))
 			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
+
+		Console.WriteLine($""Finished constructing {definition.Name} {{GetMemberCount()}}"");
 	}}
 }}
 ");
