@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.33.11</Version>
-        <PackageReleaseNotes>Possible reflection fix 10.</PackageReleaseNotes>
+        <Version>0.33.12</Version>
+        <PackageReleaseNotes>Possible reflection fix 11.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
