@@ -51,7 +51,7 @@ internal static class ImplementationIdSourceBuilder
             var implementationsEnum = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
 
             code.AppendLine($@"
-{member.Declaration} {member.GetClassName()}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered
+{member.Declaration} {member.GetClassName()}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>
     {definition.BaseTypeGenericConstraints}
 {{
 ");

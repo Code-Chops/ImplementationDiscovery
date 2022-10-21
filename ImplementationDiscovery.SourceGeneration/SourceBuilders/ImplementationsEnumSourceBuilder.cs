@@ -104,7 +104,7 @@ internal static class ImplementationsEnumSourceBuilder
 			var implementationsEnum = $"{definition.Name}{definition.TypeParameters}";
 			
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>, IDiscovered" : ": IDiscovered")}
+{definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
@@ -182,7 +182,8 @@ internal static class ImplementationsEnumSourceBuilder
 ");
 			}
 
-			code.Append($@"public static new bool IsInitialized {{ get; }}");
+			code.AppendLine($@"
+	public static new bool IsInitialized {{ get; }}");
 				
 			code.Append($@"
 	static {definition.Name}()
