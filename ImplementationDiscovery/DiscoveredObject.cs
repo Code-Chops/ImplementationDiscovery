@@ -59,10 +59,5 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 		this.Type = type;
 		this.EmptyConstructor = this.Type.GetConstructor(Type.EmptyTypes);
 		this.UninitializedInstance = this.CreateInstance();
-		
-		foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Static))
-			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
-		
-		Console.WriteLine($"Constructed {type.Name}");
 	}
 }
