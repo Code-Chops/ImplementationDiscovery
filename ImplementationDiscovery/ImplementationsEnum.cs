@@ -10,12 +10,11 @@ namespace CodeChops.ImplementationDiscovery;
 /// <typeparam name="TSelf">The type of the number enum itself. Is also equal to the type of each member.</typeparam>
 /// <typeparam name="TBaseType">The base type of the implementations.</typeparam>
 public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>, IImplementationsEnum<TBaseType>
-	where TSelf : ImplementationsEnum<TSelf, TBaseType>, new() 
+	where TSelf : ImplementationsEnum<TSelf, TBaseType>, IDiscoverable, new() 
 	where TBaseType : notnull
 {
 	public TBaseType UninitializedInstance => this.Value.UninitializedInstance;
 	public Type Type => this.Value.Type;
-	protected static bool IsInitialized { get; private set; }
 	private static string EnumName { get; } = typeof(TSelf).Name;
 
 	/// <summary>
@@ -54,14 +53,14 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 		if (name is null)
 			throw new InvalidOperationException($"Empty name: Unable to retrieve implementation {EnumName}.{name}.");
 
-		if (!IsInitialized)
+		if (!TSelf.IsInitialized)
 		{
 			var properties = typeof(TSelf).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 			
 			foreach (var property in properties)
 				property.GetGetMethod(nonPublic: true)!.Invoke(obj: null, parameters: null);
 
-			IsInitialized = true;
+			TSelf.SetInitialized();
 		}
 
 		return MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(name, valueCreator ?? (() => new DiscoveredObject<TBaseType>(typeof(TBaseType))), memberCreator);

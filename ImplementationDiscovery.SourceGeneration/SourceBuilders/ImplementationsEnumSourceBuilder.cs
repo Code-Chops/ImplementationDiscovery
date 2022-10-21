@@ -150,7 +150,7 @@ internal static class ImplementationsEnumSourceBuilder
 			var concreteDefinition = definition.ExternalDefinition ?? definition;
 			
 			code.Append($@"
-{definition.Accessibility} partial record {definition.Name}{definition.TypeParameters} : {baseType}
+{definition.Accessibility} partial record {definition.Name}{definition.TypeParameters} : {baseType}, IDiscoverable
 	{definition.BaseTypeGenericConstraints}
 {{	
 ");
@@ -183,6 +183,17 @@ internal static class ImplementationsEnumSourceBuilder
 			}
 
 			code.AppendLine($@"
+	public static new bool IsInitialized {{ get; private set; }}
+	public static void SetInitialized() => IsInitialized = true;");
+			
+			code.Append($@"
+	static {definition.Name}()
+	{{
+		foreach (var property in typeof({definition.Name}{definition.TypeParameters}).GetProperties(BindingFlags.Public | BindingFlags.Static))
+			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
+
+		IsInitialized = true;
+	}}
 }}
 ");
 
