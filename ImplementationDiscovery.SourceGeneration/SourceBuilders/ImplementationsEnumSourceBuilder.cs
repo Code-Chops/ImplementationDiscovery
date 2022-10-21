@@ -232,7 +232,7 @@ internal static class ImplementationsEnumSourceBuilder
 	public static bool TryGetSingleMember{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, string memberName, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>? member)
 	{definition.BaseTypeGenericConstraints}
 	{{
-		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberName, out {definition.Name}{definition.TypeParameters}? foundMember))
+		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberName, out var foundMember))
 		{{
 			member = null;
 			return false;
@@ -251,7 +251,7 @@ internal static class ImplementationsEnumSourceBuilder
 	public static bool TryGetSingleMember{definition.TypeParameters}(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>? member)
 	{definition.BaseTypeGenericConstraints}
 	{{
-		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberValue, out {definition.Name}{definition.TypeParameters}? foundMember))
+		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberValue, out var foundMember))
 		{{
 			member = null;
 			return false;
@@ -270,7 +270,7 @@ internal static class ImplementationsEnumSourceBuilder
 	public static bool TryGetMembers{definition.TypeParameters}(this {definition.Name}{definition.TypeParameters} implementationsEnum, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>>? members)
 	{definition.BaseTypeGenericConstraints}
 	{{
-		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetMembers(memberValue, out IReadOnlyCollection<{definition.Name}{definition.TypeParameters}>? foundMembers))
+		if (!MagicEnumCore<{definition.Name}{definition.TypeParameters}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetMembers(memberValue, out var foundMembers))
 		{{
 			members = null;
 			return false;

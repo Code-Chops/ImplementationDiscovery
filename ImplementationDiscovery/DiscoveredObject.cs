@@ -48,7 +48,13 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 	internal TBaseType UninitializedInstance { get; }
 	internal Type Type { get; }
 	private ConstructorInfo? EmptyConstructor { get; }
-	
+
+	static DiscoveredObject()
+	{
+		foreach (var property in typeof(TBaseType).GetProperties(BindingFlags.Public | BindingFlags.Static))
+			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
+	}
+
 	/// <summary>
 	/// Creates a new instance by trying to access the parameterless constructor. If not possible it creates a new uninitialized object.
 	/// </summary>

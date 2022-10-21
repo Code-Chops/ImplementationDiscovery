@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.33.1</Version>
-        <PackageReleaseNotes>Don't create implementation members for abstracts.</PackageReleaseNotes>
+        <Version>0.33.2</Version>
+        <PackageReleaseNotes>Fixed implementations enum extensions comments and added possible reflection fix.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
