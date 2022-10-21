@@ -43,7 +43,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	/// <param name="value">The (newable) uninitialized object.</param>
 	/// <returns>The newly created member or an existing member with the same name.</returns>
 	public static TSelf GetOrCreateMember(DiscoveredObject<TBaseType> value) 
-		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(
+		=> GetOrCreateMember(
 			name: GetNameWithoutBacktick(value),
 			valueCreator: () => value, 
 			memberCreator: () => new TSelf());
