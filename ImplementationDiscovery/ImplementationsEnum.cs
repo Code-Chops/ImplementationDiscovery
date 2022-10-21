@@ -1,4 +1,6 @@
-﻿using CodeChops.MagicEnums.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using CodeChops.MagicEnums.Core;
 
 namespace CodeChops.ImplementationDiscovery;
 
@@ -13,7 +15,9 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 {
 	public TBaseType UninitializedInstance => this.Value.UninitializedInstance;
 	public Type Type => this.Value.Type;
-	
+	protected static bool IsInitialized { get; private set; }
+	private static string EnumName { get; } = typeof(TSelf).Name;
+
 	/// <summary>
 	/// Creates a new enum member and returns it.
 	/// </summary>
@@ -21,11 +25,18 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	/// <returns>The newly created member.</returns>
 	/// <exception cref="InvalidOperationException">When a member with the same name already exists.</exception>
 	protected static TSelf CreateMember(DiscoveredObject<TBaseType> value) 
-		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.CreateMember(
+		=> CreateMember(
 			valueCreator: () => value, 
 			memberCreator: () => new TSelf(), 
 			name: GetNameWithoutBacktick(value));
 	
+	protected new static TSelf CreateMember<TMember>(
+		Func<DiscoveredObject<TBaseType>> valueCreator,
+		Func<TMember>? memberCreator = null,
+		[CallerMemberName] string? name = null)
+		where TMember : TSelf
+		=> GetOrCreateMember(name, valueCreator, memberCreator);
+
 	/// <summary>
 	/// Creates a new enum member and returns it or gets an existing member if one already exist of the same name.
 	/// </summary>
@@ -36,6 +47,44 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 			name: GetNameWithoutBacktick(value),
 			valueCreator: () => value, 
 			memberCreator: () => new TSelf());
+	
+	protected new static TSelf GetOrCreateMember<TMember>([CallerMemberName] string? name = null, Func<DiscoveredObject<TBaseType>>? valueCreator = null, Func<TMember>? memberCreator = null)
+		where TMember : TSelf
+	{
+		if (name is null)
+			throw new InvalidOperationException($"Empty name: Unable to retrieve implementation {EnumName}.{name}.");
+
+		if (!IsInitialized)
+			return MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(
+				name: name,
+				valueCreator: valueCreator ?? (() => new DiscoveredObject<TBaseType>(typeof(TBaseType))),
+				memberCreator: memberCreator);
+
+		return TryGetSingleMember(name, out var member) 
+			? member 
+			: throw new InvalidOperationException($"Unable to retrieve resource {EnumName}.");
+	}
+
+	// ReSharper disable once MethodOverloadWithOptionalParameter
+	protected static TSelf GetOrCreateMember([CallerMemberName] string? name = null, DiscoveredObject<TBaseType>? value = null, Func<TSelf>? memberCreator = null)
+	{
+		if (name is null)
+			throw new InvalidOperationException($"Empty name: Unable to retrieve implementation {EnumName}.{name}.");
+
+		if (!IsInitialized)
+		{
+			var properties = typeof(TSelf).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+			
+			foreach (var property in properties)
+				property.GetGetMethod(nonPublic: true)!.Invoke(obj: null, parameters: null);
+
+			IsInitialized = true;
+		}
+
+		return TryGetSingleMember(name, out var member) 
+			? member 
+			: throw new InvalidOperationException($"Unable to retrieve resource {EnumName}.");
+	}
 
 	/// <summary>
 	/// Get an enumerable over the uninitialized objects.

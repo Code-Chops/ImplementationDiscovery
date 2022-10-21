@@ -183,16 +183,6 @@ internal static class ImplementationsEnumSourceBuilder
 			}
 
 			code.AppendLine($@"
-	public static new bool IsInitialized {{ get; }}");
-				
-			code.Append($@"
-	static {definition.Name}()
-	{{
-		foreach (var property in typeof({definition.Name}{definition.TypeParameters}).GetProperties(BindingFlags.Public | BindingFlags.Static))
-			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
-
-		IsInitialized = true;
-	}}
 }}
 ");
 
