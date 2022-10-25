@@ -49,10 +49,10 @@ internal record EnumDefinition : IEnumModel
 		string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, 
 		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings, bool isPartial, EnumDefinition? externalDefinition)
 	{
-		this.Name = GetName(customName, name, isInterface: baseTypeDeclaration?.Contains("interface") == true, isProxy: externalDefinition is not null);
+		this.Name = GetName(customName, name, isProxy: externalDefinition is not null);
 		this.TypeParameters = typeParameters?.Trim();
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
-		
+
 		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
 
 		this.BaseTypeNameIncludingGenerics = baseTypeNameIncludingGenerics.Trim();
@@ -71,9 +71,9 @@ internal record EnumDefinition : IEnumModel
 		this.ExternalDefinition = externalDefinition;
 	}
 	
-	public static string GetName(string? customName, string name, bool isInterface, bool isProxy)
+	public static string GetName(string? customName, string name, bool isProxy)
 	{
-		var newName = $"{(customName ?? name)}";
+		var newName = customName ?? name;
 
 		if (customName is not null)
 			return newName;
@@ -81,10 +81,10 @@ internal record EnumDefinition : IEnumModel
 		if (newName.EndsWith("Base"))
 			newName = newName.Substring(0, newName.Length - 4);
 
-		if (isInterface && newName[0] == 'I')
+		if (newName.Length >=2 && newName[0] == 'I' && Char.IsUpper(newName[1]) && Char.IsLower(newName[2]))
 			newName = newName.Substring(1);
 
-		newName = $"{newName}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
+		newName = $"{newName}{(isProxy ? ImplementationDiscoverySourceGenerator.ProxyEnumSuffix : null)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
 		return IsValidName.IsMatch(newName) ? newName : name;
 	}
 }

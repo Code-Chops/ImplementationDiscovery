@@ -17,6 +17,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
 	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
 	internal const string ImplementationsEnumNameSuffix		= "Enum";
+	internal const string ProxyEnumSuffix					= "Proxy";
 	
 	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
 	{
@@ -54,8 +55,6 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 
 	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumModel> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
-//		Debugger.Launch();
-
 		entities = entities as List<IEnumModel> ?? entities.ToList();
 		var allDefinitions = entities.OfType<EnumDefinition>().ToList();
 		var allMembers = entities.OfType<DiscoveredEnumMember>().ToList();
@@ -97,13 +96,16 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 				isConvertibleToConcreteType: false,
 				accessibility: definition.Accessibility)));
 
-		var allEnums = CombineDiscoveredMembersAndDefinitions(allMembers, allDefinitions).ToList();
+		var allEnums = GetDiscoveredEnums(allMembers, allDefinitions)
+			.OrderBy(e => e.Definition.Name)
+			.ThenByDescending(e => e.Definition.Namespace)
+			.ToList();
 
-		ImplementationsEnumSourceBuilder.CreateSource(context, allEnums.ToList(), configOptionsProvider);
-		ImplementationIdSourceBuilder.CreateSource(context, allEnums.ToList(), configOptionsProvider);
+		ImplementationsEnumSourceBuilder.CreateSource(context, allEnums, configOptionsProvider);
+		ImplementationIdSourceBuilder.CreateSource(context, allEnums, configOptionsProvider);
 	}
 
-	internal static IEnumerable<DiscoveredEnum> CombineDiscoveredMembersAndDefinitions(IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, IEnumerable<EnumDefinition> definitions)
+	internal static IEnumerable<DiscoveredEnum> GetDiscoveredEnums(IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, IEnumerable<EnumDefinition> definitions)
 	{
 		var definitionsByIdentifier = definitions
 			.GroupBy(definition => definition.EnumIdentifier)
@@ -113,10 +115,10 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			.GroupBy(d => d.EnumIdentifier)
 			.ToDictionary(group => group.Key, group => group.ToList());
             
-		var relevantDiscoveredMembersByDefinitions = definitionsByIdentifier
+		var discoveredEnums = definitionsByIdentifier
 			.ToDictionary(group => group.Value, group => membersByIdentifier.TryGetValue(group.Key, out var members) ? members : new List<DiscoveredEnumMember>())
-			.Select(group => new DiscoveredEnum(group.Key, group.Value.ToImmutableList()));
+			.Select(group => new DiscoveredEnum(group.Key, group.Value.OrderBy(member => member.Value).ToImmutableList()));
 		
-		return relevantDiscoveredMembersByDefinitions;
+		return discoveredEnums;
 	}
 }
