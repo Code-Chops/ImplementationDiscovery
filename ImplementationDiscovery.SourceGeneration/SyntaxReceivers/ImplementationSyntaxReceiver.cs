@@ -142,16 +142,19 @@ internal static class ImplementationSyntaxReceiver
 
 		var filePath = typeDeclarationSyntax.SyntaxTree.FilePath;
 
-		// Is not a proxy enum
-		if (externalBaseType is null)
+		// Is a proxy enum
+		if (externalBaseType is not null)
+		{
+			var externalDefinition = GetEnumDefinition(externalBaseType, discoverableAttribute, externalBaseType: null);
+		
 			return new EnumDefinition(
 				customName: discoverableAttribute!.GetArgumentOrDefault("enumName", defaultValue: (string?)null),
-				name: NameHelpers.GetNameWithoutGenerics(baseType.Name),
+				name: NameHelpers.GetNameWithoutGenerics(externalBaseType.Name),
 				typeParameters: typeDeclarationSyntax.TypeParameterList?.ToFullString(),
-				enumNamespace: baseType.ContainingNamespace.IsGlobalNamespace 
+				enumNamespace: externalBaseType.ContainingNamespace.IsGlobalNamespace 
 					? null 
-					: baseType.ContainingNamespace.ToDisplayString(),
-				baseTypeNameIncludingGenerics: baseType.Name + typeDeclarationSyntax.TypeParameterList?.ToFullString(),
+					: externalBaseType.ContainingNamespace.ToDisplayString(),
+				baseTypeNameIncludingGenerics: externalDefinition?.BaseTypeNameIncludingGenerics ?? baseType.Name + typeDeclarationSyntax.TypeParameterList?.ToFullString(),
 				baseTypeDeclaration: baseType.GetObjectDeclaration(),
 				baseTypeGenericConstraints: typeDeclarationSyntax.GetClassGenericConstraints(),
 				baseTypeTypeKind: baseType.TypeKind,
@@ -161,18 +164,17 @@ internal static class ImplementationSyntaxReceiver
 				hasSingletonImplementations: discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
 				usings: typeDeclarationSyntax.GetUsings().ToList(),
 				isPartial: typeDeclarationSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
-				externalDefinition: null);
+				externalDefinition: externalDefinition);
+		}
 		
-		var externalDefinition = GetEnumDefinition(externalBaseType, discoverableAttribute, externalBaseType: null);
-		
-		var definition = new EnumDefinition(
+		return new EnumDefinition(
 			customName: discoverableAttribute!.GetArgumentOrDefault("enumName", defaultValue: (string?)null),
-			name: NameHelpers.GetNameWithoutGenerics(externalBaseType.Name),
+			name: NameHelpers.GetNameWithoutGenerics(baseType.Name),
 			typeParameters: typeDeclarationSyntax.TypeParameterList?.ToFullString(),
-			enumNamespace: externalBaseType.ContainingNamespace.IsGlobalNamespace 
+			enumNamespace: baseType.ContainingNamespace.IsGlobalNamespace 
 				? null 
-				: externalBaseType.ContainingNamespace.ToDisplayString(),
-			baseTypeNameIncludingGenerics: externalDefinition?.BaseTypeNameIncludingGenerics ?? baseType.Name + typeDeclarationSyntax.TypeParameterList?.ToFullString(),
+				: baseType.ContainingNamespace.ToDisplayString(),
+			baseTypeNameIncludingGenerics: baseType.Name + typeDeclarationSyntax.TypeParameterList?.ToFullString(),
 			baseTypeDeclaration: baseType.GetObjectDeclaration(),
 			baseTypeGenericConstraints: typeDeclarationSyntax.GetClassGenericConstraints(),
 			baseTypeTypeKind: baseType.TypeKind,
@@ -182,9 +184,7 @@ internal static class ImplementationSyntaxReceiver
 			hasSingletonImplementations: discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
 			usings: typeDeclarationSyntax.GetUsings().ToList(),
 			isPartial: typeDeclarationSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
-			externalDefinition: externalDefinition);
-		
-		return definition;
+			externalDefinition: null);
 	}
 
 	/// <summary>

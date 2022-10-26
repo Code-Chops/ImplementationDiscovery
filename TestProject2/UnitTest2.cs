@@ -2,15 +2,12 @@ using CodeChops.ImplementationDiscovery;
 
 namespace TestProject2;
 
-
-public abstract class UnitTest2 : ITest
+// ReSharper disable once UnusedTypeParameter
+public abstract partial class UnitTest2<T> : ITest
 {
-
 }
 
-
-[DiscoverImplementations]
+[DiscoverImplementations(generateImplementationIds: true)]
 public partial interface ITest
 {
-	
 }

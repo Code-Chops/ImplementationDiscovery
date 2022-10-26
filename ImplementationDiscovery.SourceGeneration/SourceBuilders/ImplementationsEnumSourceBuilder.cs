@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -184,7 +183,7 @@ internal static class ImplementationsEnumSourceBuilder
 			}
 			
 			code.AppendLine($@"
-	public new static bool IsInitialized {{ get; private set; }}
+	public static new bool IsInitialized {{ get; private set; }}
 
 	static {definition.Name}()
 	{{

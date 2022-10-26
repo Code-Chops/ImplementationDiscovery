@@ -48,7 +48,9 @@ internal static class ImplementationIdSourceBuilder
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
 
-            var implementationsEnum = $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}";
+            var implementationsEnum = definition.ExternalDefinition is null
+                ? $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}"
+                : $"global::{definition.ExternalDefinition.Namespace}.{definition.ExternalDefinition.Name}{definition.ExternalDefinition.TypeParameters}";
 
             code.AppendLine($@"
 {member.Declaration} {member.GetClassName()}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>
@@ -61,12 +63,12 @@ internal static class ImplementationIdSourceBuilder
                 code.AppendLine($@"
 	public IId Id => ImplementationId;
 ");
-            
-                code.AppendLine($@"
-	public new static {implementationsEnum} ImplementationId {{ get; }} = {implementationsEnum}.{member.GetSimpleName(definition)};
-    public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : "")}{implementationsEnum} GetImplementationId() => ImplementationId;
-");
             }
+            
+            code.AppendLine($@"
+	public new static {implementationsEnum} ImplementationId {{ get; }} = {definition.Name}{definition.TypeParameters}.{member.GetSimpleName(definition)};
+    public new {implementationsEnum} GetImplementationId() => ImplementationId;
+");
 
             code.AppendLine($@"
 }}
