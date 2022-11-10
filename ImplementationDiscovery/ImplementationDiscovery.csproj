@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.35.0</Version>
-        <PackageReleaseNotes>Updated to C# 11 and .NET 7 and updated packages.</PackageReleaseNotes>
+        <Version>0.35.1</Version>
+        <PackageReleaseNotes>Undo SourceGenerator package update in order to prevent Immutable assembly not found.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
