@@ -1,9 +1,9 @@
 using CodeChops.ImplementationDiscovery;
 
-namespace TestProject2;
+namespace ToBeImplemented;
 
 // ReSharper disable once UnusedTypeParameter
-public abstract partial class UnitTest2<T> : ITest
+public abstract partial class TestBase<T> : ITest
 {
 }
 
