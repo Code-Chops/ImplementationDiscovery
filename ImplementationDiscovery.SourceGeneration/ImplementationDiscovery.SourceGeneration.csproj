@@ -7,7 +7,6 @@
 		<LangVersion>11</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<EnablePreviewFeatures>true</EnablePreviewFeatures>
 		<IsPackable>false</IsPackable>
 		<DevelopmentDependency>true</DevelopmentDependency>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
