@@ -29,9 +29,8 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 				source: valueProvider,
 				action: (c, provider) => CreateSource(c, provider.Left, provider.Right!));
 		}
-#pragma warning disable CS0168
+
 		catch (Exception e)
-#pragma warning restore CS0168
 		{
 			initializationContext.RegisterPostInitializationOutput(c => c.AddSource($"{nameof(ImplementationDiscoverySourceGenerator)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8)));
 		}

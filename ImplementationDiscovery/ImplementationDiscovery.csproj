@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.35.2</Version>
-        <PackageReleaseNotes>Updated packages and removed Enable Preview Features.</PackageReleaseNotes>
+        <Version>0.35.3</Version>
+        <PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -59,8 +59,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.4.4" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.1.1" />
+        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.5.0" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.1.4" />
     </ItemGroup>
 	
 </Project>

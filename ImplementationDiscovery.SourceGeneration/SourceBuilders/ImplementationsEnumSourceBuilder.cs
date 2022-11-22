@@ -18,9 +18,7 @@ internal static class ImplementationsEnumSourceBuilder
 				CreateEnumFile(context, discoveredEnum, configOptionsProvider);
 		}
 		
-#pragma warning disable CS0168
 		catch (Exception e)
-#pragma warning restore CS0168
         {
 	        var descriptor = new DiagnosticDescriptor(nameof(ImplementationsEnumSourceBuilder), "Error", $"{nameof(ImplementationsEnumSourceBuilder)} failed to generate due to an error. Please inform CodeChops (www.CodeChops.nl). Error: {e}", "Compilation", DiagnosticSeverity.Error, isEnabledByDefault: true);
 	        context.ReportDiagnostic(Diagnostic.Create(descriptor, null));
