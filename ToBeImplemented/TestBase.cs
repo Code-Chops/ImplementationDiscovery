@@ -3,7 +3,12 @@ using CodeChops.ImplementationDiscovery;
 namespace ToBeImplemented;
 
 // ReSharper disable once UnusedTypeParameter
-public abstract partial class TestBase<T> : ITest
+public abstract record TestBase<T> : TestUltimateBase
+{
+}
+
+[DiscoverImplementations(generateImplementationIds: true)]
+public abstract partial record TestUltimateBase
 {
 }
 
@@ -11,3 +16,5 @@ public abstract partial class TestBase<T> : ITest
 public partial interface ITest
 {
 }
+	
+public abstract record TestBase : ITest;

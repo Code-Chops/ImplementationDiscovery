@@ -181,7 +181,7 @@ internal static class ImplementationsEnumSourceBuilder
 			}
 			
 			code.AppendLine($@"
-	public static new bool IsInitialized {{ get; private set; }}
+	public new static bool IsInitialized {{ get; private set; }}
 
 	static {definition.Name}()
 	{{

@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.35.3</Version>
-        <PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
+        <Version>0.36.0</Version>
+        <PackageReleaseNotes>Fixed discovery of external abstract implementation.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
