@@ -75,16 +75,25 @@ internal record EnumDefinition : IEnumModel
 	{
 		var newName = customName ?? name;
 
-		if (customName is not null)
-			return newName;
-		
-		if (newName.EndsWith("Base"))
-			newName = newName.Substring(0, newName.Length - 4);
+		if (customName is null)
+		{
+			if (newName.EndsWith("Base"))
+				newName = newName.Substring(0, newName.Length - "Base".Length);
 
-		if (newName.Length >=2 && newName[0] == 'I' && Char.IsUpper(newName[1]) && Char.IsLower(newName[2]))
-			newName = newName.Substring(1);
+			if (newName.Length >=2 && newName[0] == 'I' && Char.IsUpper(newName[1]) && Char.IsLower(newName[2]))
+				newName = newName.Substring(1);
+			
+			newName = $"{newName}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
+		}
 
-		newName = $"{newName}{(isProxy ? ImplementationDiscoverySourceGenerator.ProxyEnumSuffix : null)}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
+		if (isProxy)
+		{
+			if (newName.EndsWith(ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix))
+				newName = newName.Substring(0, newName.Length - ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix.Length);
+
+			newName = $"{newName}{ImplementationDiscoverySourceGenerator.ProxyEnumSuffix}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
+		}
+
 		return IsValidName.IsMatch(newName) ? newName : name;
 	}
 }

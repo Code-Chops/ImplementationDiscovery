@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
+﻿using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 
 namespace CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 
