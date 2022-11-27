@@ -80,7 +80,11 @@ internal static class ImplementationIdSourceBuilder
             
             string GetUsings()
             {
-                var usings = definition.Usings.Concat(new[] { "using System;", "using CodeChops.ImplementationDiscovery;" });
+                var usings = definition.Usings.Concat(new[]
+                {
+                    "using System;", 
+                    "using CodeChops.ImplementationDiscovery;"
+                });
 			
                 return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();
             }

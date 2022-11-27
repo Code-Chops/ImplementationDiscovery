@@ -142,7 +142,10 @@ internal static class ImplementationSyntaxReceiver
 				accessibility: baseType.DeclaredAccessibility.ToString().ToLowerInvariant(),
 				generateImplementationIds: discoverableAttribute!.GetArgumentOrDefault("generateImplementationIds", defaultValue: false),
 				hasSingletonImplementations: discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
-				usings: syntax.GetUsings().ToList(),
+				usings: syntax
+					.GetUsings()
+					.Append($"using {externalBaseType.ContainingNamespace?.ToDisplayString() ?? "System"};")
+					.ToList(),
 				isPartial: syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
 				externalDefinition: externalDefinition);
 		}
