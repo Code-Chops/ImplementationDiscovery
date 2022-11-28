@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.36.2</Version>
-        <PackageReleaseNotes>Trying to fix when no proxy enum using is added for implementation IDs.</PackageReleaseNotes>
+        <Version>0.37.0</Version>
+        <PackageReleaseNotes>IHas(Static)ImplementationId now uses IImplementationsEnum{TBaseObject} as property type.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

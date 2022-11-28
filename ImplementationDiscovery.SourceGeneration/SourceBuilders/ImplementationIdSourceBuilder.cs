@@ -46,12 +46,8 @@ internal static class ImplementationIdSourceBuilder
 {(member.Namespace is null ? null : $"namespace {member.Namespace};")}
 ");
 
-            var implementationsEnum = definition.ExternalDefinition is null
-                ? $"global::{definition.Namespace}.{definition.Name}{definition.TypeParameters}"
-                : $"global::{definition.ExternalDefinition.Namespace}.{definition.ExternalDefinition.Name}{definition.ExternalDefinition.TypeParameters}";
-
             code.AppendLine($@"
-{member.Declaration} {member.GetClassName()}{definition.TypeParameters} : IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>
+{member.Declaration} {member.GetClassName()}{definition.TypeParameters} : IHasImplementationId<{definition.BaseTypeNameIncludingGenerics}>, IHasStaticImplementationId<{definition.BaseTypeNameIncludingGenerics}>
     {definition.BaseTypeGenericConstraints}
 {{
 ");
@@ -64,8 +60,8 @@ internal static class ImplementationIdSourceBuilder
             }
             
             code.AppendLine($@"
-	public new static {implementationsEnum} ImplementationId {{ get; }} = {definition.Name}{definition.TypeParameters}.{member.GetSimpleName(definition)};
-    public new {implementationsEnum} GetImplementationId() => ImplementationId;
+	public new static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId {{ get; }} = {definition.Name}{definition.TypeParameters}.{member.GetSimpleName(definition)};
+    public new IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId() => ImplementationId;
 ");
 
             code.AppendLine($@"

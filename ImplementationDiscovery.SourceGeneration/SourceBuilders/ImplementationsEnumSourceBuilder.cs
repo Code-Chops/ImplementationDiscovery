@@ -98,18 +98,16 @@ internal static class ImplementationsEnumSourceBuilder
 			if (definition.BaseTypeDeclaration is null || !definition.IsPartial || definition.ExternalDefinition is not null) return null;
 
 			var code = new StringBuilder();
-
-			var implementationsEnum = $"{definition.Name}{definition.TypeParameters}";
 			
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{implementationsEnum}>, IHasStaticImplementationId<{implementationsEnum}>" : null)}
+{definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{definition.BaseTypeNameIncludingGenerics}>, IHasStaticImplementationId<{definition.BaseTypeNameIncludingGenerics}>" : null)}
 {{");
 				
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
 			{
 				code.AppendLine($@"
-	public new static {implementationsEnum} ImplementationId {{ get; }} = new();
-	public new virtual {implementationsEnum} GetImplementationId() => ImplementationId;");
+	public new static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+	public new virtual IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId() => ImplementationId;");
 			}
 			
 			code.Append($@"
