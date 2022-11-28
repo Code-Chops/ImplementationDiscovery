@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.37.2</Version>
-        <PackageReleaseNotes>Fixed reflected discovered members.</PackageReleaseNotes>
+        <Version>0.37.3</Version>
+        <PackageReleaseNotes>Fixed reflected discovered members 2.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
