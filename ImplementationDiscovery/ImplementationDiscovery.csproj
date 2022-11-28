@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.37.1</Version>
-        <PackageReleaseNotes>Generated enum members are now expression bodied members.</PackageReleaseNotes>
+        <Version>0.37.2</Version>
+        <PackageReleaseNotes>Fixed reflected discovered members.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

@@ -179,14 +179,15 @@ internal static class ImplementationsEnumSourceBuilder
 			}
 			
 			code.AppendLine($@"
-	public new static bool IsInitialized {{ get; private set; }}
+	public new static bool IsInitialized() => _isInitialized;
+	private new static bool _isInitialized;
 
 	static {definition.Name}()
 	{{
-		foreach (var property in typeof({definition.Name}{definition.TypeParameters}).GetProperties(BindingFlags.Public | BindingFlags.Static))
-			property.GetGetMethod()!.Invoke(obj: null, parameters: null);
+		foreach (var property in typeof({definition.Name}{definition.TypeParameters}).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty))
+			(property.GetGetMethod(false) ?? property.GetGetMethod(true))?.Invoke(obj: null, parameters: null);
 
-		IsInitialized = true;
+		_isInitialized = true;
 	}}
 }}
 ");

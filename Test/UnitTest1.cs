@@ -54,7 +54,7 @@ public partial record class UnitTest5
 	[Fact]
 	public void Test5()
 	{
-		this.TestOutputHelper.WriteLine(TestUltimateProxyEnum.IsInitialized.ToString());
+		this.TestOutputHelper.WriteLine(TestUltimateProxyEnum.IsInitialized().ToString());
 		var a = TestUltimateProxyEnum.GetDiscoveredObjects();
 		this.TestOutputHelper.WriteLine(a.Count().ToString());
 

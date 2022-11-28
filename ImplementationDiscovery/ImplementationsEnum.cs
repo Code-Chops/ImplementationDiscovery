@@ -19,7 +19,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 
 	static ImplementationsEnum()
 	{
-		var properties = typeof(TSelf).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+		var properties = typeof(TSelf).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty);
 		
 		foreach (var property in properties)
 			property.GetGetMethod(nonPublic: true)!.Invoke(obj: null, parameters: null);
