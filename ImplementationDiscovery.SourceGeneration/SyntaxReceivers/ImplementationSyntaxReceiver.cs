@@ -137,7 +137,7 @@ internal static class ImplementationSyntaxReceiver
 				baseTypeNameIncludingGenerics: externalDefinition?.BaseTypeNameIncludingGenerics ?? baseType.Name + syntax.TypeParameterList?.ToFullString(),
 				baseTypeDeclaration: baseType.GetObjectDeclaration(),
 				baseTypeGenericConstraints: syntax.GetClassGenericConstraints(),
-				baseTypeTypeKind: baseType.TypeKind,
+				baseTypeTypeKind: externalBaseType.TypeKind,
 				filePath: filePath, 
 				accessibility: baseType.DeclaredAccessibility.ToString().ToLowerInvariant(),
 				generateImplementationIds: discoverableAttribute!.GetArgumentOrDefault("generateImplementationIds", defaultValue: false),

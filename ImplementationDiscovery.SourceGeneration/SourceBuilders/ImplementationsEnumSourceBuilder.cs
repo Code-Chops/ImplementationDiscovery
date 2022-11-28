@@ -100,14 +100,15 @@ internal static class ImplementationsEnumSourceBuilder
 			var code = new StringBuilder();
 			
 			code.AppendLine($@"
-{definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition.BaseTypeTypeKind == TypeKind.Class ? $": IHasImplementationId<{definition.BaseTypeNameIncludingGenerics}>, IHasStaticImplementationId<{definition.BaseTypeNameIncludingGenerics}>" : null)}
-{{");
-				
-			if (definition.BaseTypeTypeKind == TypeKind.Class)
+{definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition is { GenerateImplementationIds: true, BaseTypeTypeKind: TypeKind.Class } ? $": IHasImplementationId<{definition.BaseTypeNameIncludingGenerics}>" : null)}
+{{
+	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationEnum {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+");
+			
+			if (definition is { GenerateImplementationIds: true, BaseTypeTypeKind: TypeKind.Class })
 			{
 				code.AppendLine($@"
-	public new static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
-	public new virtual IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId() => ImplementationId;");
+	public abstract IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId();");
 			}
 			
 			code.Append($@"
