@@ -106,7 +106,7 @@ internal static class ImplementationsEnumSourceBuilder
 			if (definition.BaseTypeTypeKind == TypeKind.Class)
 			{
 				code.AppendLine($@"
-	public new static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId {{ get; }} = new {definition.Name}{definition.TypeParameters}();
+	public new static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId => new {definition.Name}{definition.TypeParameters}();
 	public new virtual IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId() => ImplementationId;");
 			}
 			

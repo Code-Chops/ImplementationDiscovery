@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.37.3</Version>
-        <PackageReleaseNotes>Fixed reflected discovered members 2.</PackageReleaseNotes>
+        <Version>0.37.4</Version>
+        <PackageReleaseNotes>Expression bodied static Implementation ID.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>

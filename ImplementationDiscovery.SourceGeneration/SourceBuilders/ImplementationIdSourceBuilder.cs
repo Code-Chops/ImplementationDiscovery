@@ -60,7 +60,7 @@ internal static class ImplementationIdSourceBuilder
             }
             
             code.AppendLine($@"
-	public new static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId {{ get; }} = {definition.Name}{definition.TypeParameters}.{member.GetSimpleName(definition)};
+	public new static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId => {definition.Name}{definition.TypeParameters}.{member.GetSimpleName(definition)};
     public new IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId() => ImplementationId;
 ");
 
