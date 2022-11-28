@@ -1,4 +1,6 @@
 using ToBeImplemented;
+using Xunit.Abstractions;
+using ITest = ToBeImplemented.ITest;
 
 namespace Test;
 
@@ -36,5 +38,25 @@ public partial record class UnitTest4 : TestUltimateBase
 	public void Test4()
 	{
 		var _ = typeof(TestUltimateProxyEnum);
+	}
+}
+
+public partial record class UnitTest5
+{
+	public UnitTest5(ITestOutputHelper testOutputHelper)
+	{
+		this.TestOutputHelper = testOutputHelper;
+	}
+
+	public ITestOutputHelper TestOutputHelper { get; }
+	
+	
+	[Fact]
+	public void Test5()
+	{
+		this.TestOutputHelper.WriteLine(TestUltimateProxyEnum.IsInitialized.ToString());
+		var a = TestUltimateProxyEnum.GetDiscoveredObjects();
+		this.TestOutputHelper.WriteLine(a.Count().ToString());
+
 	}
 }

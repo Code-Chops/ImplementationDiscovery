@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.37.0</Version>
-        <PackageReleaseNotes>IHas(Static)ImplementationId now uses IImplementationsEnum{TBaseObject} as property type.</PackageReleaseNotes>
+        <Version>0.37.1</Version>
+        <PackageReleaseNotes>Generated enum members are now expression bodied members.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -59,7 +59,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.5.0" />
+        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.5.3" />
         <PackageReference Include="CodeChops.MagicEnums" Version="3.1.4" />
     </ItemGroup>
 	

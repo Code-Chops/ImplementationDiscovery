@@ -174,7 +174,7 @@ internal static class ImplementationsEnumSourceBuilder
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetSimpleName(definition).Length);
 
 				code.Append(@$"
-	{member.Accessibility} static {concreteDefinition.Name}{concreteDefinition.TypeParameters} {member.GetSimpleName(definition)} {{ get; }} {outlineSpaces}= CreateMember(new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value})));
+	{member.Accessibility} static {concreteDefinition.Name}{concreteDefinition.TypeParameters} {member.GetSimpleName(definition)} {outlineSpaces}=> CreateMember(new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value})));
 ");
 			}
 			

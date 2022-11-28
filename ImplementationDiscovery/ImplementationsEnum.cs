@@ -1,4 +1,5 @@
-﻿using CodeChops.MagicEnums.Core;
+﻿using System.Reflection;
+using CodeChops.MagicEnums.Core;
 
 namespace CodeChops.ImplementationDiscovery;
 
@@ -14,7 +15,17 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	public TBaseType UninitializedInstance => this.Value.UninitializedInstance;
 	public Type Type => this.Value.Type;
 	private static string EnumName { get; } = typeof(TSelf).Name;
+	public static bool IsInitialized { get; }
 
+	static ImplementationsEnum()
+	{
+		var properties = typeof(TSelf).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+		
+		foreach (var property in properties)
+			property.GetGetMethod(nonPublic: true)!.Invoke(obj: null, parameters: null);
+
+		IsInitialized = true;
+	}
 	/// <summary>
 	/// Creates a new enum member and returns it.
 	/// </summary>
