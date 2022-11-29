@@ -62,7 +62,7 @@ internal static class ImplementationIdSourceBuilder
             if (definition.GenerateImplementationIds)
             {
                 code.AppendLine($@"
-	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId => {definition.Name}{definition.TypeParameters}.{member.GetSimpleName(definition)};
+	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationId {{ get; }} = {definition.Name}{definition.TypeParameters}.{member.GetSimpleName(definition)};
     public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : null)}IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId() => ImplementationId;
 ");
             }
