@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.37.7</Version>
-        <PackageReleaseNotes>Removed expression bodied member creation.</PackageReleaseNotes>
+        <Version>0.37.9</Version>
+        <PackageReleaseNotes>Now only uses Create method or parameterless constructor when using CreateInstance.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
@@ -59,8 +59,9 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.5.3" />
+        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.5.4" />
         <PackageReference Include="CodeChops.MagicEnums" Version="3.1.4" />
+        <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
     </ItemGroup>
 	
 </Project>

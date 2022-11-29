@@ -15,8 +15,12 @@ public sealed class DiscoverImplementations : Attribute
     public bool HasSingletonImplementations { get; }
     
     /// <param name="enumName">Provide a custom enum name. If not provided, a friendly enum name will be generated automatically.</param>
-    /// <param name="generateImplementationIds">If true, all discovered implementations get an implementation ID property.</param>
-    /// <param name="hasSingletonImplementations">If true, the ID of all discovered implementations will be their implementation ID.</param>
+    /// <param name="generateImplementationIds">Default: false.
+    /// <p>If true, all discovered implementations get an implementation ID property.</p>
+    /// </param>
+    /// <param name="hasSingletonImplementations">Default: false.
+    /// <p>If true, the ID of all discovered implementations will be their implementation ID.</p>
+    /// </param>
     public DiscoverImplementations(string? enumName = null, bool generateImplementationIds = false, bool hasSingletonImplementations = false)
     {
         this.EnumName = enumName;
