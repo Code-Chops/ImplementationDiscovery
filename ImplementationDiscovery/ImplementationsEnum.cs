@@ -12,12 +12,11 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	where TSelf : ImplementationsEnum<TSelf, TBaseType>, new() 
 	where TBaseType : notnull
 {
-	public TBaseType UninitializedInstance => this.Value.Instance;
+	public TBaseType UninitializedInstance => this.Value.UninitializedInstance;
 	public Type Type => this.Value.Type;
 	private static string EnumName { get; } = typeof(TSelf).Name;
 	public static bool IsInitialized { get; }
-	protected virtual bool GenerateUninitializedObjects { get; } = true;
-	
+
 	static ImplementationsEnum()
 	{
 		var properties = typeof(TSelf).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty);
@@ -27,7 +26,6 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 
 		IsInitialized = true;
 	}
-
 	/// <summary>
 	/// Creates a new enum member and returns it.
 	/// </summary>
@@ -62,7 +60,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 		where TMember : TSelf
 	{
 		if (name is null)
-			throw new InvalidOperationException($"Empty name: Unable to retrieve implementation {EnumName} because name is null.");
+			throw new InvalidOperationException($"Empty name: Unable to retrieve implementation {EnumName}.{name}.");
 
 		return MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(name, valueCreator ?? (() => new DiscoveredObject<TBaseType>(typeof(TBaseType))), memberCreator);
 	}
@@ -71,7 +69,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicEnumCore<TSe
 	/// Get an enumerable over the uninitialized objects.
 	/// </summary>
 	public static IEnumerable<TBaseType> GetDiscoveredObjects() 
-		=> GetMembers().Select(member => member.Value.Instance);
+		=> GetMembers().Select(member => member.Value.UninitializedInstance);
 
 	private static string GetNameWithoutBacktick(DiscoveredObject<TBaseType> value)
 	{

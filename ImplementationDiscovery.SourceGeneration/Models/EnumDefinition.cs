@@ -16,7 +16,6 @@ internal record EnumDefinition : IEnumModel
 	public string Accessibility { get; }
 	public bool GenerateImplementationIds { get; }
 	public bool HasSingletonImplementations { get; }
-	public bool GenerateUninitializedObjects { get; }
 	public List<string> Usings { get; }
 	public bool IsPartial { get; }
 	public EnumDefinition? ExternalDefinition { get; }
@@ -24,7 +23,7 @@ internal record EnumDefinition : IEnumModel
 	private static Regex IsValidName { get; } = new(@"^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)*$");
 	
 	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, bool generateImplementationIds, 
-		bool hasSingletonImplementations, bool generateUninitializedObjects, List<string> usings, EnumDefinition? externalDefinition)
+		bool hasSingletonImplementations, List<string> usings, EnumDefinition? externalDefinition)
 		: this(
 			customName: customName,
 			name: NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name),
@@ -40,7 +39,6 @@ internal record EnumDefinition : IEnumModel
 			accessibility: baseTypeSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
 			generateImplementationIds: generateImplementationIds,
 			hasSingletonImplementations: hasSingletonImplementations,
-			generateUninitializedObjects: generateUninitializedObjects,
 			usings: usings,
 			isPartial: baseTypeDeclarationSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
 			externalDefinition: externalDefinition)
@@ -49,8 +47,7 @@ internal record EnumDefinition : IEnumModel
 
 	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string baseTypeNameIncludingGenerics, 
 		string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, 
-		bool generateImplementationIds, bool hasSingletonImplementations, bool generateUninitializedObjects, List<string> usings, bool isPartial, 
-		EnumDefinition? externalDefinition)
+		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings, bool isPartial, EnumDefinition? externalDefinition)
 	{
 		this.Name = GetName(customName, name, isProxy: externalDefinition is not null);
 		this.TypeParameters = typeParameters?.Trim();
@@ -68,7 +65,6 @@ internal record EnumDefinition : IEnumModel
 
 		this.GenerateImplementationIds = generateImplementationIds;
 		this.HasSingletonImplementations = hasSingletonImplementations;
-		this.GenerateUninitializedObjects = generateUninitializedObjects;
 		
 		this.Usings = usings;
 		this.IsPartial = isPartial;

@@ -178,12 +178,6 @@ internal static class ImplementationsEnumSourceBuilder
 	{member.Accessibility} static {concreteDefinition.Name}{concreteDefinition.TypeParameters} {member.GetSimpleName(definition)} {outlineSpaces}{{ get; }} = CreateMember(new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value})));
 ");
 			}
-
-			if (!definition.GenerateUninitializedObjects)
-				code.AppendLine(@"
-	protected override bool GenerateUninitializedObjects {{ get; }} = false;
-");
-			
 			
 			code.AppendLine($@"
 	public new static bool IsInitialized() => _isInitialized;

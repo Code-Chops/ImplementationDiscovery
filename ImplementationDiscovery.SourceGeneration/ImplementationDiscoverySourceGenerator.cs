@@ -75,7 +75,6 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			accessibility: "internal",
 			generateImplementationIds: false,
 			hasSingletonImplementations: false,
-			generateUninitializedObjects: true,
 			usings: new List<string>(),
 			isPartial: true, 
 			externalDefinition: null);

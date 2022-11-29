@@ -122,10 +122,6 @@ internal static class ImplementationSyntaxReceiver
 
 		var filePath = syntax.SyntaxTree.FilePath;
 
-		var generateImplementationIds = discoverableAttribute!.GetArgumentOrDefault("generateImplementationIds", defaultValue: false);
-		var hasSingletonImplementations = discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false);
-		var generateUninitializedObjects = discoverableAttribute!.GetArgumentOrDefault("generateUninitializedObjects", defaultValue: true);
-		
 		// Is a proxy enum
 		if (externalBaseType is not null)
 		{
@@ -144,9 +140,8 @@ internal static class ImplementationSyntaxReceiver
 				baseTypeTypeKind: externalBaseType.TypeKind,
 				filePath: filePath, 
 				accessibility: baseType.DeclaredAccessibility.ToString().ToLowerInvariant(),
-				generateImplementationIds: generateImplementationIds,
-				hasSingletonImplementations: hasSingletonImplementations,
-				generateUninitializedObjects: generateUninitializedObjects,
+				generateImplementationIds: discoverableAttribute!.GetArgumentOrDefault("generateImplementationIds", defaultValue: false),
+				hasSingletonImplementations: discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
 				usings: syntax
 					.GetUsings()
 					.Append($"using {externalBaseType.ContainingNamespace?.ToDisplayString() ?? "System"};")
@@ -168,9 +163,8 @@ internal static class ImplementationSyntaxReceiver
 			baseTypeTypeKind: baseType.TypeKind,
 			filePath: filePath, 
 			accessibility: baseType.DeclaredAccessibility.ToString().ToLowerInvariant(),
-			generateImplementationIds: generateImplementationIds,
-			hasSingletonImplementations: hasSingletonImplementations,
-			generateUninitializedObjects: generateUninitializedObjects,
+			generateImplementationIds: discoverableAttribute!.GetArgumentOrDefault("generateImplementationIds", defaultValue: false),
+			hasSingletonImplementations: discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
 			usings: syntax.GetUsings().ToList(),
 			isPartial: syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
 			externalDefinition: null);
