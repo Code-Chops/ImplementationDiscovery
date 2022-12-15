@@ -129,7 +129,7 @@ internal static class ImplementationSyntaxReceiver
 		
 			return new EnumDefinition(
 				customName: discoverableAttribute!.GetArgumentOrDefault("enumName", defaultValue: (string?)null),
-				name: NameHelpers.GetNameWithoutGenerics(externalBaseType.Name),
+				name: externalBaseType.GetTypeNameWithGenericParameters(),
 				typeParameters: syntax.TypeParameterList?.ToFullString(),
 				enumNamespace: externalBaseType.ContainingNamespace.IsGlobalNamespace 
 					? null 
