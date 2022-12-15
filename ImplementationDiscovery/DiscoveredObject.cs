@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace CodeChops.ImplementationDiscovery;
@@ -71,7 +72,7 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 			var implementsICreatable = type.GetInterfaces().Any(i => i == typeof(ICreatable<>));
 			if (implementsICreatable)
 			{
-				var factoryMethod = type.GetMethod(nameof(ICreatable<DiscoveredObject<TBaseType>>.Create));
+				var factoryMethod = type.GetMethod(nameof(ICreatable<Dummy>.Create));
 
 				if (factoryMethod is not null)
 					return () => (TBaseType)factoryMethod.Invoke(null, Array.Empty<object>())!;
@@ -83,5 +84,11 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 
 			return () => (TBaseType)parameterlessConstructor.Invoke(Array.Empty<object>());
 		}
+	}
+
+	// ReSharper disable once ClassNeverInstantiated.Local
+	private class Dummy : ICreatable<Dummy>, IDomainObject
+	{
+		public static Dummy Create(Validator? validator = null) => throw new UnreachableException();
 	}
 }

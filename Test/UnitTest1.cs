@@ -4,7 +4,7 @@ using ITest = ToBeImplemented.ITest;
 
 namespace Test;
 
-public partial record class UnitTest1 : TestBase<int>
+public partial record UnitTest1 : TestBase<int>
 {
 	[Fact]
 	public void Test1()
@@ -14,7 +14,7 @@ public partial record class UnitTest1 : TestBase<int>
 }
 
 
-public partial record class UnitTest2 : ITest
+public partial record UnitTest2 : ITest
 {
 	[Fact]
 	public void Test2()
@@ -23,7 +23,7 @@ public partial record class UnitTest2 : ITest
 	}
 }
 
-public partial record class UnitTest3 : TestBase
+public partial record UnitTest3 : TestBase
 {
 	[Fact]
 	public void Test3()
@@ -32,7 +32,7 @@ public partial record class UnitTest3 : TestBase
 	}
 }
 
-public partial record class UnitTest4 : TestUltimateBase
+public partial record UnitTest4 : TestUltimateBase
 {
 	[Fact]
 	public void Test4()
@@ -41,7 +41,7 @@ public partial record class UnitTest4 : TestUltimateBase
 	}
 }
 
-public partial record class UnitTest5
+public partial record UnitTest5
 {
 	public UnitTest5(ITestOutputHelper testOutputHelper)
 	{
