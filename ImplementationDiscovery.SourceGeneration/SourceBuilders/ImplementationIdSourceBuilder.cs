@@ -73,7 +73,7 @@ namespace {member.Namespace};
             if (definition.GenerateImplementationIds)
             {
                 code.AppendLine($@"
-	public static IImplementationsEnum<{baseType}> ImplementationId {{ get; }} = {definition.Name}.{NameHelpers.GetNameWithoutGenerics(member.GetSimpleName(definition))};
+	public new static IImplementationsEnum<{baseType}> ImplementationId {{ get; }} = {definition.Name}.{NameHelpers.GetNameWithoutGenerics(member.GetSimpleName(definition))};
     public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : null)}IImplementationsEnum<{baseType}> GetImplementationId() => ImplementationId;
 ");
             }

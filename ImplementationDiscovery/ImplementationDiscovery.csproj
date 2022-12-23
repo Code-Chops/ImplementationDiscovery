@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.38.1</Version>
-        <PackageReleaseNotes>Added IInitializable.</PackageReleaseNotes>
+        <Version>0.38.2</Version>
+        <PackageReleaseNotes>Made ImplementationID newable.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
