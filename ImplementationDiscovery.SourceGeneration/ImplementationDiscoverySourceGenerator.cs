@@ -6,19 +6,13 @@ using CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
 namespace CodeChops.ImplementationDiscovery.SourceGeneration;
 
 /// <summary>
-/// Generates an enum that contains members that have the name of an implementation as value and the uninitialized object as value.
-/// This way implementations of a class or struct can easily be found statically.
-/// This discovery will only work on enums with the correct attribute <see cref="DiscoverableAttributeName"/>.
+/// Generates an enum that contains members that have the name of an implementation as name and a discovered object as value.
+/// This way implementations of a class, struct, or interface can easily be found statically.
+/// This discovery will only work on abstract classes or interfaces with a 'DiscoverImplementations' attribute/>.
 /// </summary>
 [Generator]
 public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 {
-	internal const string DiscoverableAttributeName			= "DiscoverImplementationsAttribute";
-	internal const string DiscoverableAttributeNamespace	= "CodeChops.ImplementationDiscovery";
-	internal const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
-	internal const string ImplementationsEnumNameSuffix		= "Enum";
-	internal const string ProxyEnumSuffix					= "Proxy";
-	
 	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
 	{
 		try
@@ -58,42 +52,26 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		var allDefinitions = entities.OfType<EnumDefinition>().ToList();
 		var allMembers = entities.OfType<DiscoveredEnumMember>().ToList();
 
-		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
-
 		var globallyListableEnumMembers = allDefinitions.Where(definition => definition.TypeParameters is null && definition.BaseTypeNameIncludingGenerics != nameof(Object));
 
-		var globalEnumDefinition = new EnumDefinition(
-			customName: null,
-			name: AllImplementationsEnumName,
-			typeParameters: null,
-			enumNamespace: enumNamespace,
-			baseTypeNameIncludingGenerics: nameof(Object),
-			baseTypeDeclaration: null,
-			baseTypeGenericConstraints: null,
-			baseTypeTypeKind: null,
-			filePath: AllImplementationsEnumName,
-			accessibility: "internal",
-			generateImplementationIds: false,
-			hasSingletonImplementations: false,
-			usings: new List<string>(),
-			isPartial: true, 
-			externalDefinition: null);
+		var globalEnumDefinition = new GlobalEnumDefinition(configOptionsProvider);
 		
 		allDefinitions.Add(globalEnumDefinition);
 
 		allMembers.AddRange(globallyListableEnumMembers
 			.Select((definition, index) => new DiscoveredEnumMember(
-				enumIdentifier: $"{enumNamespace}.{AllImplementationsEnumName}",
-				name: NameHelpers.GetNameWithoutGenerics(definition.Name), 
+				enumIdentifier: $"{globalEnumDefinition.Namespace}.{Constants.AllImplementationsEnumName}",
+				name: definition.Name, 
 				isPartial: false, 
 				@namespace: definition.Namespace, 
 				declaration: "public class", 
 				value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
-				filePath: AllImplementationsEnumName,
+				filePath: Constants.AllImplementationsEnumName,
 				linePosition: new LinePosition(index, 0),
 				typeParameters: null,
 				isConvertibleToConcreteType: false,
-				accessibility: definition.Accessibility)));
+				accessibility: definition.Accessibility,
+				instanceCreationMethod: InstanceCreationMethod.Uninitialized)));
 
 		var allEnums = GetDiscoveredEnums(allMembers, allDefinitions)
 			.OrderBy(e => e.Definition.Name)

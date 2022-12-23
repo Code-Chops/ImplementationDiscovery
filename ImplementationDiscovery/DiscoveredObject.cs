@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace CodeChops.ImplementationDiscovery;
@@ -33,62 +32,51 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 
 	#region Casting
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static implicit operator DiscoveredObject<TBaseType>(Type type) => new(type);
+	public static explicit operator DiscoveredObject<TBaseType>(Type type) => new(type);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static implicit operator TBaseType(DiscoveredObject<TBaseType> discoveredObject) => discoveredObject.UninitializedInstance;
+	public static implicit operator TBaseType(DiscoveredObject<TBaseType> discoveredObject) => discoveredObject.Instance;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static implicit operator Type(DiscoveredObject<TBaseType> discoveredObject) => discoveredObject.Type;
 	#endregion
-
-	public Type Type { get; }
-	public TBaseType UninitializedInstance { get; }
 	
-	private static readonly ConcurrentDictionary<Type, Func<TBaseType>> TypeCreatorCache = new();
+	/// <summary>
+	/// <para>An instance of the discovered object.</para>
+	/// <para>
+	/// <em>Don't mutate this instance as it will be used by other processes.</em>
+	/// </para>
+	/// </summary>
+	public TBaseType Instance { get; }
+
+	/// <summary>
+	/// The type of the discovered object.
+	/// </summary>
+	public Type Type { get; }
+
+	/// <summary>
+	/// Creates a new instance of the discovered object.
+	/// </summary>
+	public TBaseType Create() => this._instanceCreator();
+	private readonly Func<TBaseType> _instanceCreator;
+	
+	private static ConcurrentDictionary<Type, object> UninitializedObjectCache { get; } = new();  
 	
 	public DiscoveredObject(Type type)
 	{
+		var instanceCreator = (TBaseType)UninitializedObjectCache.GetOrAdd(type, FormatterServices.GetUninitializedObject);
+		
+		this.Instance = instanceCreator;
 		this.Type = type;
-		this.UninitializedInstance = CreateUninitializedInstance(type);
-	}
-	
-	public static TBaseType CreateUninitializedInstance(Type type )
-	{
-		return (TBaseType)FormatterServices.GetUninitializedObject(type);
-	}
-	
-	/// <summary>
-	/// <p>Tries to find the <see cref="CodeChops.DomainDrivenDesign.DomainModeling.Factories.ICreatable{TObject}.Create(Validator)"/> factory method and invoke it.</p>
-	/// <p>If the method is not found, it tries to find a parameterless constructor and invoke it.</p>
-	/// </summary>
-	/// <exception cref="InvalidOperationException">When the factory method and parameterless constructor are not found.</exception>
-	public TBaseType CreateInstance()
-	{
-		return TypeCreatorCache.GetOrAdd(this.Type, GetInstanceCreator).Invoke();
-
-		static Func<TBaseType> GetInstanceCreator(Type type)
-		{
-			var implementsICreatable = type.GetInterfaces().Any(i => i == typeof(ICreatable<>));
-			if (implementsICreatable)
-			{
-				var factoryMethod = type.GetMethod(nameof(ICreatable<Dummy>.Create));
-
-				if (factoryMethod is not null)
-					return () => (TBaseType)factoryMethod.Invoke(null, Array.Empty<object>())!;
-			}
-
-			var parameterlessConstructor = type.GetConstructor(Type.EmptyTypes);
-			if (parameterlessConstructor is null)
-				throw new InvalidOperationException($"Could not create instance of {type.Name}: No parameterless constructor defined or ICreatable<> implemented. Creation of uninitialized objects is disable.");
-
-			return () => (TBaseType)parameterlessConstructor.Invoke(Array.Empty<object>());
-		}
+		this._instanceCreator = () => instanceCreator;
 	}
 
-	// ReSharper disable once ClassNeverInstantiated.Local
-	private class Dummy : ICreatable<Dummy>, IDomainObject
+	public DiscoveredObject(Func<TBaseType> instanceCreator)
 	{
-		public static Dummy Create(Validator? validator = null) => throw new UnreachableException();
+		var instance = instanceCreator();
+		
+		this.Instance = instance;
+		this.Type = instance.GetType();
+		this._instanceCreator = instanceCreator;
 	}
 }

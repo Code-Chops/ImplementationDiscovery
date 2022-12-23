@@ -4,22 +4,23 @@ using ITest = ToBeImplemented.ITest;
 
 namespace Test;
 
-public partial record UnitTest1 : TestBase<int>
+public record Mock1A : TestBase<int>;
+
+public class UnitTest1
 {
 	[Fact]
 	public void Test1()
 	{
-		var _ = typeof(TestProxyEnum);
-	}
+		Assert.True(TestUltimateProxyEnum<int>.TryGetSingleMember(nameof(Mock1A), out _));
+	}	
 }
-
 
 public partial record UnitTest2 : ITest
 {
 	[Fact]
 	public void Test2()
 	{
-		var _ = typeof(TestProxyEnum);
+		Assert.True(TestProxyEnum.TryGetSingleMember(nameof(UnitTest2), out _));
 	}
 }
 
@@ -28,20 +29,22 @@ public partial record UnitTest3 : TestBase
 	[Fact]
 	public void Test3()
 	{
-		var _ = typeof(TestProxyEnum);
+		Assert.True(TestProxyEnum.TryGetSingleMember(nameof(UnitTest3), out _));
 	}
 }
 
-public partial record UnitTest4 : TestUltimateBase
+public record Mock4A<T> : TestUltimateBase<T>;
+
+public record UnitTest4
 {
 	[Fact]
 	public void Test4()
 	{
-		var _ = typeof(TestUltimateProxyEnum);
+		Assert.True(TestUltimateProxyEnum<int>.TryGetSingleMember(nameof(Mock4A<int>), out _));
 	}
 }
 
-public partial record UnitTest5
+public record UnitTest5
 {
 	public UnitTest5(ITestOutputHelper testOutputHelper)
 	{
@@ -50,13 +53,10 @@ public partial record UnitTest5
 
 	public ITestOutputHelper TestOutputHelper { get; }
 	
-	
 	[Fact]
 	public void Test5()
 	{
-		this.TestOutputHelper.WriteLine(TestUltimateProxyEnum.IsInitialized().ToString());
-		var a = TestUltimateProxyEnum.GetDiscoveredObjects();
+		var a = TestUltimateProxyEnum<int>.GetInstances();
 		this.TestOutputHelper.WriteLine(a.Count().ToString());
-
 	}
 }

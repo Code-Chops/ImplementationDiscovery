@@ -16,13 +16,13 @@ public partial interface IDayOfWeek<TDay>
 {
 }
 
-public abstract record DayOfWeek<TSelf, TDay> : ImplementationsEnum<TSelf, IDayOfWeek<TDay>>
-	where TSelf : DayOfWeek<TSelf, TDay>, IDiscoverable, new()
+public abstract record DayOfWeek<TSelf, TDay> : ImplementationsEnum<TSelf, DayOfWeek<TSelf, TDay>>, IDayOfWeek<TDay>
+	where TSelf : DayOfWeek<TSelf, TDay>, new()
 	where TDay : class
 {
 	public static TSelf CreateDay()
 	{
-		var member = CreateMember(null!);
+		var member = CreateMember(new DiscoveredObject<DayOfWeek<TSelf, TDay>>(() => new TSelf()));
 		return member;
 	}
 }

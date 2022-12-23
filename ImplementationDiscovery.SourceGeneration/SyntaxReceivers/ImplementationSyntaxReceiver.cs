@@ -18,7 +18,8 @@ internal static class ImplementationSyntaxReceiver
 		static bool IsProbablyDiscoverableImplementation(SyntaxNode syntaxNode)
 		{
 			// It should be a class, record or struct declaration.
-			if (syntaxNode is not TypeDeclarationSyntax typeDeclarationSyntax || typeDeclarationSyntax is InterfaceDeclarationSyntax) return false;
+			if (syntaxNode is not TypeDeclarationSyntax typeDeclarationSyntax || typeDeclarationSyntax is InterfaceDeclarationSyntax) 
+				return false;
 
 			// It should inherit (from a base class/struct/record or interface).
 			var isProbablyImplementation = typeDeclarationSyntax.BaseList is not null && typeDeclarationSyntax.BaseList.Types.Count != 0;
@@ -27,10 +28,13 @@ internal static class ImplementationSyntaxReceiver
 
 		static bool IsProbablyDiscoverableBaseType(SyntaxNode syntaxNode, CancellationToken cancellationToken)
 		{
-			if (syntaxNode is not AttributeSyntax attribute || attribute.ArgumentList?.Arguments.Count > 3) return false;
-			if (attribute.Parent?.Parent is not TypeDeclarationSyntax) return false;
+			if (syntaxNode is not AttributeSyntax attribute || attribute.ArgumentList?.Arguments.Count > 3) 
+				return false;
+			
+			if (attribute.Parent?.Parent is not TypeDeclarationSyntax) 
+				return false;
 
-			var isProbablyBaseType = attribute.Name.HasAttributeName(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, cancellationToken);
+			var isProbablyBaseType = attribute.Name.HasAttributeName(Constants.DiscoverableAttributeName, cancellationToken);
 			return isProbablyBaseType;
 		}
 	}
@@ -52,16 +56,12 @@ internal static class ImplementationSyntaxReceiver
 
 		if (!TryGetBaseType(type, out var baseType, out var attribute, out var externalBaseType))
 			return Array.Empty<IEnumModel>();
-
+		
 		var definition = GetEnumDefinition(typeDeclarationSyntax, baseType!, attribute, externalBaseType);
 
-		var enumIdentifier = externalBaseType is null
-			? $"{(baseType!.ContainingNamespace.IsGlobalNamespace ? null : $"{baseType.ContainingNamespace}.")}{NameHelpers.GetNameWithoutGenerics(baseType.Name)}"
-			: $"{(externalBaseType.ContainingNamespace.IsGlobalNamespace ? null : $"{externalBaseType.ContainingNamespace}.")}{NameHelpers.GetNameWithoutGenerics(externalBaseType.Name)}";
-
 		var member = new DiscoveredEnumMember(
-			enumIdentifier: enumIdentifier,
-			name: type.Name,
+			enumIdentifier: definition!.EnumIdentifier,
+			name: type.GetTypeNameWithGenericParameters(),
 			isPartial: typeDeclarationSyntax.Modifiers.Any(m =>  m.IsKind(SyntaxKind.PartialKeyword)),
 			@namespace: type.ContainingNamespace.IsGlobalNamespace 
 				? null 
@@ -72,18 +72,32 @@ internal static class ImplementationSyntaxReceiver
 			linePosition: typeDeclarationSyntax.SyntaxTree.GetLineSpan(typeDeclarationSyntax.Span, cancellationToken).StartLinePosition,
 			typeParameters: typeDeclarationSyntax.TypeParameterList?.ToFullString(),
 			isConvertibleToConcreteType: type.IsOrInheritsClass(type => type.Equals(baseType, SymbolEqualityComparer.Default), out _),
-			accessibility: type.DeclaredAccessibility.ToString().ToLowerInvariant());
+			accessibility: type.DeclaredAccessibility.ToString().ToLowerInvariant(),
+			instanceCreationMethod: GetInstanceCreationMethod(type));
 		
-		return new IEnumModel[] { member, definition!};
+		return new IEnumModel[] { member, definition };
+	}
+	
+	private static InstanceCreationMethod GetInstanceCreationMethod(INamedTypeSymbol type)
+	{
+		if (type.IsOrImplementsInterface(t => t.IsType(typeName: Constants.NewableInterface, containingNamespace: Constants.FactoriesNamespace, isGenericType: true), out _))
+			return InstanceCreationMethod.New;
+		
+		if (type.IsOrImplementsInterface(
+			    predicate: t => t is INamedTypeSymbol { TypeArguments.Length: 1 } && t.IsType(Constants.CreatableInterface, Constants.FactoriesNamespace, isGenericType: true), 
+			    targetType: out _))
+			return InstanceCreationMethod.Factory;
+
+		return InstanceCreationMethod.Uninitialized;
 	}
 	
 	private static bool TryGetBaseType(ITypeSymbol type, out ITypeSymbol? baseType, out AttributeData? attribute, out ITypeSymbol? externalBaseType)
 	{
 		AttributeData? attributeData = null;
-		var implementsInterface = type.IsOrImplementsInterface(t => t.HasAttribute(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, ImplementationDiscoverySourceGenerator.DiscoverableAttributeNamespace, out attributeData), out baseType);
+		var implementsInterface = type.IsOrImplementsInterface(t => t.HasAttribute(Constants.DiscoverableAttributeName, Constants.DiscoverableAttributeNamespace, out attributeData), out baseType);
 		if (!implementsInterface)
 		{
-			var implementsClass = type.IsOrInheritsClass(t => t.HasAttribute(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, ImplementationDiscoverySourceGenerator.DiscoverableAttributeNamespace, out attributeData), out baseType);
+			var implementsClass = type.IsOrInheritsClass(t => t.HasAttribute(Constants.DiscoverableAttributeName, Constants.DiscoverableAttributeNamespace, out attributeData), out baseType);
 			if (!implementsClass)
 			{
 				attribute = null;
@@ -94,17 +108,19 @@ internal static class ImplementationSyntaxReceiver
 		
 		attribute = attributeData;
 		
-		// Base type is in the same assembly.
-		if (baseType.ContainingAssembly.Equals(type.ContainingAssembly, SymbolEqualityComparer.Default))
+		// Base type is in another assembly.
+		if (!baseType.ContainingAssembly.Equals(type.ContainingAssembly, SymbolEqualityComparer.Default))
 		{
-			externalBaseType = null;
+			externalBaseType = baseType;
+			if (implementsInterface)
+				type.IsOrImplementsInterface(t => !t.BaseType!.ContainingAssembly.Equals(type.ContainingAssembly, SymbolEqualityComparer.Default), out baseType);
+			else
+				type.IsOrInheritsClass(t => !t.BaseType!.ContainingAssembly.Equals(type.ContainingAssembly, SymbolEqualityComparer.Default), out baseType);
+
 			return true;
 		}
 
-		externalBaseType = baseType;
-		if (implementsInterface) type.IsOrImplementsInterface(t => !t.BaseType!.ContainingAssembly.Equals(type.ContainingAssembly, SymbolEqualityComparer.Default), out baseType);
-		if (!implementsInterface) type.IsOrInheritsClass(t => !t.BaseType!.ContainingAssembly.Equals(type.ContainingAssembly, SymbolEqualityComparer.Default), out baseType);
-
+		externalBaseType = null;
 		return true;
 	}
 	
@@ -115,58 +131,37 @@ internal static class ImplementationSyntaxReceiver
 
 		if (discoverableAttribute is null)
 		{
-			var hasDiscoverableAttribute = baseType.HasAttribute(ImplementationDiscoverySourceGenerator.DiscoverableAttributeName, ImplementationDiscoverySourceGenerator.DiscoverableAttributeNamespace, out discoverableAttribute);
-			if (!hasDiscoverableAttribute) 
+			var hasDiscoverableAttribute = baseType.HasAttribute(Constants.DiscoverableAttributeName, Constants.DiscoverableAttributeNamespace, out discoverableAttribute);
+			if (!hasDiscoverableAttribute || discoverableAttribute is null) 
 				return null;
 		}
 
 		var filePath = syntax.SyntaxTree.FilePath;
 
+		var generateProxies = discoverableAttribute.GetArgumentOrDefault("generateProxies", defaultValue: false);
+		
 		// Is a proxy enum
-		if (externalBaseType is not null)
+		if (generateProxies && externalBaseType is not null)
 		{
-			var externalDefinition = GetEnumDefinition(syntax, externalBaseType, discoverableAttribute, externalBaseType: null);
+			var proxyDefinition = GetEnumDefinition(syntax, baseType: externalBaseType.OriginalDefinition, discoverableAttribute, externalBaseType: null);
 		
 			return new EnumDefinition(
-				customName: discoverableAttribute!.GetArgumentOrDefault("enumName", defaultValue: (string?)null),
-				name: externalBaseType.GetTypeNameWithGenericParameters(),
-				typeParameters: syntax.TypeParameterList?.ToFullString(),
-				enumNamespace: externalBaseType.ContainingNamespace.IsGlobalNamespace 
-					? null 
-					: externalBaseType.ContainingNamespace.ToDisplayString(),
-				baseTypeNameIncludingGenerics: externalDefinition?.BaseTypeNameIncludingGenerics ?? baseType.Name + syntax.TypeParameterList?.ToFullString(),
-				baseTypeDeclaration: baseType.GetObjectDeclaration(),
-				baseTypeGenericConstraints: syntax.GetClassGenericConstraints(),
-				baseTypeTypeKind: externalBaseType.TypeKind,
-				filePath: filePath, 
-				accessibility: baseType.DeclaredAccessibility.ToString().ToLowerInvariant(),
-				generateImplementationIds: discoverableAttribute!.GetArgumentOrDefault("generateImplementationIds", defaultValue: false),
-				hasSingletonImplementations: discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
-				usings: syntax
-					.GetUsings()
-					.Append($"using {externalBaseType.ContainingNamespace?.ToDisplayString() ?? "System"};")
-					.ToList(),
-				isPartial: syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
-				externalDefinition: externalDefinition);
+				baseTypeNameIncludingGenerics: proxyDefinition?.BaseTypeNameIncludingGenerics ?? baseType.Name + syntax.TypeParameterList?.ToFullString(),
+				baseType: baseType,
+				externalBaseType: externalBaseType.OriginalDefinition,
+				syntax: syntax,
+				filePath: filePath,
+				attribute: discoverableAttribute,
+				externalDefinition: proxyDefinition);
 		}
 		
 		return new EnumDefinition(
-			customName: discoverableAttribute!.GetArgumentOrDefault("enumName", defaultValue: (string?)null),
-			name: NameHelpers.GetNameWithoutGenerics(baseType.Name),
-			typeParameters: syntax.TypeParameterList?.ToFullString(),
-			enumNamespace: baseType.ContainingNamespace.IsGlobalNamespace 
-				? null 
-				: baseType.ContainingNamespace.ToDisplayString(),
-			baseTypeNameIncludingGenerics: baseType.Name + syntax.TypeParameterList?.ToFullString(),
-			baseTypeDeclaration: baseType.GetObjectDeclaration(),
-			baseTypeGenericConstraints: syntax.GetClassGenericConstraints(),
-			baseTypeTypeKind: baseType.TypeKind,
-			filePath: filePath, 
-			accessibility: baseType.DeclaredAccessibility.ToString().ToLowerInvariant(),
-			generateImplementationIds: discoverableAttribute!.GetArgumentOrDefault("generateImplementationIds", defaultValue: false),
-			hasSingletonImplementations: discoverableAttribute!.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false),
-			usings: syntax.GetUsings().ToList(),
-			isPartial: syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
+			baseTypeNameIncludingGenerics: baseType.OriginalDefinition.GetTypeNameWithGenericParameters(),
+			baseType: baseType,
+			externalBaseType: null,
+			syntax: syntax,
+			filePath: filePath,
+			attribute: discoverableAttribute,
 			externalDefinition: null);
 	}
 
@@ -176,9 +171,11 @@ internal static class ImplementationSyntaxReceiver
 	/// <returns>The enum definition. Or null if not applicable for this node.</returns>
 	internal static IEnumModel? GetBaseType(GeneratorSyntaxContext context, CancellationToken cancellationToken)
 	{
-		if (context.Node is not AttributeSyntax { Parent.Parent: TypeDeclarationSyntax typeDeclarationSyntax }) return null;
+		if (context.Node is not AttributeSyntax { Parent.Parent: TypeDeclarationSyntax typeDeclarationSyntax }) 
+			return null;
 
-		if (ModelExtensions.GetDeclaredSymbol(context.SemanticModel, typeDeclarationSyntax, cancellationToken) is not INamedTypeSymbol baseType) return null;
+		if (ModelExtensions.GetDeclaredSymbol(context.SemanticModel, typeDeclarationSyntax, cancellationToken) is not INamedTypeSymbol baseType) 
+			return null;
 
 		var definition = GetEnumDefinition(typeDeclarationSyntax, baseType, discoverableAttribute: null, externalBaseType: null);
 		return definition;

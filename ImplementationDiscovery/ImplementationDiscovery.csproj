@@ -10,11 +10,11 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.37.11</Version>
-        <PackageReleaseNotes>Revert some package references updates.</PackageReleaseNotes>
+        <Version>0.38.0</Version>
+        <PackageReleaseNotes>Big update. Added InstanceCreationMethods. Cleanup code. No reflection anymore.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
-        <Description>Provides globally accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
+        <Description>Provides easy-accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
         <PackageId>CodeChops.ImplementationDiscovery</PackageId>
         <PackageProjectUrl>https://github.com/code-chops/ImplementationDiscovery</PackageProjectUrl>
         <PackageTags>CodeChops;CodeChops.ImplementationDiscovery;ImplementationDiscovery;Implementation discovery;Implementation discoverability</PackageTags>
@@ -26,6 +26,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Copyright>Copyright (c) CodeChops $([System.DateTime]::Now.ToString(yyyy))</Copyright>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <NoWarn>
             CS1591, <!-- Missing XML comment for publicly visible type or member -->
             CS1573, <!-- Parameter has no matching param tag in the XML comment -->
@@ -43,8 +44,9 @@
     </Target>
 
     <ItemGroup Label="PackageAssets">
-        <None Include="Properties\LICENSE" Pack="true" PackagePath="" />
-        <None Include="Properties\icon.png" Pack="true" Visible="true" PackagePath="" />
+        <None Include="..\LICENSE" Pack="true" PackagePath="" />
+        <None Include="..\icon.png" Pack="true" Visible="true" PackagePath="" />
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup Label="InternalsVisibleTo">
@@ -59,9 +61,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.6.3" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.3.1" />
-        <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.6.8" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.3.5" />
     </ItemGroup>
 	
 </Project>

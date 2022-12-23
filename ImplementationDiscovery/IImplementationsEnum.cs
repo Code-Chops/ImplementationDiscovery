@@ -3,7 +3,7 @@
 public interface IImplementationsEnum<TBaseType> : IImplementationsEnum, IMagicEnum<DiscoveredObject<TBaseType>>
 	where TBaseType : notnull
 {
-	TBaseType UninitializedInstance { get; }
+	TBaseType Instance { get; }
 }
 
 public interface IImplementationsEnum

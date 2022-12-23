@@ -16,64 +16,86 @@ internal record EnumDefinition : IEnumModel
 	public string Accessibility { get; }
 	public bool GenerateImplementationIds { get; }
 	public bool HasSingletonImplementations { get; }
+	public bool GenerateProxies { get; }
 	public List<string> Usings { get; }
 	public bool IsPartial { get; }
 	public EnumDefinition? ExternalDefinition { get; }
+
+	public bool IsProxy => this.ExternalDefinition is not null;
 	
 	private static Regex IsValidName { get; } = new(@"^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)*$");
 	
-	public EnumDefinition(string? customName, TypeDeclarationSyntax baseTypeDeclarationSyntax, ITypeSymbol baseTypeSymbol, string filePath, bool generateImplementationIds, 
-		bool hasSingletonImplementations, List<string> usings, EnumDefinition? externalDefinition)
-		: this(
-			customName: customName,
-			name: NameHelpers.GetNameWithoutGenerics(baseTypeSymbol.Name),
-			typeParameters: baseTypeDeclarationSyntax.TypeParameterList?.ToFullString(),
-			enumNamespace: baseTypeSymbol.ContainingNamespace.IsGlobalNamespace 
-				? null 
-				: baseTypeSymbol.ContainingNamespace.ToDisplayString(),
-			baseTypeNameIncludingGenerics: baseTypeSymbol.Name + baseTypeDeclarationSyntax.TypeParameterList?.ToFullString(),
-			baseTypeDeclaration: baseTypeSymbol.GetObjectDeclaration(),
-			baseTypeGenericConstraints: baseTypeDeclarationSyntax.GetClassGenericConstraints(),
-			baseTypeTypeKind: baseTypeSymbol.TypeKind,
-			filePath: filePath, 
-			accessibility: baseTypeSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
-			generateImplementationIds: generateImplementationIds,
-			hasSingletonImplementations: hasSingletonImplementations,
-			usings: usings,
-			isPartial: baseTypeDeclarationSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
-			externalDefinition: externalDefinition)
+	protected EnumDefinition(AnalyzerConfigOptionsProvider configOptionsProvider)
 	{
+		var baseTypeName = nameof(Object);
+		var name = GetName(Constants.AllImplementationsEnumName, baseTypeName, isProxy: false);
+		
+		this.Name = name;
+		this.TypeParameters = null;
+		
+		configOptionsProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var enumNamespace);
+		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
+
+		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
+
+		this.BaseTypeNameIncludingGenerics = baseTypeName.Trim();
+
+		this.FilePath = Constants.AllImplementationsEnumName;
+		this.Accessibility = "internal";
+
+		this.GenerateImplementationIds = false;
+		this.HasSingletonImplementations = false;
+		this.GenerateProxies = false;
+		
+		this.Usings = new List<string>();
+		this.IsPartial = true;
+		this.ExternalDefinition = null;
 	}
 
-	public EnumDefinition(string? customName, string name, string? typeParameters, string? enumNamespace, string baseTypeNameIncludingGenerics, 
-		string? baseTypeDeclaration, string? baseTypeGenericConstraints, TypeKind? baseTypeTypeKind, string filePath, string accessibility, 
-		bool generateImplementationIds, bool hasSingletonImplementations, List<string> usings, bool isPartial, EnumDefinition? externalDefinition)
+	public EnumDefinition(string baseTypeNameIncludingGenerics, ITypeSymbol baseType, ITypeSymbol? externalBaseType, TypeDeclarationSyntax syntax, 
+		string filePath, AttributeData attribute, EnumDefinition? externalDefinition)
 	{
-		this.Name = GetName(customName, name, isProxy: externalDefinition is not null);
-		this.TypeParameters = typeParameters?.Trim();
+		var typeParameters = NameHelpers.GetGenericsParameters(baseTypeNameIncludingGenerics);
+		var isProxy = externalDefinition is not null;
+		var generateProxies = attribute.GetArgumentOrDefault("generateProxies", defaultValue: false);
+		
+		var customName = attribute.GetArgumentOrDefault("enumName", defaultValue: (string?)null);
+		var name = GetName(customName, baseTypeNameIncludingGenerics, isProxy: isProxy) + typeParameters;
+		
+		this.Name = name;
+		this.TypeParameters = typeParameters;
+		
+		var enumNamespace = baseType.ContainingNamespace.IsGlobalNamespace 
+			? null 
+			: baseType.ContainingNamespace.ToDisplayString();
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 
 		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
 
 		this.BaseTypeNameIncludingGenerics = baseTypeNameIncludingGenerics.Trim();
-		this.BaseTypeDeclaration = baseTypeDeclaration?.Trim();
-		this.BaseTypeGenericConstraints = baseTypeGenericConstraints?.Trim();
-		this.BaseTypeTypeKind = baseTypeTypeKind;
+		this.BaseTypeDeclaration = baseType.GetObjectDeclaration().Trim();
+		this.BaseTypeGenericConstraints = syntax.GetClassGenericConstraints()?.Trim();
+		this.BaseTypeTypeKind = (externalBaseType ?? baseType).TypeKind;
 		
 		this.FilePath = filePath;
-		this.Accessibility = accessibility.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
+		this.Accessibility = generateProxies ? "public" : "internal";
 
-		this.GenerateImplementationIds = generateImplementationIds;
-		this.HasSingletonImplementations = hasSingletonImplementations;
+		this.GenerateImplementationIds = attribute.GetArgumentOrDefault("generateImplementationIds", defaultValue: false);
+		this.HasSingletonImplementations = attribute.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false);
+		this.GenerateProxies = generateProxies;
 		
-		this.Usings = usings;
-		this.IsPartial = isPartial;
+		this.Usings = syntax
+			.GetUsings()
+			.Append($"using {baseType.ContainingNamespace?.ToDisplayString() ?? "System"};")
+			.ToList();
+		
+		this.IsPartial = syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
 		this.ExternalDefinition = externalDefinition;
 	}
-	
+
 	public static string GetName(string? customName, string name, bool isProxy)
 	{
-		var newName = customName ?? name;
+		var newName = NameHelpers.GetNameWithoutGenerics(customName ?? name);
 
 		if (customName is null)
 		{
@@ -83,15 +105,16 @@ internal record EnumDefinition : IEnumModel
 			if (newName.Length >=2 && newName[0] == 'I' && Char.IsUpper(newName[1]) && Char.IsLower(newName[2]))
 				newName = newName.Substring(1);
 			
-			newName = $"{newName}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
+			if (!newName.EndsWith(Constants.ImplementationsEnumNameSuffix))
+				newName = $"{newName}{Constants.ImplementationsEnumNameSuffix}";
 		}
 
 		if (isProxy)
 		{
-			if (newName.EndsWith(ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix))
-				newName = newName.Substring(0, newName.Length - ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix.Length);
+			if (newName.EndsWith(Constants.ImplementationsEnumNameSuffix))
+				newName = newName.Substring(0, newName.Length - Constants.ImplementationsEnumNameSuffix.Length);
 
-			newName = $"{newName}{ImplementationDiscoverySourceGenerator.ProxyEnumSuffix}{ImplementationDiscoverySourceGenerator.ImplementationsEnumNameSuffix}";
+			newName = $"{newName}{Constants.ProxyEnumSuffix}{Constants.ImplementationsEnumNameSuffix}";
 		}
 
 		return IsValidName.IsMatch(newName) ? newName : name;
