@@ -87,6 +87,7 @@ internal record EnumDefinition : IEnumModel
 		this.Usings = syntax
 			.GetUsings()
 			.Append($"using {baseType.ContainingNamespace?.ToDisplayString() ?? "System"};")
+			.Append($"using {externalBaseType?.ContainingNamespace?.ToDisplayString() ?? "System"};")
 			.ToList();
 		
 		this.IsPartial = syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
