@@ -43,9 +43,6 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 	
 	/// <summary>
 	/// <para>An instance of the discovered object.</para>
-	/// <para>
-	/// <em>Don't mutate this instance as it will be used by other processes.</em>
-	/// </para>
 	/// </summary>
 	public TBaseType Instance { get; }
 
@@ -60,15 +57,15 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 	public TBaseType Create() => this._instanceCreator();
 	private readonly Func<TBaseType> _instanceCreator;
 	
-	private static ConcurrentDictionary<Type, object> UninitializedObjectCache { get; } = new();  
+	private static ConcurrentDictionary<Type, Func<TBaseType>> UninitializedObjectCreatorCache { get; } = new();  
 	
 	public DiscoveredObject(Type type)
 	{
-		var instanceCreator = (TBaseType)UninitializedObjectCache.GetOrAdd(type, FormatterServices.GetUninitializedObject);
+		var instanceCreator = UninitializedObjectCreatorCache.GetOrAdd(type, () => (TBaseType)FormatterServices.GetUninitializedObject(type));
 		
-		this.Instance = instanceCreator;
+		this.Instance = instanceCreator();
 		this.Type = type;
-		this._instanceCreator = () => instanceCreator;
+		this._instanceCreator = instanceCreator;
 	}
 
 	public DiscoveredObject(Func<TBaseType> instanceCreator)

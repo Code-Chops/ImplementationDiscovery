@@ -39,8 +39,8 @@ This enum can be used to iterate or look up members dynamically or statically, s
 
 ## Discovered object
 The value of each enum member is a `DiscoveredObject`. 
-This object contains the type, a globally shared instance, and a factory of the discovered implementation. 
-It can be used to retrieve a shared or a new instance. It can implicitly be casted to the the concrete type of the implementation or the base class / interface.
+This object contains the type, an instance, and a factory of the discovered implementation. 
+It can implicitly be casted to the the concrete type of the implementation or the base class / interface.
 
 # Implementation IDs
 When setting `GenerateImplementationIds` is enabled, each discovered implementation gets an implementation ID property when it is set to `partial`.
