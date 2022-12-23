@@ -158,7 +158,7 @@ internal static class ImplementationsEnumSourceBuilder
 			var originalDefinition = definition.ExternalDefinition ?? definition;
 
 			code.Append($@"
-{definition.Accessibility} partial record {definition.Name} : {baseType}
+{definition.Accessibility} partial record {definition.Name} : {baseType}, IInitializable
 	");
 
 			if (definition.BaseTypeGenericConstraints is not null)
@@ -307,7 +307,7 @@ internal static class ImplementationsEnumSourceBuilder
 	/// Is false when the enum is still in static buildup and true if this is finished.
 	/// This parameter can be used to detect cyclic references during buildup and act accordingly.
 	/// </summary>
-	internal static bool IsInitialized {{ get; }}
+	public new static bool IsInitialized {{ get; }}
 
 	static {NameHelpers.GetNameWithoutGenerics(definition.Name)}()
 	{{
