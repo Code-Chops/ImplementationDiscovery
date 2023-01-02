@@ -11,9 +11,10 @@ internal record DiscoveredEnumMember : EnumMember
 	public bool IsConvertibleToConcreteType { get; }
 	public string Accessibility { get; }
 	public InstanceCreationMethod InstanceCreationMethod { get; }
+	public bool HasComments { get; }
 	
-	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string? value, 
-		string filePath, LinePosition linePosition, string? typeParameters, bool isConvertibleToConcreteType, string accessibility, InstanceCreationMethod instanceCreationMethod)
+	public DiscoveredEnumMember(string enumIdentifier, string name, bool isPartial, string? @namespace, string declaration, string value, string filePath, 
+		LinePosition linePosition, string? typeParameters, bool isConvertibleToConcreteType, string accessibility, InstanceCreationMethod instanceCreationMethod, bool hasComments)
 		: base(enumIdentifier, name, value)
 	{
 		this.FilePath = filePath;
@@ -25,5 +26,6 @@ internal record DiscoveredEnumMember : EnumMember
 		this.IsConvertibleToConcreteType = isConvertibleToConcreteType;
 		this.Accessibility = accessibility;
 		this.InstanceCreationMethod = instanceCreationMethod;
+		this.HasComments = hasComments;
 	}
 }

@@ -73,7 +73,8 @@ internal static class ImplementationSyntaxReceiver
 			typeParameters: typeDeclarationSyntax.TypeParameterList?.ToFullString(),
 			isConvertibleToConcreteType: type.IsOrInheritsClass(type => type.Equals(baseType, SymbolEqualityComparer.Default), out _),
 			accessibility: type.DeclaredAccessibility.ToString().ToLowerInvariant(),
-			instanceCreationMethod: GetInstanceCreationMethod(type));
+			instanceCreationMethod: GetInstanceCreationMethod(type),
+			hasComments: !String.IsNullOrWhiteSpace(type.GetDocumentationCommentXml()));
 		
 		return new IEnumModel[] { member, definition };
 	}

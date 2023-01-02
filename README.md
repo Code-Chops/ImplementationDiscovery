@@ -78,6 +78,8 @@ This API also offers some extra methods and classes on the enum (`Implementation
 
 # Examples
 
+![ImplementationDiscovery usage example](https://raw.githubusercontent.com/Code-Chops/ImplementationDiscovery/master/ImplementationDiscovery.gif)
+
 > The [LightResources library](https://github.com/Code-Chops/LightResources/) makes use of this library to collect all the resources (and their localizations).
 
 > The [Geometry library](https://github.com/Code-Chops/Geometry/) makes use of this library to collect every `StrictDirection` implementation under one enum.
@@ -87,8 +89,8 @@ This API also offers some extra methods and classes on the enum (`Implementation
 # Global implementations
 By default a global implementations enum will be generated in the root namespace of the assembly. 
 This enum contains all discovered enums as value. 
-This way you can easily find base enums / interfaces whose implementations should be discovered. 
-From there, you can discover the concrete implementations.
+This enum makes it easy to find base enums / interfaces whose implementations should be discovered. 
+You can navigate to the concrete implementations using these values.
 
 # Cross-assembly implementations
 Implementations can also be discovered across different assemblies, resulting in `proxy eums`. 

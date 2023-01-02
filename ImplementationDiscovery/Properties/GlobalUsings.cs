@@ -2,5 +2,3 @@
 global using System.Runtime.Serialization;
 
 global using CodeChops.MagicEnums;
-
-

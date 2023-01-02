@@ -42,7 +42,7 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 	#endregion
 	
 	/// <summary>
-	/// <para>An instance of the discovered object.</para>
+	/// An instance of the discovered object.
 	/// </summary>
 	public TBaseType Instance { get; }
 

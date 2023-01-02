@@ -106,8 +106,17 @@ internal static class ImplementationsEnumSourceBuilder
 				return null;
 
 			var code = new StringBuilder();
-			
-			code.Append($@"
+
+			if (!definition.BaseTypeHasComments)
+			{
+				code.AppendLine(@$"
+/// <summary>
+/// Discovered implementations: <see cref=""{definition.EnumIdentifier.Replace('<', '{').Replace('>', '}')}""/>.
+/// </summary>
+");
+			}
+
+			code.TrimEnd().Append($@"
 {definition.BaseTypeDeclaration} {definition.BaseTypeNameIncludingGenerics} {(definition is { GenerateImplementationIds: true, BaseTypeTypeKind: TypeKind.Class } ? $": IHasImplementationId<{definition.BaseTypeNameIncludingGenerics}>" : null)}
 {{
 	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> ImplementationEnum {{ get; }} = new {definition.Name}();
@@ -119,9 +128,7 @@ internal static class ImplementationsEnumSourceBuilder
 	public abstract IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetImplementationId();
 ");
 			}
-			
-			
-			
+
 			code.TrimEnd().Append($@"
 }}");
 
@@ -137,17 +144,18 @@ internal static class ImplementationsEnumSourceBuilder
 			// Create the comments on the enum record.
 			code.Append($@"
 /// <summary>
-/// <list type=""bullet"">");
+/// Discovered implementations for <see cref=""{definition.BaseTypeNameIncludingGenerics.Replace('<', '{').Replace('>', '}')}""/>:
+/// <list type=""table"">
+");
 			
 			foreach (var member in members)
 			{
-				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetSimpleName(definition).Length);
-				
-				code.Append($@"
-/// <item><c><![CDATA[ {member.GetSimpleName(definition)}{outlineSpaces} = {member.Value ?? "?"} ]]></c></item>");
+				code.TrimEnd().Append($@"
+/// <item><see cref=""{member.Value.Replace('<', '{').Replace('>', '}')}""/></item>
+");
 			}
 			
-			code.Append($@"
+			code.TrimEnd().Append($@"
 /// </list>
 /// </summary>");
 
@@ -162,7 +170,7 @@ internal static class ImplementationsEnumSourceBuilder
 	");
 
 			if (definition.BaseTypeGenericConstraints is not null)
-				code.Append(definition.BaseTypeGenericConstraints).TrimEnd();
+				code.Append(definition.ExternalDefinition?.BaseTypeGenericConstraints ?? definition.BaseTypeGenericConstraints).TrimEnd();
 			
 			code.TrimEnd().AppendLine(@"
 {
@@ -171,21 +179,16 @@ internal static class ImplementationsEnumSourceBuilder
 			// Add the discovered members to the enum record.
 			foreach (var member in members)
 			{
-				// Create the comment on the enum member.
-				if (member.Value is not null)
-				{
-					code.Append($@"
-	/// <summary>");
+				code.Append($@"
+	/// <summary>
+");
 
-					if (member.Value is not null)
-					{
-						code.Append($@"
-	/// <c><![CDATA[ (value: {member.Value}) ]]></c>");
-					}
+				code.TrimEnd().Append($@"
+	/// <see cref=""{member.Value.Replace('<', '{').Replace('>', '}')}""/>
+");
 
-					code.Append($@"
+				code.TrimEnd().Append($@"
 	/// </summary>");
-				}
 
 				// Create the enum member itself.
 				var outlineSpaces = new String(' ', longestMemberNameLength - member.GetSimpleName(definition).Length);

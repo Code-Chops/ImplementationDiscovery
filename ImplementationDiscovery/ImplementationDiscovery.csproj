@@ -10,11 +10,11 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.38.4</Version>
-        <PackageReleaseNotes>Uninitialized instances are not shared anymore.</PackageReleaseNotes>
+        <Version>1.0.0</Version>
+        <PackageReleaseNotes>Uses comment links to navigate. Enhanced README.md.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
-        <Description>Provides easy-accessible, design-time information about implementations throughout your code in the form of magic enums.</Description>
+        <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
         <PackageId>CodeChops.ImplementationDiscovery</PackageId>
         <PackageProjectUrl>https://github.com/code-chops/ImplementationDiscovery</PackageProjectUrl>
         <PackageTags>CodeChops;CodeChops.ImplementationDiscovery;ImplementationDiscovery;Implementation discovery;Implementation discoverability</PackageTags>
@@ -61,8 +61,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.6.8" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.3.5" />
+        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.8.0" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.4.0" />
     </ItemGroup>
 	
 </Project>

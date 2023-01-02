@@ -11,9 +11,9 @@ internal record EnumMember : IEnumModel
 	/// </summary>
 	public string EnumIdentifier { get; }
 	private string Name { get; }
-	public string? Value { get; }
+	public string Value { get; }
 
-	public EnumMember(string enumIdentifier, string name, string? value = null)
+	public EnumMember(string enumIdentifier, string name, string value)
 	{
 		this.EnumIdentifier = String.IsNullOrWhiteSpace(enumIdentifier) ? throw new ArgumentNullException(nameof(enumIdentifier)) : enumIdentifier;
 		this.Name = String.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name;

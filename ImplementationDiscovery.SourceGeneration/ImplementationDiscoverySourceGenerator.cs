@@ -71,7 +71,8 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 				typeParameters: null,
 				isConvertibleToConcreteType: false,
 				accessibility: definition.Accessibility,
-				instanceCreationMethod: InstanceCreationMethod.Uninitialized)));
+				instanceCreationMethod: InstanceCreationMethod.Uninitialized,
+				hasComments: false)));
 
 		var allEnums = GetDiscoveredEnums(allMembers, allDefinitions)
 			.OrderBy(e => e.Definition.Name)

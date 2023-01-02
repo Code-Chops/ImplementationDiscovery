@@ -11,6 +11,7 @@ internal record EnumDefinition : IEnumModel
 	public string BaseTypeNameIncludingGenerics { get; }
 	public string? BaseTypeDeclaration { get; }
 	public string? BaseTypeGenericConstraints { get; }
+	public bool BaseTypeHasComments { get; }
 	public TypeKind? BaseTypeTypeKind { get; }
 	public string FilePath { get; }
 	public string Accessibility { get; }
@@ -39,7 +40,8 @@ internal record EnumDefinition : IEnumModel
 		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
 
 		this.BaseTypeNameIncludingGenerics = baseTypeName.Trim();
-
+		this.BaseTypeHasComments = false;
+		
 		this.FilePath = Constants.AllImplementationsEnumName;
 		this.Accessibility = "internal";
 
@@ -76,6 +78,7 @@ internal record EnumDefinition : IEnumModel
 		this.BaseTypeDeclaration = baseType.GetObjectDeclaration().Trim();
 		this.BaseTypeGenericConstraints = syntax.GetClassGenericConstraints()?.Trim();
 		this.BaseTypeTypeKind = (externalBaseType ?? baseType).TypeKind;
+		this.BaseTypeHasComments = !String.IsNullOrWhiteSpace(baseType.GetDocumentationCommentXml());
 		
 		this.FilePath = filePath;
 		this.Accessibility = generateProxies ? "public" : "internal";
