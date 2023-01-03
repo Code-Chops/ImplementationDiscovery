@@ -57,7 +57,7 @@ internal record EnumDefinition : IEnumModel
 	public EnumDefinition(string baseTypeNameIncludingGenerics, ITypeSymbol baseType, ITypeSymbol? externalBaseType, TypeDeclarationSyntax syntax, 
 		string filePath, AttributeData attribute, EnumDefinition? externalDefinition)
 	{
-		var typeParameters = NameHelpers.GetGenericsParameters(baseTypeNameIncludingGenerics);
+		var typeParameters = NameHelpers.GetGenericParameters(baseTypeNameIncludingGenerics);
 		var isProxy = externalDefinition is not null;
 		var generateProxies = attribute.GetArgumentOrDefault("generateProxies", defaultValue: false);
 		
