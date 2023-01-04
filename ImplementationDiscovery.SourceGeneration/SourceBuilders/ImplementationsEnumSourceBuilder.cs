@@ -199,11 +199,11 @@ internal static class ImplementationsEnumSourceBuilder
 	{member.Accessibility} static {originalDefinition.Name} {NameHelpers.GetNameWithoutGenerics(member.GetSimpleName(definition))} {outlineSpaces}{{ get; }} = CreateMember({creation});
 ");
 			}
-			
-							
+
 			if (definition.IsProxy)
 			{
 				code.AppendLine($@"
+	#region Forwarding
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.CreateMember""/>
 	protected new static {originalDefinition.Name} CreateMember(
 		DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value,
@@ -244,68 +244,37 @@ internal static class ImplementationsEnumSourceBuilder
 		Func<DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>? valueCreator = null, 
 		Func<TMember>? memberCreator = null)
 		where TMember : {originalDefinition.Name}
-	{{
-		RunClassConstructor();
-
-		return {originalDefinition.Name}.GetOrCreateMember(name, valueCreator, memberCreator);
-	}}
+		=> {originalDefinition.Name}.GetOrCreateMember(name, valueCreator, memberCreator);
 	
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(string, out DiscoveredObject{{TBaseType}})""/> 
 	public new static bool TryGetSingleMember(string memberName, [NotNullWhen(true)] out {originalDefinition.Name}? member)
-	{{
-		RunClassConstructor();
-		return {originalDefinition.Name}.TryGetSingleMember(memberName, out member);
-	}}
+		=> {originalDefinition.Name}.TryGetSingleMember(memberName, out member);
 	
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetSingleMember(string)""/> 
 	public new static {originalDefinition.Name} GetSingleMember(string memberName)
-	{{
-		RunClassConstructor();
-		return {originalDefinition.Name}.GetSingleMember(memberName);
-	}}
+		=> {originalDefinition.Name}.GetSingleMember(memberName);
 	
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(DiscoveredObject{{TBaseType}}, out TSelf?)""/> 
 	public new static bool TryGetSingleMember(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out {originalDefinition.Name}? member)
-	{{
-		RunClassConstructor();
-		return {originalDefinition.Name}.TryGetSingleMember(memberValue, out member);
-	}}
+		=> {originalDefinition.Name}.TryGetSingleMember(memberValue, out member);
 
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetSingleMember(DiscoveredObject{{TBaseType}})""/> 
 	public new static {originalDefinition.Name} GetSingleMember(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue)
-	{{	
-		RunClassConstructor();
-		return {originalDefinition.Name}.GetSingleMember(memberValue);
-	}}
+		=> {originalDefinition.Name}.GetSingleMember(memberValue);
 	
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetMembers(DiscoveredObject{{TBaseType}}, out IReadOnlyCollection{{TSelf}}?)""/> 
 	public new static bool TryGetMembers(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<{originalDefinition.Name}>? members)
-	{{
-		RunClassConstructor(); 
-		return {originalDefinition.Name}.TryGetMembers(memberValue, out members);
-	}}
+		=> {originalDefinition.Name}.TryGetMembers(memberValue, out members);
 	
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetMembers(DiscoveredObject{{TBaseType}})""/> 
 	public new static IEnumerable<{originalDefinition.Name}> GetMembers(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue)
-	{{
-		RunClassConstructor();
-		return {originalDefinition.Name}.GetMembers(memberValue);
-	}}
-
-	/// <summary>
-	/// Forces to run the static constructor of the user-defined enum if it hasn't been done yet.
-	/// This makes sure that the Create method is called for every member (in code line order).
-	/// </summary>
-	private static void RunClassConstructor()
-	{{
-		if (!IsInitialized)
-			RuntimeHelpers.RunClassConstructor(typeof({originalDefinition.Name}).TypeHandle);
-	}}
+		=> {originalDefinition.Name}.GetMembers(memberValue);
+	#endregion
 ");
 			}
-				
-
-			code.AppendLine(@$"
+			
+			code.TrimEnd().AppendLine().AppendLine(@$"
+	#region Initialization
 	/// <summary>
 	/// Is false when the enum is still in static buildup and true if this is finished.
 	/// This parameter can be used to detect cyclic references during buildup and act accordingly.
@@ -316,6 +285,7 @@ internal static class ImplementationsEnumSourceBuilder
 	{{
 		IsInitialized = true;		
 	}}
+	#endregion
 }}
 ");
 
