@@ -67,9 +67,9 @@ internal record EnumDefinition : IEnumModel
 		this.Name = name;
 		this.TypeParameters = typeParameters;
 		
-		var enumNamespace = baseType.ContainingNamespace.IsGlobalNamespace 
+		var enumNamespace = (externalBaseType ?? baseType).ContainingNamespace.IsGlobalNamespace 
 			? null 
-			: baseType.ContainingNamespace.ToDisplayString();
+			: (externalBaseType ?? baseType).ContainingNamespace.ToDisplayString();
 		this.Namespace = String.IsNullOrWhiteSpace(enumNamespace) ? null : enumNamespace;
 
 		this.EnumIdentifier = $"{(this.Namespace is null ? null : $"{this.Namespace}.")}{name}";
@@ -89,10 +89,14 @@ internal record EnumDefinition : IEnumModel
 		
 		this.Usings = syntax
 			.GetUsings()
-			.Append($"using {baseType.ContainingNamespace?.ToDisplayString() ?? "System"};")
-			.Append($"using {externalBaseType?.ContainingNamespace?.ToDisplayString() ?? "System"};")
 			.ToList();
 		
+		if (!baseType.ContainingNamespace.IsGlobalNamespace) 
+			this.Usings.Add($"using {baseType.ContainingNamespace?.ToDisplayString() ?? "System"};");
+
+		if (externalBaseType is not null && !externalBaseType.ContainingNamespace.IsGlobalNamespace)
+			this.Usings.Add($"using {externalBaseType.ContainingNamespace?.ToDisplayString() ?? "System"};");
+
 		this.IsPartial = syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
 		this.ExternalDefinition = externalDefinition;
 	}

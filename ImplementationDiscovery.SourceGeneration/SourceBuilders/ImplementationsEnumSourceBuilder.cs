@@ -80,7 +80,6 @@ internal static class ImplementationsEnumSourceBuilder
 				"using CodeChops.ImplementationDiscovery;", 
 				"using CodeChops.MagicEnums;",
 				"using CodeChops.MagicEnums.Core;", 
-				$"using {definition.Namespace ?? "System"};", 
 				"using System.Diagnostics.CodeAnalysis;",
 				"using System.Reflection;",
 			});

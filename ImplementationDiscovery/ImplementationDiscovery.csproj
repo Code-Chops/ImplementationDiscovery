@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.0.2</Version>
-        <PackageReleaseNotes>Added regions and removed calling InstanceConstructor in generated code.</PackageReleaseNotes>
+        <Version>1.0.3</Version>
+        <PackageReleaseNotes>Added source generated code to README.md and fixed global namespace usings bug and fixed namespace for proxy enum.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
