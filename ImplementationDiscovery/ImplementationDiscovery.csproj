@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.0.3</Version>
-        <PackageReleaseNotes>Added source generated code to README.md and fixed global namespace usings bug and fixed namespace for proxy enum.</PackageReleaseNotes>
+        <Version>1.0.4</Version>
+        <PackageReleaseNotes>Updated magicenum package reference.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
@@ -62,7 +62,7 @@
 
     <ItemGroup Label="PackageReferences">
         <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.9.1" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.4.1" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.4.2" />
     </ItemGroup>
 	
 </Project>
