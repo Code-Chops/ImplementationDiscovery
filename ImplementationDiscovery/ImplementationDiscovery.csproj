@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.1.0</Version>
+        <Version>1.1.1</Version>
         <PackageReleaseNotes>Updated package references.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
@@ -61,8 +61,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainModeling" Version="2.0.0" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.4.3" />
+        <PackageReference Include="CodeChops.DomainModeling" Version="2.0.1" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.4.4" />
     </ItemGroup>
 	
 </Project>
