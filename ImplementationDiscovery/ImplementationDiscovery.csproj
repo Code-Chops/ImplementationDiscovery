@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.0.4</Version>
-        <PackageReleaseNotes>Updated magicenum package reference.</PackageReleaseNotes>
+        <Version>1.1.0</Version>
+        <PackageReleaseNotes>Updated package references.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
@@ -61,8 +61,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainDrivenDesign.DomainModeling" Version="1.9.1" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.4.2" />
+        <PackageReference Include="CodeChops.DomainModeling" Version="2.0.0" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.4.3" />
     </ItemGroup>
 	
 </Project>

@@ -7,7 +7,7 @@ internal static class Constants
 	public const string AllImplementationsEnumName		= "AllDiscoveredImplementations";
 	public const string ImplementationsEnumNameSuffix	= "Enum";
 	public const string ProxyEnumSuffix					= "Proxy";
-	public const string FactoriesNamespace				= "CodeChops.DomainDrivenDesign.DomainModeling.Factories";
+	public const string FactoriesNamespace				= "CodeChops.DomainModeling.Factories";
 	public const string NewableInterface				= "INewable";
 	public const string CreatableInterface				= "ICreatable";
 }
