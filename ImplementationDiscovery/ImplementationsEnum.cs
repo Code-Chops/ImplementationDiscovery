@@ -39,7 +39,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicCustomEnum<T
 			: name[..index];
 	}
 	
-	/// <inheritdoc cref="CodeChops.MagicEnums.MagicCustomEnum{TSelf, TValue}.CreateMember"/>
+	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.CreateMember{TMember}"/>
 	protected new static TSelf CreateMember(
 		DiscoveredObject<TBaseType> value,
 		Func<TSelf>? memberCreator = null,
@@ -49,7 +49,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicCustomEnum<T
 			memberCreator: memberCreator, 
 			name: name);
 	
-	/// <inheritdoc cref="CodeChops.MagicEnums.MagicCustomEnum{TSelf, TValue}.CreateMember{TMember}"/>
+	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.CreateMember{TMember}"/>
 	protected new static TSelf CreateMember<TMember>(
 		DiscoveredObject<TBaseType> value,
 		Func<TMember>? memberCreator = null,
@@ -89,7 +89,7 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicCustomEnum<T
 		return MagicCustomEnum<TSelf, DiscoveredObject<TBaseType>>.GetOrCreateMember(name, valueCreator ?? (() => new DiscoveredObject<TBaseType>(typeof(TBaseType))), memberCreator);
 	}
 	
-	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.TryGetSingleMember(string, out DiscoveredObject{TBaseType})"/> 
+	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.TryGetSingleMember(string, out TSelf?)"/> 
 	public new static bool TryGetSingleMember(string memberName, [NotNullWhen(true)] out TSelf? member)
 		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.TryGetSingleMember(memberName, out member);
 	
@@ -97,19 +97,19 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicCustomEnum<T
 	public new static TSelf GetSingleMember(string memberName)
 		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetSingleMember(memberName);
 	
-	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.TryGetSingleMember(DiscoveredObject{TBaseType}, out TSelf?)"/> 
+	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.TryGetSingleMember(TValue, out TSelf?)"/> 
 	public new static bool TryGetSingleMember(DiscoveredObject<TBaseType> memberValue, [NotNullWhen(true)] out TSelf? member)
 		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.TryGetSingleMember(memberValue, out member);
 	
-	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.GetSingleMember(DiscoveredObject{TBaseType})"/> 
+	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.GetSingleMember(TValue)"/> 
 	public new static TSelf GetSingleMember(DiscoveredObject<TBaseType> memberValue)
 		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetSingleMember(memberValue);
 	
-	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.TryGetMembers(DiscoveredObject{TBaseType}, out IReadOnlyCollection{TSelf}?)"/> 
+	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.TryGetMembers(TValue, out IReadOnlyCollection{TSelf}?)"/> 
 	public new static bool TryGetMembers(DiscoveredObject<TBaseType> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<TSelf>? members)
 		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.TryGetMembers(memberValue, out members);
 	
-	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.GetMembers(DiscoveredObject{TBaseType})"/> 
+	/// <inheritdoc cref="CodeChops.MagicEnums.Core.MagicEnumCore{TSelf, TValue}.GetMembers(TValue)"/> 
 	public new static IEnumerable<TSelf> GetMembers(DiscoveredObject<TBaseType> memberValue)
 		=> MagicEnumCore<TSelf, DiscoveredObject<TBaseType>>.GetMembers(memberValue);
 }

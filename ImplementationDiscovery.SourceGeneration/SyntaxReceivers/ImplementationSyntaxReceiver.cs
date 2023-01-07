@@ -74,7 +74,7 @@ internal static class ImplementationSyntaxReceiver
 			isConvertibleToConcreteType: type.IsOrInheritsClass(type => type.Equals(baseType, SymbolEqualityComparer.Default), out _),
 			accessibility: type.DeclaredAccessibility.ToString().ToLowerInvariant(),
 			instanceCreationMethod: GetInstanceCreationMethod(type),
-			hasComments: !String.IsNullOrWhiteSpace(type.GetDocumentationCommentXml()));
+			hasComments: !String.IsNullOrWhiteSpace(type.GetDocumentationCommentXml(cancellationToken: cancellationToken)));
 		
 		return new IEnumModel[] { member, definition };
 	}

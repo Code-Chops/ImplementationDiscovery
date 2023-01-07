@@ -60,8 +60,7 @@ internal static class ImplementationsEnumSourceBuilder
 		code.AppendLine(GetNamespaceDeclaration);
 		code.AppendLine(GetImplementationIdProperty);
 		code.AppendLine(GetEnumRecord);
-		code.AppendLine(GetExtensionMethod);
-		
+
 		code.Append(@"
 #nullable restore
 ");
@@ -253,7 +252,7 @@ internal static class ImplementationsEnumSourceBuilder
 	public new static {originalDefinition.Name} GetSingleMember(string memberName)
 		=> {originalDefinition.Name}.GetSingleMember(memberName);
 	
-	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(DiscoveredObject{{TBaseType}}, out TSelf?)""/> 
+	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(DiscoveredObject{{TBaseType}}, out TSelf)""/> 
 	public new static bool TryGetSingleMember(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out {originalDefinition.Name}? member)
 		=> {originalDefinition.Name}.TryGetSingleMember(memberValue, out member);
 
@@ -298,179 +297,7 @@ internal static class ImplementationsEnumSourceBuilder
 				InstanceCreationMethod.Factory			=> $"new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(static () => {member.Value}.Create())",
 				InstanceCreationMethod.New				=> $"new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(static () => new {member.Value}())",
 				InstanceCreationMethod.Uninitialized	=> $"new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value}))",
-				_ => throw new ArgumentOutOfRangeException()
+				_ => throw new ArgumentOutOfRangeException(nameof(member))
 			};
-		
-		
-		string? GetExtensionMethod()
-		{
-			if (definition.IsProxy)
-				return null;
-
-			var commentName = definition.BaseTypeNameIncludingGenerics.Replace('<', '{').Replace('>', '}');
-
-			var code = new StringBuilder();
-
-			code.Append($@"
-{definition.Accessibility} static class {NameHelpers.GetNameWithoutGenerics(definition.Name)}Extensions
-{{
-	public static IEnumerable<{definition.BaseTypeNameIncludingGenerics}> GetDiscoveredObjects{definition.TypeParameters}(this {definition.Name} implementationsEnum)
-		");
-
-			if (definition.BaseTypeGenericConstraints is not null)
-				code.Append(definition.BaseTypeGenericConstraints);
-			
-			code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMembers().Select(member => member.Instance);
-		").TrimEnd();
-
-			code.AppendLine();
-
-			code.Append(@$"	
-	#region ForwardInstanceMethodsToStatic 
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetDefaultValue""/>
-	public static DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> GetDefaultValue{definition.TypeParameters}(this {definition.Name} implementationsEnum) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetDefaultValue();
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetMemberCount""/>
-	public static int GetMemberCount{definition.TypeParameters}(this {definition.Name} implementationsEnum) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMemberCount();
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetUniqueValueCount""/>
-	public static int GetUniqueValueCount{definition.TypeParameters}(this {definition.Name} implementationsEnum) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetUniqueValueCount();
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetMembers()""/>
-	public static IEnumerable<IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>> GetMembers{definition.TypeParameters}(this {definition.Name} implementationsEnum) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMembers();
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetValues()""/>
-	public static IEnumerable<DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>> GetValues{definition.TypeParameters}(this {definition.Name} implementationsEnum) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetValues();
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.TryGetSingleMember(string, out {commentName})""/>
-	public static bool TryGetSingleMember{definition.TypeParameters}(this {definition.Name} implementationsEnum, string memberName, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>? member)
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-	{{
-		if (!MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberName, out var foundMember))
-		{{
-			member = null;
-			return false;
-		}}
-	
-		member = foundMember;
-		return true;
-	}}
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetSingleMember(string)""/>
-	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetSingleMember{definition.TypeParameters}(this {definition.Name} implementationsEnum, string memberName) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetSingleMember(memberName);
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.TryGetSingleMember(DiscoveredObject, out {commentName}?)""/>
-	public static bool TryGetSingleMember{definition.TypeParameters}(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>? member)
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-	{{
-		if (!MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetSingleMember(memberValue, out var foundMember))
-		{{
-			member = null;
-			return false;
-		}}
-	
-		member = foundMember;
-		return true;
-	}}
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetSingleMember(DiscoveredObject)""/>
-	public static IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}> GetSingleMember{definition.TypeParameters}(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetSingleMember(memberValue);
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.TryGetMembers(DiscoveredObject, out IReadOnlyCollection{{{commentName}}}?)""/>
-	public static bool TryGetMembers{definition.TypeParameters}(this {definition.Name} implementationsEnum, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>>? members)
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-
-		code.TrimEnd().Append(@$"
-	{{
-		if (!MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.TryGetMembers(memberValue, out var foundMembers))
-		{{
-			members = null;
-			return false;
-		}}
-	
-		members = foundMembers;
-		return true;
-	}}
-	
-	/// <inheritdoc cref=""MagicEnumCore{{{commentName}, DiscoveredObject}}.GetMembers(DiscoveredObject)""/>
-	public static IEnumerable<IImplementationsEnum<{definition.BaseTypeNameIncludingGenerics}>> GetMembers{definition.TypeParameters}(this {definition.Name} implementationsEnum, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue) 
-		");
-
-		if (definition.BaseTypeGenericConstraints is not null)
-			code.Append(definition.BaseTypeGenericConstraints);
-		
-		code.TrimEnd().Append(@$"
-		=> MagicEnumCore<{definition.Name}, DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>.GetMembers(memberValue);
-	
-	#endregion
-}}
-");
-
-			return code.TrimEnd().ToString();
-		}
 	}
 }
