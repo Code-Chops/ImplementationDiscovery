@@ -64,7 +64,8 @@ Implementation discovery makes use of MagicEnums under the hood, so the base API
 | `GetDefaultValue`     | Gets the default value of the enum.                                                                                              |
 | `GetOrCreateMember`   | Creates a member or gets one if a member already exists.                                                                         |
 
-This API also offers some extra methods and classes on the enum (`ImplementationsEnum`) and on the value (`DiscoveredObject`) of each member:
+This API can be used to search for, or create implementations at runtime.
+This package offers some extra methods and classes on the enum (`ImplementationsEnum`) and on the value (`DiscoveredObject`) of each member:
 
 | Member            | Description                                                                                                                                                                    |
 |-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
