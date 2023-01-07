@@ -27,6 +27,12 @@ It is set to `false` by default. For more information, see [cross-assembly imple
 > - `AnimalBase` ->  `AnimalEnum`
 > - `IVehicle` -> `VehicleEnum`
 
+> The [LightResources library](https://github.com/Code-Chops/LightResources/) makes use of this library to collect all the resources within an assemby.
+
+> The [Geometry library](https://github.com/Code-Chops/Geometry/) makes use of this library to collect every `StrictDirection` implementation under one enum.
+
+> The [Blame game engine library](https://github.com/Code-Chops/Blame/) makes use of this library to discover implemented GameObjects.
+
 # Concepts
 
 ## Implementations enum
@@ -225,14 +231,6 @@ internal static class AnimalEnumExtensions
 #nullable restore
 
 ```
-
-> The [LightResources library](https://github.com/Code-Chops/LightResources/) makes use of this library to collect all the resources (and their localizations).
-
-> The [Geometry library](https://github.com/Code-Chops/Geometry/) makes use of this library to collect every `StrictDirection` implementation under one enum.
-
-> The [Blame game engine library](https://github.com/Code-Chops/Blame/) makes use of this library to discover implemented GameObjects.
-
-
 
 # Global implementations
 By default a global implementations enum will be generated in the root namespace of the assembly. 
