@@ -5,8 +5,8 @@ Provides easy-accessible, design-time information about implementations througho
 - All implementations of a specific class or interface are centralized in one place.
 - You have a simple and navigable overview over what is implemented.
 - No need to use slow reflection to collect implementations. This improves startup time of your app.
-- [Assembly-level trimming](https://devblogs.microsoft.com/dotnet/app-trimming-in-net-5/) can be implemented in your libraries with ease: Implementations will not be trimmed because the enum contains a hard link to each implementation.
-- No need to manually implement logic to search for the correct implementation.
+- [Assembly-level trimming](https://devblogs.microsoft.com/dotnet/app-trimming-in-net-5/) can be implemented in your libraries easier now: There is now a hard link to each implementation and the implementations won't be trimmed, something that would be the case when using reflection. 
+- No need to manually implement logic to search for the correct implementation at runtime.
 - Members can be found in a static context, so there is no need to pass around a collection of implementations.
 
 # Usage
@@ -233,9 +233,8 @@ internal static class AnimalEnumExtensions
 ```
 
 # Global implementations
-By default a global implementations enum will be generated in the root namespace of the assembly. 
-This enum contains all discovered enums as value. 
-This enum makes it easy to find base enums / interfaces whose implementations should be discovered. 
+By default a global implementations enum will be generated in the root namespace of the assembly with the name `AllDiscoveredImplementations`. 
+This enum contains all discovered enums as value and makes it easy to find base enums / interfaces whose implementations should be discovered. 
 You can navigate to the concrete implementations using these values.
 
 # Cross-assembly implementations
