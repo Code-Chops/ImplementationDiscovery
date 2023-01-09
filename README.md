@@ -1,5 +1,7 @@
-﻿# Implementation discovery
+# Implementation discovery
 Provides easy-accessible, design-time information about implementations throughout your code. Just place an attribute on a specific base class or interface whose implementations you want to discover. A source generator will create an eum at design time that contains instances of all implementations.
+
+> Check out [CodeChops projects](https://www.CodeChops.nl/projects) for more projects.
 
 ## Advantages
 - All implementations of a specific class or interface are centralized in one place.
