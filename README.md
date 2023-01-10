@@ -1,5 +1,7 @@
-﻿# Implementation discovery
+# Implementation discovery
 Provides easy-accessible, design-time information about implementations throughout your code. Just place an attribute on a specific base class or interface whose implementations you want to discover. A source generator will create an eum at design time that contains instances of all implementations.
+
+> Check out [CodeChops projects](https://www.CodeChops.nl/projects) for more projects.
 
 ## Advantages
 - All implementations of a specific class or interface are centralized in one place.
@@ -26,6 +28,12 @@ It is set to `false` by default. For more information, see [cross-assembly imple
 > Examples:
 > - `AnimalBase` will become `AnimalEnum`.
 > - `IVehicle`will become `VehicleEnum`.
+
+> The [LightResources library](https://github.com/Code-Chops/LightResources/) makes use of this library to collect all the resources within an assemby.
+
+> The [Geometry library](https://github.com/Code-Chops/Geometry/) makes use of this library to collect every `StrictDirection` implementation under one enum.
+
+> The [Blame game engine library](https://github.com/Code-Chops/Blame/) makes use of this library to discover implemented GameObjects.
 
 # Concepts
 
@@ -224,16 +232,9 @@ internal static class AnimalEnumExtensions
 
 ```
 
-> The [LightResources library](https://github.com/Code-Chops/LightResources/) makes use of this library to collect all the resources (and their localizations).
-
-> The [Geometry library](https://github.com/Code-Chops/Geometry/) makes use of this library to collect every `StrictDirection` implementation under one enum.
-
-> The [Blame game engine library](https://github.com/Code-Chops/Blame/) makes use of this library to discover implemented GameObjects.
-
 # Global implementations
-By default a global implementations enum will be generated in the root namespace of the assembly. 
-This enum contains all discovered enums as value. 
-This enum makes it easy to find base enums / interfaces whose implementations should be discovered. 
+By default a global implementations enum will be generated in the root namespace of the assembly with the name `AllDiscoveredImplementations`. 
+This enum contains all discovered enums as value and makes it easy to find base enums / interfaces whose implementations should be discovered. 
 You can navigate to the concrete implementations using these values.
 
 # Cross-assembly implementations
