@@ -80,6 +80,7 @@ internal static class ImplementationsEnumSourceBuilder
 				"using CodeChops.MagicEnums;",
 				"using CodeChops.MagicEnums.Core;", 
 				"using System.Diagnostics.CodeAnalysis;",
+				"using Microsoft.Extensions.DependencyInjection;",
 			});
 			
 			return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();
@@ -269,9 +270,22 @@ internal static class ImplementationsEnumSourceBuilder
 	#endregion
 ");
 			}
+
+			var allDiscoveredImplementationsInitializationCode = new StringBuilder();
+
+			if (definition.Name == Constants.AllImplementationsEnumName)
+				allDiscoveredImplementationsInitializationCode.AppendLine(@$"
+	/// <summary>
+	/// Call this in order to initialize all discovered implementation. This is needed when this assembly implements enums from other assemblies.
+	/// </summary>
+	public static void Initialize()
+	{{
+		// Automatically calls the type constructor.
+	}}");
 			
 			code.TrimEnd().AppendLine().AppendLine(@$"
 	#region Initialization
+	{allDiscoveredImplementationsInitializationCode}
 	/// <summary>
 	/// Is false when the enum is still in static buildup and true if this is finished.
 	/// This parameter can be used to detect cyclic references during buildup and act accordingly.
@@ -282,9 +296,27 @@ internal static class ImplementationsEnumSourceBuilder
 	{{
 		IsInitialized = true;		
 	}}
+
 	#endregion
 }}
 ");
+
+			if (definition.Name == Constants.AllImplementationsEnumName)
+			{
+				code.AppendLine($@"
+public static class ProxyInitializationExtensions
+{{
+	public static IServiceCollection InitializeProxyImplementations(this IServiceCollection services)
+	{{
+		// Calls the type constructor of all types that are implemented in this assembly.
+		AllDiscoveredImplementations.Initialize();
+
+		return services;
+	}}
+}}
+");
+			}
+			
 
 			return code.TrimEnd().ToString();
 		}

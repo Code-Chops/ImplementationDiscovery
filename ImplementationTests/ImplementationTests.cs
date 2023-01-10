@@ -66,7 +66,7 @@ public record UnitTest6
 	[Fact]
 	public void RetrieveExternalMemberFromSourceAssembly()
 	{
-		CodeChops.ImplementationDiscovery.ProxyImplementations.Initialize();
+		AllDiscoveredImplementations.Initialize();
 		
 		TestUltimateBase<int>.GetMemberOnSourceAssembly(nameof(Mock1A));
 	}
