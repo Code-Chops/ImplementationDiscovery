@@ -21,7 +21,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 	
 			initializationContext.RegisterSourceOutput(
 				source: valueProvider,
-				action: (c, provider) => CreateSource(c, provider.Left, provider.Right!));
+				action: static (c, provider) => CreateSource(c, provider.Left, provider.Right!));
 		}
 
 		catch (Exception e)
@@ -83,7 +83,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		ImplementationIdSourceBuilder.CreateSource(context, allEnums, configOptionsProvider);
 	}
 
-	internal static IEnumerable<DiscoveredEnum> GetDiscoveredEnums(IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, IEnumerable<EnumDefinition> definitions)
+	private static IEnumerable<DiscoveredEnum> GetDiscoveredEnums(IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, IEnumerable<EnumDefinition> definitions)
 	{
 		var definitionsByIdentifier = definitions
 			.GroupBy(definition => definition.EnumIdentifier)

@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImplementationDiscovery.Sou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImplementationDiscovery.UnitTests", "ImplementationDiscovery.UnitTests\ImplementationDiscovery.UnitTests.csproj", "{82379A0A-83FA-4CBA-824A-A0A24997504E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{03CD4826-E412-47EF-B673-D7D1AA24E80D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImplementationTests", "ImplementationTests\ImplementationTests.csproj", "{03CD4826-E412-47EF-B673-D7D1AA24E80D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToBeImplemented", "ToBeImplemented\ToBeImplemented.csproj", "{DC132DFF-8A08-462B-9462-443C568D058A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToBeImplementedTests", "ToBeImplementedTests\ToBeImplementedTests.csproj", "{DC132DFF-8A08-462B-9462-443C568D058A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{AEB83360-601B-4534-8430-C72D660BD63D}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 		ImplementationDiscovery.gif = ImplementationDiscovery.gif
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrossAssemblyTests", "CrossAssemblyTests", "{4B5A3836-5293-48DB-89F7-25703B624CA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,5 +55,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30F38937-5B17-4E06-A8B7-5F230A17E874}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC132DFF-8A08-462B-9462-443C568D058A} = {4B5A3836-5293-48DB-89F7-25703B624CA4}
+		{03CD4826-E412-47EF-B673-D7D1AA24E80D} = {4B5A3836-5293-48DB-89F7-25703B624CA4}
 	EndGlobalSection
 EndGlobal

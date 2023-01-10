@@ -80,7 +80,6 @@ internal static class ImplementationsEnumSourceBuilder
 				"using CodeChops.MagicEnums;",
 				"using CodeChops.MagicEnums.Core;", 
 				"using System.Diagnostics.CodeAnalysis;",
-				"using System.Reflection;",
 			});
 			
 			return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();

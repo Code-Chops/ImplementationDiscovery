@@ -3,10 +3,11 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <RootNamespace>ToBeImplemented</RootNamespace>
+        <RootNamespace>ImplementationTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,10 +23,17 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup Label="PackageReferences">
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\ToBeImplementedTests\ToBeImplementedTests.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup Label="ProjectReferences">
         <ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\ImplementationDiscovery\ImplementationDiscovery.csproj" />
     </ItemGroup>
-
 
 </Project>

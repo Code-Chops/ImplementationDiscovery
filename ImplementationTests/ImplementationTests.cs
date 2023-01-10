@@ -1,8 +1,8 @@
-using ToBeImplemented;
+using ToBeImplementedMocks;
+using Xunit;
 using Xunit.Abstractions;
-using ITest = ToBeImplemented.ITest;
 
-namespace Test;
+namespace ImplementationTests;
 
 public record Mock1A : TestBase<int>;
 
@@ -15,7 +15,7 @@ public class UnitTest1
 	}	
 }
 
-public partial record UnitTest2 : ITest
+public partial record UnitTest2 : ToBeImplementedMocks.ITest
 {
 	[Fact]
 	public void Test2()
@@ -58,5 +58,16 @@ public record UnitTest5
 	{
 		var a = TestUltimateProxyEnum<int>.GetInstances();
 		this.TestOutputHelper.WriteLine(a.Count().ToString());
+	}
+}
+
+public record UnitTest6
+{
+	[Fact]
+	public void RetrieveExternalMemberFromSourceAssembly()
+	{
+		CodeChops.ImplementationDiscovery.ProxyImplementations.Initialize();
+		
+		TestUltimateBase<int>.GetMemberOnSourceAssembly(nameof(Mock1A));
 	}
 }

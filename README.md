@@ -4,7 +4,7 @@ Provides easy-accessible, design-time information about implementations througho
 ## Advantages
 - All implementations of a specific class or interface are centralized in one place.
 - You have a simple and navigable overview over what is implemented.
-- No need to use slow reflection to collect implementations. This improves startup time of your app.
+- Does not use reflection. This improves startup time of your app.
 - [Assembly-level trimming](https://devblogs.microsoft.com/dotnet/app-trimming-in-net-5/) can be implemented in your libraries with ease: Implementations will not be trimmed because the enum contains a hard link to each implementation.
 - No need to manually implement logic to search for the correct implementation.
 - Members can be found in a static context, so there is no need to pass around a collection of implementations.
@@ -24,8 +24,8 @@ It is set to `false` by default. For more information, see [cross-assembly imple
 > The name of the base class or interface will be used without the leading 'I' (for interfaces) or trailing 'Base' for base classes.
 > `Enum` will be placed at the end of the name.
 > Examples:
-> - `AnimalBase` ->  `AnimalEnum`
-> - `IVehicle` -> `VehicleEnum`
+> - `AnimalBase` will become `AnimalEnum`.
+> - `IVehicle`will become `VehicleEnum`.
 
 # Concepts
 
@@ -96,9 +96,7 @@ using CodeChops.MagicEnums;
 using CodeChops.MagicEnums.Core;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-
 
 /// <summary>
 /// Discovered implementations: <see cref="AnimalEnum"/>.
@@ -231,8 +229,6 @@ internal static class AnimalEnumExtensions
 > The [Geometry library](https://github.com/Code-Chops/Geometry/) makes use of this library to collect every `StrictDirection` implementation under one enum.
 
 > The [Blame game engine library](https://github.com/Code-Chops/Blame/) makes use of this library to discover implemented GameObjects.
-
-
 
 # Global implementations
 By default a global implementations enum will be generated in the root namespace of the assembly. 

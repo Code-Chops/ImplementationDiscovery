@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.2.0</Version>
-        <PackageReleaseNotes>Fixed inheritdocs of source generated proxy enum extensions and removed normal extensions generation.</PackageReleaseNotes>
+        <Version>1.3.0</Version>
+        <PackageReleaseNotes>Added proxy enum initialization source generated code. Enhanced README.md.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
