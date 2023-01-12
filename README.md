@@ -33,7 +33,7 @@ It is set to `false` by default. For more information, see [cross-assembly imple
 
 > The [Geometry library](https://github.com/Code-Chops/Geometry/) makes use of this library to collect every `StrictDirection` implementation under one enum.
 
-> The [Blame game engine library](https://github.com/Code-Chops/Blame/) makes use of this library to discover implemented GameObjects.
+> The [Blame game engine library](https://github.com/Code-Chops/Blame/) makes use of this library to discover implemented GameObjects (not released yet).
 
 # Concepts
 
