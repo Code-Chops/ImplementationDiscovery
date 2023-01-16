@@ -1,4 +1,7 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
+﻿using CodeChops.ImplementationDiscovery.Discovered;
+using CodeChops.ImplementationDiscovery.Enums;
+
+namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementedInterfaces;
 
 [DiscoverImplementations]
 public partial interface IInterfaceToImplement
@@ -16,13 +19,13 @@ public partial interface IDayOfWeek<TDay>
 {
 }
 
-public abstract record DayOfWeek<TSelf, TDay> : ImplementationsEnum<TSelf, DayOfWeek<TSelf, TDay>>, IDayOfWeek<TDay>
+public abstract record DayOfWeek<TSelf, TDay> : ImplementationsEnumBase<TSelf, DayOfWeek<TSelf, TDay>>, IDayOfWeek<TDay>
 	where TSelf : DayOfWeek<TSelf, TDay>, new()
 	where TDay : class
 {
 	public static TSelf CreateDay()
 	{
-		var member = CreateMember(new DiscoveredObject<DayOfWeek<TSelf, TDay>>(() => new TSelf()));
+		var member = CreateMember(new SimpleDiscoveredObject<DayOfWeek<TSelf, TDay>>(typeof(TSelf), () => new TSelf()));
 		return member;
 	}
 }

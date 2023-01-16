@@ -1,9 +1,12 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsEnum;
+﻿using CodeChops.ImplementationDiscovery.Discovered;
+using CodeChops.ImplementationDiscovery.Enums;
 
-public record NewableImplementationsEnumMock : ImplementationsEnum<NewableImplementationsEnumMock, Color>
+namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsEnum;
+
+public record NewableImplementationsEnumMock : SimpleImplementationsEnum<NewableImplementationsEnumMock, Color>
 {
-	public static NewableImplementationsEnumMock Blue { get; }	= CreateMember(new DiscoveredObject<Color>(typeof(Blue)));
-	public static NewableImplementationsEnumMock Red { get; }	= CreateMember(new DiscoveredObject<Color>(typeof(Red)));
+	public static NewableImplementationsEnumMock Blue { get; }	= CreateMember(new SimpleDiscoveredObject<Color>(typeof(Blue)));
+	public static NewableImplementationsEnumMock Red { get; }	= CreateMember(new SimpleDiscoveredObject<Color>(typeof(Red)));
 }
 
 public sealed record Blue : Color;

@@ -1,9 +1,8 @@
 ﻿namespace CodeChops.ImplementationDiscovery;
 
-public interface IImplementationsEnum<TBaseType> : IImplementationsEnum, IMagicEnum<DiscoveredObject<TBaseType>>
+public interface IImplementationsEnum<TBaseType> : IImplementationsEnum, IMagicEnum<DiscoveredObjectBase<TBaseType>>
 	where TBaseType : notnull
 {
-	TBaseType Instance { get; }
 }
 
 public interface IImplementationsEnum

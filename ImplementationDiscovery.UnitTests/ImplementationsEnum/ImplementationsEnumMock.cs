@@ -1,9 +1,12 @@
-﻿namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsEnum;
+﻿using CodeChops.ImplementationDiscovery.Discovered;
+using CodeChops.ImplementationDiscovery.Enums;
 
-public record ImplementationsEnumMock : ImplementationsEnum<ImplementationsEnumMock, Animal>
+namespace CodeChops.ImplementationDiscovery.UnitTests.ImplementationsEnum;
+
+public record ImplementationsEnumMock : ImplementationsEnumBase<ImplementationsEnumMock, Animal>
 {
-	public static ImplementationsEnumMock Cat { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(Cat)));
-	public static ImplementationsEnumMock Dog { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(Dog)));
+	public static ImplementationsEnumMock Cat { get; } = CreateMember(new SimpleDiscoveredObject<Animal>(typeof(Cat)));
+	public static ImplementationsEnumMock Dog { get; } = CreateMember(new SimpleDiscoveredObject<Animal>(typeof(Dog)));
 }
 
 public sealed record Cat : Animal;

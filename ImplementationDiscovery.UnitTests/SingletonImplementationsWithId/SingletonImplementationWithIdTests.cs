@@ -1,4 +1,5 @@
-﻿using CodeChops.ImplementationDiscovery.UnitTests.ImplementationsWithId;
+﻿using CodeChops.ImplementationDiscovery.Discovered;
+using CodeChops.ImplementationDiscovery.UnitTests.ImplementationsWithId;
 
 namespace CodeChops.ImplementationDiscovery.UnitTests.SingletonImplementationsWithId;
 
@@ -14,7 +15,7 @@ public class ImplementationWithIdTests
     [Fact]
     public void IdsAreCreated()
     {
-        Assert.Equal(typeof(DiscoveredObject<ImplementationWithIdMockBase>), ImplementationWithIdMockBase.ImplementationEnum.GetValue().GetType());
-        Assert.Equal(typeof(DiscoveredObject<ImplementationWithIdMockBase>), ImplementationWithIdMockBase.ImplementationEnum.GetValue().GetType());
+        Assert.Equal(typeof(SimpleDiscoveredObject<ImplementationWithIdMockBase>), ImplementationWithIdMockEnum.ImplementationWithIdMock1.GetValue().GetType());
+        Assert.Equal(typeof(SimpleDiscoveredObject<ImplementationWithIdMockBase>), ImplementationWithIdMockEnum.ImplementationWithIdMock2.GetValue().GetType());
     }
 }
