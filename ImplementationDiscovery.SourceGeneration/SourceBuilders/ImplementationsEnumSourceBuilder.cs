@@ -77,8 +77,6 @@ internal static class ImplementationsEnumSourceBuilder
 				"using System.Runtime.CompilerServices;",
 				"using System;", 
 				"using CodeChops.ImplementationDiscovery;", 
-				"using CodeChops.ImplementationDiscovery.Discovered;",
-				"using CodeChops.ImplementationDiscovery.Enums;",
 				"using CodeChops.MagicEnums;",
 				"using CodeChops.MagicEnums.Core;", 
 				"using System.Diagnostics.CodeAnalysis;",
@@ -161,7 +159,7 @@ internal static class ImplementationsEnumSourceBuilder
 
 			var baseType = definition.IsProxy
 				? $"{definition.ExternalDefinition!.Namespace}.{definition.ExternalDefinition.Name}"
-				: $"SimpleImplementationsEnum<{definition.Name}, {definition.BaseTypeNameIncludingGenerics}>";
+				: $"ImplementationsEnum<{definition.Name}, {definition.BaseTypeNameIncludingGenerics}>";
 			
 			var originalDefinition = definition.ExternalDefinition ?? definition;
 
@@ -206,14 +204,14 @@ internal static class ImplementationsEnumSourceBuilder
 	#region Forwarding
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.CreateMember""/>
 	protected new static {originalDefinition.Name} CreateMember(
-		SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value,
+		DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value,
 		Func<{originalDefinition.Name}>? memberCreator = null,
 		[CallerMemberName] string? name = null)
 		=> {originalDefinition.Name}.CreateMember(value: value, memberCreator: memberCreator, name: name);
 	
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.CreateMember{{TMember}}""/>
 	protected new static {originalDefinition.Name} CreateMember<TMember>(
-		SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value,
+		DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value,
 		Func<TMember>? memberCreator = null,
 		[CallerMemberName] string? name = null)
 		where TMember : {originalDefinition.Name}
@@ -221,32 +219,32 @@ internal static class ImplementationsEnumSourceBuilder
 	
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.CreateMember{{TMember}}""/>
 	protected new static {originalDefinition.Name} CreateMember<TMember>(
-		Func<SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>> valueCreator,
+		Func<DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>> valueCreator,
 		Func<TMember>? memberCreator = null,
 		[CallerMemberName] string? name = null)
 		where TMember : {originalDefinition.Name}
 		=> {originalDefinition.Name}.CreateMember<TMember>(valueCreator, memberCreator, name);
 
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetOrCreateMember""/>
-	public new static {originalDefinition.Name} GetOrCreateMember(SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value) 
+	public new static {originalDefinition.Name} GetOrCreateMember(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value) 
 		=> {originalDefinition.Name}.GetOrCreateMember(value);
 
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetOrCreateMember""/>
 	protected new static {originalDefinition.Name} GetOrCreateMember(
 		string? name, 
-		SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value, 
+		DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> value, 
 		Func<{originalDefinition.Name}>? memberCreator = null)
 		=> {originalDefinition.Name}.GetOrCreateMember(name: name, value: value, memberCreator: memberCreator);
 
 	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetOrCreateMember{{TMember}}""/>
 	protected new static {originalDefinition.Name} GetOrCreateMember<TMember>(
 		[CallerMemberName] string? name = null, 
-		Func<SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>? valueCreator = null, 
+		Func<DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>>? valueCreator = null, 
 		Func<TMember>? memberCreator = null)
 		where TMember : {originalDefinition.Name}
 		=> {originalDefinition.Name}.GetOrCreateMember(name, valueCreator, memberCreator);
 	
-	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(string, out SimpleDiscoveredObject{{TBaseType}})""/> 
+	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(string, out DiscoveredObject{{TBaseType}})""/> 
 	public new static bool TryGetSingleMember(string memberName, [NotNullWhen(true)] out {originalDefinition.Name}? member)
 		=> {originalDefinition.Name}.TryGetSingleMember(memberName, out member);
 	
@@ -254,20 +252,20 @@ internal static class ImplementationsEnumSourceBuilder
 	public new static {originalDefinition.Name} GetSingleMember(string memberName)
 		=> {originalDefinition.Name}.GetSingleMember(memberName);
 	
-	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(SimpleDiscoveredObject{{TBaseType}}, out TSelf)""/> 
-	public new static bool TryGetSingleMember(SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out {originalDefinition.Name}? member)
+	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetSingleMember(DiscoveredObject{{TBaseType}}, out TSelf)""/> 
+	public new static bool TryGetSingleMember(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out {originalDefinition.Name}? member)
 		=> {originalDefinition.Name}.TryGetSingleMember(memberValue, out member);
 
-	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetSingleMember(SimpleDiscoveredObject{{TBaseType}})""/> 
-	public new static {originalDefinition.Name} GetSingleMember(SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue)
+	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetSingleMember(DiscoveredObject{{TBaseType}})""/> 
+	public new static {originalDefinition.Name} GetSingleMember(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue)
 		=> {originalDefinition.Name}.GetSingleMember(memberValue);
 	
-	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetMembers(SimpleDiscoveredObject{{TBaseType}}, out IReadOnlyCollection{{TSelf}}?)""/> 
-	public new static bool TryGetMembers(SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<{originalDefinition.Name}>? members)
+	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.TryGetMembers(DiscoveredObject{{TBaseType}}, out IReadOnlyCollection{{TSelf}}?)""/> 
+	public new static bool TryGetMembers(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<{originalDefinition.Name}>? members)
 		=> {originalDefinition.Name}.TryGetMembers(memberValue, out members);
 	
-	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetMembers(SimpleDiscoveredObject{{TBaseType}})""/> 
-	public new static IEnumerable<{originalDefinition.Name}> GetMembers(SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue)
+	/// <inheritdoc cref=""ImplementationsEnum{{TSelf, TValue}}.GetMembers(DiscoveredObject{{TBaseType}})""/> 
+	public new static IEnumerable<{originalDefinition.Name}> GetMembers(DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}> memberValue)
 		=> {originalDefinition.Name}.GetMembers(memberValue);
 	#endregion
 ");
@@ -319,6 +317,7 @@ public static class ProxyInitializationExtensions
 ");
 			}
 			
+
 			return code.TrimEnd().ToString();
 		}
 
@@ -326,9 +325,9 @@ public static class ProxyInitializationExtensions
 		string GetCreation(DiscoveredEnumMember member, EnumDefinition definition)
 			=> member.InstanceCreationMethod switch
 			{
-				InstanceCreationMethod.Factory			=> $"new SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value}), static () => {member.Value}.Create())",
-				InstanceCreationMethod.New				=> $"new SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value}), static () => new {member.Value}())",
-				InstanceCreationMethod.Uninitialized	=> $"new SimpleDiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value}))",
+				InstanceCreationMethod.Factory			=> $"new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(static () => {member.Value}.Create())",
+				InstanceCreationMethod.New				=> $"new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(static () => new {member.Value}())",
+				InstanceCreationMethod.Uninitialized	=> $"new DiscoveredObject<{definition.BaseTypeNameIncludingGenerics}>(typeof({member.Value}))",
 				_ => throw new ArgumentOutOfRangeException(nameof(member))
 			};
 	}

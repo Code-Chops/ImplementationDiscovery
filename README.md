@@ -96,12 +96,12 @@ This generates the following code:
 #nullable enable
 #pragma warning disable CS0109
 
+global using CodeChops.MagicEnums;
+global using System.Runtime.CompilerServices;
+global using System.Runtime.Serialization;
 using CodeChops.ImplementationDiscovery;
-using CodeChops.ImplementationDiscovery.Discovered;
-using CodeChops.ImplementationDiscovery.Enums;
 using CodeChops.MagicEnums;
 using CodeChops.MagicEnums.Core;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -111,7 +111,7 @@ using System.Runtime.CompilerServices;
 /// </summary>
 public partial record class Animal 
 {
-    public static IImplementationsEnum<Animal> ImplementationEnum { get; } = new AnimalEnum();
+	public static IImplementationsEnum<Animal> ImplementationEnum { get; } = new AnimalEnum();
 }
 
 /// <summary>
@@ -121,33 +121,115 @@ public partial record class Animal
 /// <item><see cref="global::Dog"/></item>
 /// </list>
 /// </summary>
-internal partial record AnimalEnum : SimpleImplementationsEnum<AnimalEnum, Animal>, IInitializable
+internal partial record AnimalEnum : ImplementationsEnum<AnimalEnum, Animal>, IInitializable
 {
-    /// <summary>
-    /// <see cref="global::Cat"/>
-    /// </summary>
-    public static AnimalEnum Cat { get; } = CreateMember(new SimpleDiscoveredObject<Animal>(typeof(global::Cat)));  
-    
-    /// <summary>
-    /// <see cref="global::Dog"/>
-    /// </summary>
-    public static AnimalEnum Dog { get; } = CreateMember(new SimpleDiscoveredObject<Animal>(typeof(global::Dog)));  
-    
-    #region Initialization
-    /// <summary>
-    /// Is false when the enum is still in static buildup and true if this is finished.
-    /// This parameter can be used to detect cyclic references during buildup and act accordingly.
-    /// </summary>
-    public new static bool IsInitialized { get; }   
-    
-    static AnimalEnum()
-    {
-    	IsInitialized = true;		
-    }   
-    #endregion
+	/// <summary>
+	/// <see cref="global::Cat"/>
+	/// </summary>
+	public static AnimalEnum Cat { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(global::Cat)));
+
+	/// <summary>
+	/// <see cref="global::Dog"/>
+	/// </summary>
+	public static AnimalEnum Dog { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(global::Dog)));
+
+	#region Initialization
+	/// <summary>
+	/// Is false when the enum is still in static buildup and true if this is finished.
+	/// This parameter can be used to detect cyclic references during buildup and act accordingly.
+	/// </summary>
+	public new static bool IsInitialized { get; }
+
+	static AnimalEnum()
+	{
+		IsInitialized = true;		
+	}
+	#endregion
+}
+
+internal static class AnimalEnumExtensions
+{
+	public static IEnumerable<Animal> GetDiscoveredObjects(this AnimalEnum implementationsEnum)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetMembers().Select(member => member.Instance);
+	
+	#region ForwardInstanceMethodsToStatic 
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetDefaultValue"/>
+	public static DiscoveredObject<Animal> GetDefaultValue(this AnimalEnum implementationsEnum)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetDefaultValue();
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetMemberCount"/>
+	public static int GetMemberCount(this AnimalEnum implementationsEnum)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetMemberCount();
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetUniqueValueCount"/>
+	public static int GetUniqueValueCount(this AnimalEnum implementationsEnum)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetUniqueValueCount();
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetMembers()"/>
+	public static IEnumerable<IImplementationsEnum<Animal>> GetMembers(this AnimalEnum implementationsEnum)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetMembers();
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetValues()"/>
+	public static IEnumerable<DiscoveredObject<Animal>> GetValues(this AnimalEnum implementationsEnum)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetValues();
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.TryGetSingleMember(string, out Animal)"/>
+	public static bool TryGetSingleMember(this AnimalEnum implementationsEnum, string memberName, [NotNullWhen(true)] out IImplementationsEnum<Animal>? member)
+	{
+		if (!MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.TryGetSingleMember(memberName, out var foundMember))
+		{
+			member = null;
+			return false;
+		}
+	
+		member = foundMember;
+		return true;
+	}
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetSingleMember(string)"/>
+	public static IImplementationsEnum<Animal> GetSingleMember(this AnimalEnum implementationsEnum, string memberName)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetSingleMember(memberName);
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.TryGetSingleMember(DiscoveredObject, out Animal?)"/>
+	public static bool TryGetSingleMember(DiscoveredObject<Animal> memberValue, [NotNullWhen(true)] out IImplementationsEnum<Animal>? member)
+	{
+		if (!MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.TryGetSingleMember(memberValue, out var foundMember))
+		{
+			member = null;
+			return false;
+		}
+	
+		member = foundMember;
+		return true;
+	}
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetSingleMember(DiscoveredObject)"/>
+	public static IImplementationsEnum<Animal> GetSingleMember(DiscoveredObject<Animal> memberValue)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetSingleMember(memberValue);
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.TryGetMembers(DiscoveredObject, out IReadOnlyCollection{Animal}?)"/>
+	public static bool TryGetMembers(this AnimalEnum implementationsEnum, DiscoveredObject<Animal> memberValue, [NotNullWhen(true)] out IReadOnlyCollection<IImplementationsEnum<Animal>>? members)
+	{
+		if (!MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.TryGetMembers(memberValue, out var foundMembers))
+		{
+			members = null;
+			return false;
+		}
+	
+		members = foundMembers;
+		return true;
+	}
+	
+	/// <inheritdoc cref="MagicEnumCore{Animal, DiscoveredObject}.GetMembers(DiscoveredObject)"/>
+	public static IEnumerable<IImplementationsEnum<Animal>> GetMembers(this AnimalEnum implementationsEnum, DiscoveredObject<Animal> memberValue)
+		=> MagicEnumCore<AnimalEnum, DiscoveredObject<Animal>>.GetMembers(memberValue);
+	
+	#endregion
 }
 
 #nullable restore
+
 ```
 
 # Global implementations
