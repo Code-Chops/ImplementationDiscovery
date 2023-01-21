@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.5.0</Version>
-        <PackageReleaseNotes>Reverted preparations for ParamDiscoveredObject.</PackageReleaseNotes>
+        <Version>1.5.1</Version>
+        <PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
@@ -61,7 +61,7 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainModeling" Version="2.0.1" />
+        <PackageReference Include="CodeChops.DomainModeling" Version="2.3.5" />
         <PackageReference Include="CodeChops.MagicEnums" Version="3.6.0" />
     </ItemGroup>
 	
