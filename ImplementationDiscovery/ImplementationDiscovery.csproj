@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.5.1</Version>
-        <PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
+        <Version>1.5.2</Version>
+        <PackageReleaseNotes>Removed console log (whoops).</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>

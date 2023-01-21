@@ -83,8 +83,6 @@ public abstract record ImplementationsEnum<TSelf, TBaseType> : MagicCustomEnum<T
 	protected new static TSelf GetOrCreateMember<TMember>([CallerMemberName] string? name = null, Func<DiscoveredObject<TBaseType>>? valueCreator = null, Func<TMember>? memberCreator = null)
 		where TMember : TSelf
 	{
-		Console.WriteLine($"Member {name} created for {typeof(TSelf).Name}!");
-		
 		if (name is null)
 			throw new ArgumentNullException($"Empty name provided to {nameof(GetOrCreateMember)} for enum {EnumName}.");
 
