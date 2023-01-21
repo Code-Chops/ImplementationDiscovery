@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.3.2</Version>
-        <PackageReleaseNotes>Don't generated proxy enum initialization code but add it to AllDiscoveredImplementations.</PackageReleaseNotes>
+        <Version>1.5.0</Version>
+        <PackageReleaseNotes>Reverted preparations for ParamDiscoveredObject.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>

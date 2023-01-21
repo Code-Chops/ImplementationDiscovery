@@ -1,6 +1,7 @@
 using ToBeImplementedMocks;
 using Xunit;
 using Xunit.Abstractions;
+using ITest = ToBeImplementedMocks.ITest;
 
 namespace ImplementationTests;
 
@@ -15,7 +16,7 @@ public class UnitTest1
 	}	
 }
 
-public partial record UnitTest2 : ToBeImplementedMocks.ITest
+public partial record UnitTest2 : ITest
 {
 	[Fact]
 	public void Test2()
@@ -68,6 +69,6 @@ public record UnitTest6
 	{
 		AllDiscoveredImplementations.Initialize();
 		
-		TestUltimateBase<int>.GetMemberOnSourceAssembly(nameof(Mock1A));
+		ITest.GetMemberOnSourceAssembly(nameof(UnitTest3));
 	}
 }
