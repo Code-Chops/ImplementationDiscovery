@@ -1,6 +1,6 @@
 ﻿namespace CodeChops.ImplementationDiscovery.UnitTests.SingletonImplementationsWithId;
 
-[DiscoverImplementations(generateImplementationIds: true, hasSingletonImplementations: true)]
+[DiscoverImplementations(generateImplementationIds: true)]
 public abstract partial class SingletonImplementationWithIdMockBase
 {
 }

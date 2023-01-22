@@ -16,7 +16,6 @@ internal record EnumDefinition : IEnumModel
 	public string FilePath { get; }
 	public string Accessibility { get; }
 	public bool GenerateImplementationIds { get; }
-	public bool HasSingletonImplementations { get; }
 	public bool GenerateProxies { get; }
 	public List<string> Usings { get; }
 	public bool IsPartial { get; }
@@ -46,7 +45,6 @@ internal record EnumDefinition : IEnumModel
 		this.Accessibility = "internal";
 
 		this.GenerateImplementationIds = false;
-		this.HasSingletonImplementations = false;
 		this.GenerateProxies = false;
 		
 		this.Usings = new List<string>();
@@ -84,7 +82,6 @@ internal record EnumDefinition : IEnumModel
 		this.Accessibility = generateProxies ? "public" : "internal";
 
 		this.GenerateImplementationIds = attribute.GetArgumentOrDefault("generateImplementationIds", defaultValue: false);
-		this.HasSingletonImplementations = attribute.GetArgumentOrDefault("hasSingletonImplementations", defaultValue: false);
 		this.GenerateProxies = generateProxies;
 		
 		this.Usings = syntax

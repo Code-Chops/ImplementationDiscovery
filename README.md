@@ -16,7 +16,6 @@ Provides easy-accessible, design-time information about implementations througho
 2. Place the attribute `DiscoverImplementations` on the declaration and optionally provide the following parameters:
    - `EnumName`: The name of the enum that is being generated. If not provided, it will create one for you, see [enum name creation](#Enum-name-creation).
    - `GenerateImplementationIds`: If `true` (default), all discovered implementations get an implementation ID property, see [implementation IDs](#Implementation-IDs).
-   - `HasSingletonImplementations` If `true`, the ID of all discovered implementations will be their implementation ID. It is set to `false` by default.
    - `GenerateProxies`: If `true`, implementations are discovered in assemblies that reference the base class / interface that has to be discovered. 
 This is done by creating a proxy enum in the assembly of the implementation (under the namespace of the base class / interface. 
 It is set to `false` by default. For more information, see [cross-assembly implementations](#Cross-assembly-implementations).

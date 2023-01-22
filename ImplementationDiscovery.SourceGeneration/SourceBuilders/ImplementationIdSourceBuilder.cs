@@ -77,12 +77,6 @@ namespace {member.Namespace};
 {{
 ").TrimEnd();
             
-            if (definition.HasSingletonImplementations)
-            {
-                code.AppendLine($@"
-	public IId Id => ImplementationId;
-");
-            }
 
             if (definition.GenerateImplementationIds)
             {
