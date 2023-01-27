@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.7.0</Version>
-        <PackageReleaseNotes>Updated package references and removed hasSingletonImplementations.</PackageReleaseNotes>
+        <Version>1.8.0</Version>
+        <PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
@@ -61,8 +61,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainModeling" Version="2.6.0" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.7.1" />
+        <PackageReference Include="CodeChops.DomainModeling" Version="2.8.0" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.8.0" />
     </ItemGroup>
 	
 </Project>
