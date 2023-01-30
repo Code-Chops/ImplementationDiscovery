@@ -79,7 +79,10 @@ internal record EnumDefinition : IEnumModel
 		this.BaseTypeHasComments = !String.IsNullOrWhiteSpace(baseType.GetDocumentationCommentXml());
 		
 		this.FilePath = filePath;
-		this.Accessibility = generateProxies ? "public" : "internal";
+		this.Accessibility = (externalBaseType ?? baseType)
+			.DeclaredAccessibility.ToString()
+			.ToLowerInvariant()
+			.Replace("partial ", "").Replace("static ", "").Replace("abstract ", "").Trim();
 
 		this.GenerateImplementationIds = attribute.GetArgumentOrDefault("generateImplementationIds", defaultValue: false);
 		this.GenerateProxies = generateProxies;
