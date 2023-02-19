@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.8.1</Version>
-        <PackageReleaseNotes>Customizes accessibility of generated enums according to acessebility of base type.</PackageReleaseNotes>
+        <Version>1.8.2</Version>
+        <PackageReleaseNotes>Updated packages.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
@@ -61,8 +61,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainModeling" Version="2.8.1" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.8.0" />
+        <PackageReference Include="CodeChops.DomainModeling" Version="2.8.3" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.8.1" />
     </ItemGroup>
 	
 </Project>
