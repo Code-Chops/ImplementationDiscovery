@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>1.8.5</Version>
-        <PackageReleaseNotes>Updated packages 4.</PackageReleaseNotes>
+        <Version>1.8.6</Version>
+        <PackageReleaseNotes>Updated packages 5.</PackageReleaseNotes>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>CodeChops.ImplementationDiscovery</Title>
         <Description>Provides easy-accessible, design-time and runtime information about implementations throughout your code.</Description>
@@ -61,8 +61,8 @@
     </ItemGroup>
 
     <ItemGroup Label="PackageReferences">
-        <PackageReference Include="CodeChops.DomainModeling" Version="2.10.5" />
-        <PackageReference Include="CodeChops.MagicEnums" Version="3.8.3" />
+        <PackageReference Include="CodeChops.DomainModeling" Version="2.15.0" />
+        <PackageReference Include="CodeChops.MagicEnums" Version="3.9.0" />
     </ItemGroup>
 	
 </Project>
