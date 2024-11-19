@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using CodeChops.ImplementationDiscovery.SourceGeneration.Models;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SyntaxReceivers;
 using CodeChops.ImplementationDiscovery.SourceGeneration.SourceBuilders;
@@ -18,7 +19,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		try
 		{
 			var valueProvider = FindImplementations(initializationContext).Combine(initializationContext.AnalyzerConfigOptionsProvider);
-	
+
 			initializationContext.RegisterSourceOutput(
 				source: valueProvider,
 				action: static (c, provider) => CreateSource(c, provider.Left, provider.Right!));
@@ -26,6 +27,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 
 		catch (Exception e)
 		{
+			Debugger.Launch();
 			initializationContext.RegisterPostInitializationOutput(c => c.AddSource($"{nameof(ImplementationDiscoverySourceGenerator)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8)));
 		}
 	}
@@ -42,7 +44,7 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 			.Where(static definition => definition is not null)
 			.SelectMany((s, _) => s.ToList())
 			.Collect();
-		
+
 		return enumEntities!;
 	}
 
@@ -55,16 +57,16 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		var globallyListableEnumMembers = allDefinitions.Where(definition => definition.TypeParameters is null && definition.BaseTypeNameIncludingGenerics != nameof(Object));
 
 		var globalEnumDefinition = new GlobalEnumDefinition(configOptionsProvider);
-		
+
 		allDefinitions.Add(globalEnumDefinition);
 
 		allMembers.AddRange(globallyListableEnumMembers
 			.Select((definition, index) => new DiscoveredEnumMember(
 				enumIdentifier: $"{globalEnumDefinition.Namespace}.{Constants.AllImplementationsEnumName}",
-				name: definition.Name, 
-				isPartial: false, 
-				@namespace: definition.Namespace, 
-				declaration: "public class", 
+				name: definition.Name,
+				isPartial: false,
+				@namespace: definition.Namespace,
+				declaration: "public class",
 				value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
 				filePath: Constants.AllImplementationsEnumName,
 				linePosition: new LinePosition(index, 0),
@@ -88,15 +90,15 @@ public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 		var definitionsByIdentifier = definitions
 			.GroupBy(definition => definition.EnumIdentifier)
 			.ToDictionary(group => group.Key, group => group.First());
-		
+
 		var membersByIdentifier = allDiscoveredMembers
 			.GroupBy(d => d.EnumIdentifier)
 			.ToDictionary(group => group.Key, group => group.ToList());
-            
+
 		var discoveredEnums = definitionsByIdentifier
 			.ToDictionary(group => group.Value, group => membersByIdentifier.TryGetValue(group.Key, out var members) ? members : new List<DiscoveredEnumMember>())
 			.Select(group => new DiscoveredEnum(group.Key, group.Value.OrderBy(member => member.Value).ToImmutableList()));
-		
+
 		return discoveredEnums;
 	}
 }

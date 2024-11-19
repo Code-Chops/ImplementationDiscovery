@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -22,10 +23,9 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup Label="PackageReferences">
+    <ItemGroup Label="ProjectReferences">
         <ProjectReference Include="..\ImplementationDiscovery.SourceGeneration\ImplementationDiscovery.SourceGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\ImplementationDiscovery\ImplementationDiscovery.csproj" />
     </ItemGroup>
-
 
 </Project>

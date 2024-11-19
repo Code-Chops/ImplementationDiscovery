@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace CodeChops.ImplementationDiscovery;
 
-[StructLayout(LayoutKind.Auto)] 
+[StructLayout(LayoutKind.Auto)]
 public readonly record struct DiscoveredObject<TBaseType> : IComparable<DiscoveredObject<TBaseType>>, IValueObject
 	where TBaseType : notnull
 {
@@ -40,7 +40,7 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static implicit operator Type(DiscoveredObject<TBaseType> discoveredObject) => discoveredObject.Type;
 	#endregion
-	
+
 	/// <summary>
 	/// An instance of the discovered object.
 	/// </summary>
@@ -56,13 +56,13 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 	/// </summary>
 	public TBaseType Create() => this._instanceCreator();
 	private readonly Func<TBaseType> _instanceCreator;
-	
-	private static ConcurrentDictionary<Type, Func<TBaseType>> UninitializedObjectCreatorCache { get; } = new();  
-	
+
+	private static ConcurrentDictionary<Type, Func<TBaseType>> UninitializedObjectCreatorCache { get; } = new();
+
 	public DiscoveredObject(Type type)
 	{
-		var instanceCreator = UninitializedObjectCreatorCache.GetOrAdd(type, () => (TBaseType)FormatterServices.GetUninitializedObject(type));
-		
+		var instanceCreator = UninitializedObjectCreatorCache.GetOrAdd(type, () => (TBaseType)RuntimeHelpers.GetUninitializedObject(type));
+
 		this.Instance = instanceCreator();
 		this.Type = type;
 		this._instanceCreator = instanceCreator;
@@ -71,7 +71,7 @@ public readonly record struct DiscoveredObject<TBaseType> : IComparable<Discover
 	public DiscoveredObject(Func<TBaseType> instanceCreator)
 	{
 		var instance = instanceCreator();
-		
+
 		this.Instance = instance;
 		this.Type = instance.GetType();
 		this._instanceCreator = instanceCreator;

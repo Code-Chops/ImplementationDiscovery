@@ -3,8 +3,8 @@
 	<PropertyGroup Label="Main">
 		<AssemblyName>CodeChops.ImplementationDiscovery.UnitTests</AssemblyName>
 		<RootNamespace>CodeChops.ImplementationDiscovery.UnitTests</RootNamespace>
-		<TargetFramework>net8.0</TargetFramework>
-		<LangVersion>12</LangVersion>
+		<TargetFramework>net9.0</TargetFramework>
+		<LangVersion>13</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
