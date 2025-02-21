@@ -2,8 +2,8 @@
 
 internal record GlobalEnumDefinition : EnumDefinition
 {
-	public GlobalEnumDefinition(AnalyzerConfigOptionsProvider configOptionsProvider) 
-		: base(configOptionsProvider)
-	{
-	}
+    public GlobalEnumDefinition(AnalyzerConfigOptionsProvider configOptionsProvider)
+        : base(configOptionsProvider)
+    {
+    }
 }

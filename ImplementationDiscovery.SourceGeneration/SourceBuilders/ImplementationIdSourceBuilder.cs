@@ -7,15 +7,15 @@ internal static class ImplementationIdSourceBuilder
 {
     public static void CreateSource(SourceProductionContext context, List<DiscoveredEnum> discoveredEnums, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
-        if (discoveredEnums.Count == 0) 
+        if (discoveredEnums.Count is 0)
             return;
-        
+
         try
         {
             foreach (var discoveredEnum in discoveredEnums)
                 CreateDiscoveredImplementationIdFiles(context, discoveredEnum, configOptionsProvider);
         }
-        
+
         catch (Exception e)
         {
             var descriptor = new DiagnosticDescriptor(nameof(ImplementationIdSourceBuilder), "Error", $"{nameof(ImplementationIdSourceBuilder)} failed to generate due to an error. Please inform CodeChops (www.CodeChops.nl). Error: {e}", "Compilation", DiagnosticSeverity.Error, isEnabledByDefault: true);
@@ -24,13 +24,13 @@ internal static class ImplementationIdSourceBuilder
             context.AddSource($"{nameof(ImplementationIdSourceBuilder)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8));
         }
     }
-    
+
     private static void CreateDiscoveredImplementationIdFiles(SourceProductionContext context, DiscoveredEnum discoveredEnum, AnalyzerConfigOptionsProvider configOptionsProvider)
     {
         var definition = discoveredEnum.Definition;
-        
+
         var partialMembers = discoveredEnum.Members.Where(m => m.IsPartial);
-		
+
         foreach (var member in partialMembers)
         {
             var code = new StringBuilder();
@@ -59,52 +59,52 @@ namespace {member.Namespace};
 /// </summary>
 ");
             }
-            
+
             var baseType = definition.ExternalDefinition?.BaseTypeNameIncludingGenerics ?? definition.BaseTypeNameIncludingGenerics;
 
             var interfaces = definition.GenerateImplementationIds
                 ? $" : IHasImplementationId<{baseType}>, IHasStaticImplementationId<{baseType}>"
                 : null;
-                
+
             code.TrimEnd().Append($@"
 {member.Declaration} {member.GetClassName()}{interfaces}
 ");
 
             if (definition.BaseTypeGenericConstraints is not null)
                 code.Append(definition.BaseTypeGenericConstraints);
-            
+
             code.TrimEnd().Append($@"
 {{
 ").TrimEnd();
-            
+
 
             if (definition.GenerateImplementationIds)
             {
                 code.AppendLine($@"
-	public new static IImplementationsEnum<{baseType}> ImplementationId {{ get; }} = {definition.Name}.{NameHelpers.GetNameWithoutGenerics(member.GetSimpleName(definition))};
+    public new static IImplementationsEnum<{baseType}> ImplementationId {{ get; }} = {definition.Name}.{NameHelpers.GetNameWithoutGenerics(member.GetSimpleName(definition))};
     public {(definition.BaseTypeTypeKind == TypeKind.Class ? "override " : null)}IImplementationsEnum<{baseType}> GetImplementationId() => ImplementationId;
 ");
             }
-            
+
 
             code.TrimEnd().Append($@"
 }}
        
 #nullable restore
 ");
-			
+
             var implementationIdFileName = FileNameHelpers.GetFileName($"{member.Namespace}.{member.GetSimpleName(definition)}.ImplementationId", configOptionsProvider);
             context.AddSource(implementationIdFileName, SourceText.From(code.ToString(), Encoding.UTF8));
 
-            
+
             string GetUsings()
             {
                 var usings = definition.Usings.Concat(new[]
                 {
-                    "using System;", 
+                    "using System;",
                     "using CodeChops.ImplementationDiscovery;"
                 });
-			
+
                 return usings.Distinct().OrderBy(u => u).Aggregate(new StringBuilder(), (sb, u) => sb.AppendLine(u)).ToString();
             }
         }

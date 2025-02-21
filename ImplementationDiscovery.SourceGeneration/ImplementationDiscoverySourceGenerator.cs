@@ -14,91 +14,91 @@ namespace CodeChops.ImplementationDiscovery.SourceGeneration;
 [Generator]
 public class ImplementationDiscoverySourceGenerator : IIncrementalGenerator
 {
-	public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
-	{
-		try
-		{
-			var valueProvider = FindImplementations(initializationContext).Combine(initializationContext.AnalyzerConfigOptionsProvider);
+    public void Initialize(IncrementalGeneratorInitializationContext initializationContext)
+    {
+        try
+        {
+            var valueProvider = FindImplementations(initializationContext).Combine(initializationContext.AnalyzerConfigOptionsProvider);
 
-			initializationContext.RegisterSourceOutput(
-				source: valueProvider,
-				action: static (c, provider) => CreateSource(c, provider.Left, provider.Right!));
-		}
+            initializationContext.RegisterSourceOutput(
+                source: valueProvider,
+                action: static (c, provider) => CreateSource(c, provider.Left, provider.Right!));
+        }
 
-		catch (Exception e)
-		{
-			Debugger.Launch();
-			initializationContext.RegisterPostInitializationOutput(c => c.AddSource($"{nameof(ImplementationDiscoverySourceGenerator)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8)));
-		}
-	}
+        catch (Exception e)
+        {
+            Debugger.Launch();
+            initializationContext.RegisterPostInitializationOutput(c => c.AddSource($"{nameof(ImplementationDiscoverySourceGenerator)}_Exception_{Guid.NewGuid()}", SourceText.From($"/*{e}*/", Encoding.UTF8)));
+        }
+    }
 
-	/// <summary>
-	/// Finds the enum definitions and stores the enum definitions in the property for later use.
-	/// </summary>
-	private static IncrementalValueProvider<ImmutableArray<IEnumModel>> FindImplementations(IncrementalGeneratorInitializationContext context)
-	{
-		var enumEntities = context.SyntaxProvider
-			.CreateSyntaxProvider(
-				predicate: ImplementationSyntaxReceiver.CheckIfIsProbablyDiscoverableBaseOrImplementation,
-				transform: static (context, ct)	=> ImplementationSyntaxReceiver.GetImplementation(context, ct).Append(ImplementationSyntaxReceiver.GetBaseType(context, ct)))
-			.Where(static definition => definition is not null)
-			.SelectMany((s, _) => s.ToList())
-			.Collect();
+    /// <summary>
+    /// Finds the enum definitions and stores the enum definitions in the property for later use.
+    /// </summary>
+    private static IncrementalValueProvider<ImmutableArray<IEnumModel>> FindImplementations(IncrementalGeneratorInitializationContext context)
+    {
+        var enumEntities = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                predicate: ImplementationSyntaxReceiver.CheckIfIsProbablyDiscoverableBaseOrImplementation,
+                transform: static (context, ct) => ImplementationSyntaxReceiver.GetImplementation(context, ct).Append(ImplementationSyntaxReceiver.GetBaseType(context, ct)))
+            .Where(static definition => definition is not null)
+            .SelectMany((s, _) => s.ToList())
+            .Collect();
 
-		return enumEntities!;
-	}
+        return enumEntities!;
+    }
 
-	private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumModel> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
-	{
-		entities = entities as List<IEnumModel> ?? entities.ToList();
-		var allDefinitions = entities.OfType<EnumDefinition>().ToList();
-		var allMembers = entities.OfType<DiscoveredEnumMember>().ToList();
+    private static void CreateSource(SourceProductionContext context, IEnumerable<IEnumModel> entities, AnalyzerConfigOptionsProvider configOptionsProvider)
+    {
+        entities = entities as List<IEnumModel> ?? entities.ToList();
+        var allDefinitions = entities.OfType<EnumDefinition>().ToList();
+        var allMembers = entities.OfType<DiscoveredEnumMember>().ToList();
 
-		var globallyListableEnumMembers = allDefinitions.Where(definition => definition.TypeParameters is null && definition.BaseTypeNameIncludingGenerics != nameof(Object));
+        var globallyListableEnumMembers = allDefinitions.Where(definition => definition.TypeParameters is null && definition.BaseTypeNameIncludingGenerics != nameof(Object));
 
-		var globalEnumDefinition = new GlobalEnumDefinition(configOptionsProvider);
+        var globalEnumDefinition = new GlobalEnumDefinition(configOptionsProvider);
 
-		allDefinitions.Add(globalEnumDefinition);
+        allDefinitions.Add(globalEnumDefinition);
 
-		allMembers.AddRange(globallyListableEnumMembers
-			.Select((definition, index) => new DiscoveredEnumMember(
-				enumIdentifier: $"{globalEnumDefinition.Namespace}.{Constants.AllImplementationsEnumName}",
-				name: definition.Name,
-				isPartial: false,
-				@namespace: definition.Namespace,
-				declaration: "public class",
-				value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
-				filePath: Constants.AllImplementationsEnumName,
-				linePosition: new LinePosition(index, 0),
-				typeParameters: null,
-				isConvertibleToConcreteType: false,
-				accessibility: definition.Accessibility,
-				instanceCreationMethod: InstanceCreationMethod.Uninitialized,
-				hasComments: false)));
+        allMembers.AddRange(globallyListableEnumMembers
+            .Select((definition, index) => new DiscoveredEnumMember(
+                enumIdentifier: $"{globalEnumDefinition.Namespace}.{Constants.AllImplementationsEnumName}",
+                name: definition.Name,
+                isPartial: false,
+                @namespace: definition.Namespace,
+                declaration: "public class",
+                value: $"global::{(definition.Namespace is null ? null : $"{definition.Namespace}.")}{definition.Name}",
+                filePath: Constants.AllImplementationsEnumName,
+                linePosition: new LinePosition(index, 0),
+                typeParameters: null,
+                isConvertibleToConcreteType: false,
+                accessibility: definition.Accessibility,
+                instanceCreationMethod: InstanceCreationMethod.Uninitialized,
+                hasComments: false)));
 
-		var allEnums = GetDiscoveredEnums(allMembers, allDefinitions)
-			.OrderBy(e => e.Definition.Name)
-			.ThenByDescending(e => e.Definition.Namespace)
-			.ToList();
+        var allEnums = GetDiscoveredEnums(allMembers, allDefinitions)
+            .OrderBy(e => e.Definition.Name)
+            .ThenByDescending(e => e.Definition.Namespace)
+            .ToList();
 
-		ImplementationsEnumSourceBuilder.CreateSource(context, allEnums, configOptionsProvider);
-		ImplementationIdSourceBuilder.CreateSource(context, allEnums, configOptionsProvider);
-	}
+        ImplementationsEnumSourceBuilder.CreateSource(context, allEnums, configOptionsProvider);
+        ImplementationIdSourceBuilder.CreateSource(context, allEnums, configOptionsProvider);
+    }
 
-	private static IEnumerable<DiscoveredEnum> GetDiscoveredEnums(IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, IEnumerable<EnumDefinition> definitions)
-	{
-		var definitionsByIdentifier = definitions
-			.GroupBy(definition => definition.EnumIdentifier)
-			.ToDictionary(group => group.Key, group => group.First());
+    private static IEnumerable<DiscoveredEnum> GetDiscoveredEnums(IEnumerable<DiscoveredEnumMember> allDiscoveredMembers, IEnumerable<EnumDefinition> definitions)
+    {
+        var definitionsByIdentifier = definitions
+            .GroupBy(definition => definition.EnumIdentifier)
+            .ToDictionary(group => group.Key, group => group.First());
 
-		var membersByIdentifier = allDiscoveredMembers
-			.GroupBy(d => d.EnumIdentifier)
-			.ToDictionary(group => group.Key, group => group.ToList());
+        var membersByIdentifier = allDiscoveredMembers
+            .GroupBy(d => d.EnumIdentifier)
+            .ToDictionary(group => group.Key, group => group.ToList());
 
-		var discoveredEnums = definitionsByIdentifier
-			.ToDictionary(group => group.Value, group => membersByIdentifier.TryGetValue(group.Key, out var members) ? members : new List<DiscoveredEnumMember>())
-			.Select(group => new DiscoveredEnum(group.Key, group.Value.OrderBy(member => member.Value).ToImmutableList()));
+        var discoveredEnums = definitionsByIdentifier
+            .ToDictionary(group => group.Value, group => membersByIdentifier.TryGetValue(group.Key, out var members) ? members : [])
+            .Select(group => new DiscoveredEnum(group.Key, group.Value.OrderBy(member => member.Value).ToImmutableList()));
 
-		return discoveredEnums;
-	}
+        return discoveredEnums;
+    }
 }

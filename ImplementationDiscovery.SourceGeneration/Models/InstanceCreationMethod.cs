@@ -2,7 +2,7 @@
 
 public enum InstanceCreationMethod
 {
-	Factory,
-	New,
-	Uninitialized,
+    Factory,
+    New,
+    Uninitialized,
 }

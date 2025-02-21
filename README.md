@@ -107,7 +107,7 @@ using System.Runtime.CompilerServices;
 /// </summary>
 public partial record class Animal 
 {
-	public static IImplementationsEnum<Animal> ImplementationEnum { get; } = new AnimalEnum();
+    public static IImplementationsEnum<Animal> ImplementationEnum { get; } = new AnimalEnum();
 }
 
 /// <summary>
@@ -119,28 +119,28 @@ public partial record class Animal
 /// </summary>
 internal partial record AnimalEnum : ImplementationsEnum<AnimalEnum, Animal>, IInitializable
 {
-	/// <summary>
-	/// <see cref="global::Cat"/>
-	/// </summary>
-	public static AnimalEnum Cat { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(global::Cat)));
+    /// <summary>
+    /// <see cref="global::Cat"/>
+    /// </summary>
+    public static AnimalEnum Cat { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(global::Cat)));
 
-	/// <summary>
-	/// <see cref="global::Dog"/>
-	/// </summary>
-	public static AnimalEnum Dog { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(global::Dog)));
+    /// <summary>
+    /// <see cref="global::Dog"/>
+    /// </summary>
+    public static AnimalEnum Dog { get; } = CreateMember(new DiscoveredObject<Animal>(typeof(global::Dog)));
 
-	#region Initialization
-	/// <summary>
-	/// Is false when the enum is still in static buildup and true if this is finished.
-	/// This parameter can be used to detect cyclic references during buildup and act accordingly.
-	/// </summary>
-	public new static bool IsInitialized { get; }
+    #region Initialization
+    /// <summary>
+    /// Is false when the enum is still in static buildup and true if this is finished.
+    /// This parameter can be used to detect cyclic references during buildup and act accordingly.
+    /// </summary>
+    public new static bool IsInitialized { get; }
 
-	static AnimalEnum()
-	{
-		IsInitialized = true;		
-	}
-	#endregion
+    static AnimalEnum()
+    {
+        IsInitialized = true;		
+    }
+    #endregion
 }
 ```
 

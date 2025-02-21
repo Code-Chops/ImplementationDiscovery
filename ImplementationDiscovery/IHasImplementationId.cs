@@ -4,7 +4,7 @@
 /// Contains an implementation enum value.
 /// </summary>
 public interface IHasImplementationId<TBaseType>
-	where TBaseType : notnull
+    where TBaseType : notnull
 {
-	IImplementationsEnum<TBaseType> GetImplementationId();
+    IImplementationsEnum<TBaseType> GetImplementationId();
 }
